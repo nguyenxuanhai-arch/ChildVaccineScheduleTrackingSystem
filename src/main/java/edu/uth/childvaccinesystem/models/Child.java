@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,8 @@ public class Child {
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String age ;
+    @Column(name = "dob") 
+    private LocalDate dob;
 
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Appointment> appoinments = new HashSet<>();

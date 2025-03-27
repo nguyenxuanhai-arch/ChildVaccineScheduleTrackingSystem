@@ -30,7 +30,7 @@ public class ChildService {
         if (optionalChild.isPresent()) {
             Child child = optionalChild.get();
             child.setName(childDetails.getName());
-            child.setAge(childDetails.getAge());
+            child.setDob(childDetails.getDob());
             return childRepository.save(child).getId();
         } else {
             throw new RuntimeException("Child not found");

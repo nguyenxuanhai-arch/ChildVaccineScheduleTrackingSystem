@@ -1,5 +1,7 @@
 package edu.uth.childvaccinesystem.models;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +17,11 @@ public class Dashboard {
 
     private String name;
     private String description;
-
-    // Constructors
+    private String status;
+    
+    @Column(name = "created_date")
+    private LocalDate createdDate;
+    
     public Dashboard() {
     }
 

@@ -21,4 +21,5 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "child_id", nullable = false)
     private Child child;
+    
 }
