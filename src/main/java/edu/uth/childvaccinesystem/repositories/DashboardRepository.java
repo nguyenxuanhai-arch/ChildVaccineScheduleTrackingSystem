@@ -1,8 +1,10 @@
 package edu.uth.childvaccinesystem.repositories;
 
-import edu.uth.childvaccinesystem.models.Dashboard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import edu.uth.childvaccinesystem.entities.Dashboard;
+
 import java.time.LocalDate;
 import java.util.List;
 

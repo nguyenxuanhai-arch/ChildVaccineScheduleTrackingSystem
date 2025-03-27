@@ -1,6 +1,6 @@
 package edu.uth.childvaccinesystem.controllers;
 
-import edu.uth.childvaccinesystem.models.Notification;
+import edu.uth.childvaccinesystem.entities.Notification;
 import edu.uth.childvaccinesystem.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

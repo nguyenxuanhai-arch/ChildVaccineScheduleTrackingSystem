@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import edu.uth.childvaccinesystem.dtos.RegisterDTO;
-import edu.uth.childvaccinesystem.models.User;
+import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.repositories.UserRepository;
 
 @Service

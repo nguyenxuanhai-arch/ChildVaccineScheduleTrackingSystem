@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.models;
+package edu.uth.childvaccinesystem.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

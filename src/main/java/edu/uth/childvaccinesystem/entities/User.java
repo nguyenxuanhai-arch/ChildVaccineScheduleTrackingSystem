@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.models;
+package edu.uth.childvaccinesystem.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

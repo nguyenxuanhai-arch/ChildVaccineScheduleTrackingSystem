@@ -1,9 +1,9 @@
 package edu.uth.childvaccinesystem.services;
 
-import edu.uth.childvaccinesystem.models.Appointment;
-import edu.uth.childvaccinesystem.models.Report;
-import edu.uth.childvaccinesystem.models.User;
-import edu.uth.childvaccinesystem.models.Vaccine;
+import edu.uth.childvaccinesystem.entities.Appointment;
+import edu.uth.childvaccinesystem.entities.Report;
+import edu.uth.childvaccinesystem.entities.User;
+import edu.uth.childvaccinesystem.entities.Vaccine;
 import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import edu.uth.childvaccinesystem.repositories.ReportRepository;
 import edu.uth.childvaccinesystem.repositories.UserRepository;

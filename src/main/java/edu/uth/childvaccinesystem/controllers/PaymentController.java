@@ -1,6 +1,6 @@
 package edu.uth.childvaccinesystem.controllers;
 
-import edu.uth.childvaccinesystem.models.Payment;
+import edu.uth.childvaccinesystem.entities.Payment;
 import edu.uth.childvaccinesystem.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

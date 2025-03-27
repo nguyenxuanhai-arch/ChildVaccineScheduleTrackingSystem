@@ -1,6 +1,6 @@
 package edu.uth.childvaccinesystem.services;
 
-import edu.uth.childvaccinesystem.models.Payment;
+import edu.uth.childvaccinesystem.entities.Payment;
 import edu.uth.childvaccinesystem.repositories.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

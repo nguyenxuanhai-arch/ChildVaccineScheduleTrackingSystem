@@ -1,6 +1,6 @@
 package edu.uth.childvaccinesystem.controllers;
 
-import edu.uth.childvaccinesystem.models.Feedback;
+import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.services.FeedbackService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

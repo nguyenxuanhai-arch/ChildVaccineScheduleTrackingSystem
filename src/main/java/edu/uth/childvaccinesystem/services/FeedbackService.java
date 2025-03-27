@@ -1,6 +1,6 @@
 package edu.uth.childvaccinesystem.services;
 
-import edu.uth.childvaccinesystem.models.Feedback;
+import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.repositories.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

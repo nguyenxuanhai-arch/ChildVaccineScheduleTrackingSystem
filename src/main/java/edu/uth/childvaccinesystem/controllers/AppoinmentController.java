@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.services.AppointmentService;
-import edu.uth.childvaccinesystem.models.Appointment;
 
 @RestController
 @RequestMapping("/api/appointments")
