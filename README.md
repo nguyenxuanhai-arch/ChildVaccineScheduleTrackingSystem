@@ -77,6 +77,6 @@ Giấy phép
 Dự án này được cấp phép theo giấy phép MIT. Xem file [LICENSE](https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem/blob/master/LICENSE) để biết thêm chi tiết.
 
 Trợ giúp
-Để biết thêm thông tin chi tiết và hướng dẫn sử dụng, vui lòng xem file [HELP.md](https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem/blob/master/%5BHelp).
+Để biết thêm thông tin chi tiết và hướng dẫn sử dụng, vui lòng xem file [HELP.md](https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem/blob/master/Help).
 
 Hãy lưu file này vào dự án của bạn với tên [README.md]([http://_vscodecontentref_/1](https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem/blob/master/README.md)).
