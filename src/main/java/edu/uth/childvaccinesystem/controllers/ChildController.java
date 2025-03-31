@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/child")
+@RequestMapping("/child")
 public class ChildController {
 
     @Autowired
@@ -17,13 +17,6 @@ public class ChildController {
     @GetMapping
     public List<Child> getAllChildren() {
         return childService.getAllChildren();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Child> getChildById(@PathVariable Long id) {
-        return childService.getChildById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping

@@ -10,7 +10,7 @@ import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.services.AppointmentService;
 
 @RestController
-@RequestMapping("/api/appointments")
+@RequestMapping("/appointments")
 public class AppoinmentController 
 {
 

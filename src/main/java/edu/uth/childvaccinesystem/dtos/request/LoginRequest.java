@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.dtos;
+package edu.uth.childvaccinesystem.dtos.request;
 
 public class LoginRequest {
     private String username;

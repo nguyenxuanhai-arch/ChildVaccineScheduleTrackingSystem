@@ -2,20 +2,33 @@ package edu.uth.childvaccinesystem.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
-// import ut.edu.vn.dms.services.UserService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import edu.uth.childvaccinesystem.filters.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    // @Autowired
-    // private UserService userService;
-    
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ADMIN > ROLE_ADMIN\nUSER > ROLE_USER"); // Ánh xạ role
+        return roleHierarchy;
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -28,10 +41,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/**").hasRole("ADMIN") // Chỉ ADMIN mới truy cập được
                 .requestMatchers("/user/**").authenticated()   // User phải đăng nhập
-                .anyRequest().permitAll()                     // Các trang còn lại truy cập tự do
+                .anyRequest().permitAll()                      // Các trang còn lại truy cập tự do
             )
-            // .userDetailsService(userService)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Inject filter đúng cách
             .build();
     }
-   
 }

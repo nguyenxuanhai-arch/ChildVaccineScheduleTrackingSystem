@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.dtos;
+package edu.uth.childvaccinesystem.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
