@@ -46,6 +46,8 @@ public RoleHierarchy roleHierarchy() {
             .authorizeHttpRequests(auth -> auth
                 // ADMIN có toàn quyền
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users", "/vaccines", "/appointments").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/users", "/vaccines", "/appointments").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
                 
@@ -54,7 +56,8 @@ public RoleHierarchy roleHierarchy() {
                 .requestMatchers(HttpMethod.PUT, "/appointments/{id}/cancel").hasRole("STAFF")
 
                 // USER chỉ có thể tạo dữ liệu
-                .requestMatchers(HttpMethod.POST, "/feedback", "/appointments/book").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/feedback", "/appointments/book", "/vaccines").hasRole("USER")
+                .requestMatchers(HttpMethod.GET, "/feedback", "notifications/{userId}").hasRole("USER")
 
                 // Cho phép mọi người truy cập các API còn lại
                 .anyRequest().permitAll()

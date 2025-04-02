@@ -14,8 +14,6 @@ import java.util.List;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT SUM(p.amount) FROM Payment p")
     double getTotalRevenue();
-}
-
 
     List<Payment> findByUserId(Long userId);
 

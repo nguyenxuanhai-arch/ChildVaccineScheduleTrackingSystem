@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.controllers;
+package edu.uth.childvaccinesystem.services;
 
 import edu.uth.childvaccinesystem.entities.Appointment;
 

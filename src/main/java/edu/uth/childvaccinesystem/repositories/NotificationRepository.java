@@ -24,6 +24,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Notification> findByTitleContaining(@Param("keyword") String keyword);
     
     List<Notification> findByUserIdAndIsReadTrue(Long userId);
-}
     boolean existsByUserIdAndMessage(Long userId, String message);
 }

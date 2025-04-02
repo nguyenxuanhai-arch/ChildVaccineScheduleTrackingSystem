@@ -6,9 +6,6 @@ import edu.uth.childvaccinesystem.repositories.FeedbackRepository;
 import edu.uth.childvaccinesystem.repositories.UserRepository;  // Make sure to add this
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +53,12 @@ public class FeedbackService {
         return "Feedback saved successfully";
     }
 
-    public void deleteFeedback(Long id) {
-        feedbackRepository.deleteById(id);
+    public String deleteFeedback(Long id) {
+        if (feedbackRepository.existsById(id)) {
+            feedbackRepository.deleteById(id);
+            return "Feedback deleted successfully";
+        } else {
+            return "Feedback not found";
+        }
     }
 }
