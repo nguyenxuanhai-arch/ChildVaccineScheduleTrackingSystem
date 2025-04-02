@@ -18,23 +18,30 @@ public class ChildService {
     }
 
     public Optional<Child> getChildById(Long id) {
+        if (!childRepository.existsById(id)) {
+            throw new RuntimeException("Child not found");
+        }
         return childRepository.findById(id);
     }
 
-    public long saveChild(Child child) {
-        return childRepository.save(child).getId();
+    public String saveChild(Child child) {
+        // Check if a child with the same name and date of birth already exists
+        if (childRepository.existsByNameAndDob(child.getName(), child.getDob())) {
+            return "Child already exists with the same name and date of birth";
+        }
+        childRepository.save(child).getId();
+        return "Child saved successfully";
     }
 
-    public long updateChild(Long id, Child childDetails) {
+    public String updateChild(Long id, Child childDetails) {
         Optional<Child> optionalChild = childRepository.findById(id);
         if (optionalChild.isPresent()) {
             Child child = optionalChild.get();
             child.setName(childDetails.getName());
             child.setDob(childDetails.getDob());
-            return childRepository.save(child).getId();
-        } else {
-            throw new RuntimeException("Child not found");
+            childRepository.save(child).getId();
         }
+        return "Child not found";
     }
 
     public long deleteChild(Long id) {

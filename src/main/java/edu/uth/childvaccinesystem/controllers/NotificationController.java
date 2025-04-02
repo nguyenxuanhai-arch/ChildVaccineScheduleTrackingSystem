@@ -1,5 +1,6 @@
 package edu.uth.childvaccinesystem.controllers;
 
+import edu.uth.childvaccinesystem.dtos.request.NotificationRequest;
 import edu.uth.childvaccinesystem.entities.Notification;
 import edu.uth.childvaccinesystem.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class NotificationController {
 
     // API gửi thông báo
     @PostMapping("/send")
-    public Notification sendNotification(@RequestParam Long userId, @RequestParam String message) {
-        return notificationService.sendNotification(userId, message);
+    public String sendNotification(@RequestBody NotificationRequest request) {
+    return notificationService.sendNotification(request.getUserId(), request.getMessage());
     }
 
     // API lấy danh sách thông báo của một người dùng

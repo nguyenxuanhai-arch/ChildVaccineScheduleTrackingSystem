@@ -15,25 +15,25 @@ public class VaccineController {
     private VaccineService vaccineService;
 
     // Create
-    @PostMapping("/vaccine")
+    @PostMapping()
     public long createVaccine(@RequestBody Vaccine vaccine) {
         return vaccineService.createVaccine(vaccine);
     }
 
     // Read (Lấy tất cả vaccine)
-    @GetMapping("vaccines")
+    @GetMapping()
     public List<Vaccine> getAllVaccines() {
         return vaccineService.getAllVaccines();
     }
 
     // Update
-    @PutMapping("vaccine/{id}")
+    @PutMapping("/{id}")
     public long updateVaccine(@PathVariable Long id, @RequestBody Vaccine vaccine) {
         return vaccineService.updateVaccine(id, vaccine);
     }
 
     // Delete
-    @DeleteMapping("vaccine/{id}")
+    @DeleteMapping("/{id}")
     public long deleteVaccine(@PathVariable Long id) {
         return vaccineService.deleteVaccine(id);
     }

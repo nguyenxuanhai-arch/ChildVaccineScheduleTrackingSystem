@@ -21,14 +21,14 @@ public class ChildController {
 
     @PostMapping
     public ResponseEntity<Long> createChild(@RequestBody Child child) {
-        long id = childService.saveChild(child);
+        long id = Long.parseLong(childService.saveChild(child));
         return ResponseEntity.ok(id);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateChild(@PathVariable Long id, @RequestBody Child childDetails) {
         try {
-            long updatedId = childService.updateChild(id, childDetails);
+            long updatedId = Long.parseLong(childService.updateChild(id, childDetails));
             return ResponseEntity.ok(updatedId);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

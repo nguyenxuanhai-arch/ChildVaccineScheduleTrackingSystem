@@ -2,44 +2,42 @@ package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.services.FeedbackService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/feedback")
 public class FeedbackController {
     @Autowired
     private FeedbackService feedbackService;
 
-    // Hiển thị danh sách feedback
     @GetMapping
-    public String listFeedback(Model model) {
+    public ResponseEntity<List<Feedback>> listFeedback() {
         List<Feedback> feedbackList = feedbackService.getAllFeedback();
-        model.addAttribute("feedbackList", feedbackList);
-        return "feedback/list";
+        return ResponseEntity.ok(feedbackList);
     }
 
-    // Hiển thị form thêm feedback
-    @GetMapping("/add")
-    public String addFeedbackForm(Model model) {
-        model.addAttribute("feedback", new Feedback());
-        return "feedback/add";
+    @PostMapping 
+    public ResponseEntity<String> saveFeedback(@RequestBody Feedback feedback) {
+        String response = feedbackService.saveFeedback(feedback);
+        if (response.equals("Feedback saved successfully")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
-    // Lưu feedback
-    @PostMapping("/save")
-    public String saveFeedback(@ModelAttribute Feedback feedback) {
-        feedbackService.saveFeedback(feedback);
-        return "redirect:/feedback";
-    }
-
-    // Xóa feedback
-    @GetMapping("/delete/{id}")
-    public String deleteFeedback(@PathVariable Long id) {
-        feedbackService.deleteFeedback(id);
-        return "redirect:/feedback";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteFeedback(@PathVariable Long id) {
+        String response = feedbackService.deleteFeedback(id);
+        if (response.equals("Feedback deleted successfully")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

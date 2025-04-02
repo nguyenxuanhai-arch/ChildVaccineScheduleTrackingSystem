@@ -22,4 +22,6 @@ public interface DashboardRepository extends JpaRepository<Dashboard, Long> {
 
     // Tìm Dashboard theo tên và trạng thái
     List<Dashboard> findByNameAndStatus(String name, String status);
+
+    boolean existsByName(String name);
 }

@@ -16,4 +16,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByChildId(Long childId);
 
     List<Appointment> findByDate(LocalDate date);
+
+    boolean existsByChildIdAndDate(Long childId, LocalDate date);
 }

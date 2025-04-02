@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     List<Notification> findByUserId(Long userId);
+    boolean existsByUserIdAndMessage(Long userId, String message);
 }

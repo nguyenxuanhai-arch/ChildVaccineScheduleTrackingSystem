@@ -1,59 +1,45 @@
 package edu.uth.childvaccinesystem.controllers;
 
+import edu.uth.childvaccinesystem.dtos.request.PaymentRequest;
 import edu.uth.childvaccinesystem.entities.Payment;
 import edu.uth.childvaccinesystem.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/payment")
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    // Hiển thị danh sách thanh toán
+    // Lấy danh sách thanh toán
     @GetMapping
-    public String listPayments(Model model) {
-        List<Payment> payments = paymentService.getAllPayments();
-        model.addAttribute("payments", payments);
-        return "payment/list";
+    public List<Payment> listPayments() {
+        return paymentService.getAllPayments();
     }
 
-    // Hiển thị form thanh toán
-    @GetMapping("/checkout")
-    public String checkoutForm(Model model) {
-        model.addAttribute("payment", new Payment());
-        return "payment/checkout";
-    }
-
-    // Xử lý thanh toán
-    @PostMapping("/process")
-    public String processPayment(@ModelAttribute Payment payment) {
-        paymentService.savePayment(payment);
-        return "redirect:/payment";
+    // Xử lý thanh toán (POST request)
+    @PostMapping
+    public String processPayment(@RequestBody PaymentRequest request) {
+        return paymentService.savePayment(request);
     }
 
     // Cập nhật trạng thái thanh toán
-    @GetMapping("/update/{id}/{status}")
+    @PutMapping("/{id}/{status}")
     public String updatePayment(@PathVariable Long id, @PathVariable String status) {
-        paymentService.updatePaymentStatus(id, status);
-        return "redirect:/payment";
+        return paymentService.updatePaymentStatus(id, status);
     }
 
     // Xóa thanh toán
-    @GetMapping("/delete/{id}")
-    public String deletePayment(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public void deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
-        return "redirect:/payment";
     }
 
     // API lấy tổng doanh thu
-    @GetMapping("/revenue")
-    @ResponseBody
+    @GetMapping("/total")
     public double getTotalRevenue() {
         return paymentService.getTotalRevenue();
     }

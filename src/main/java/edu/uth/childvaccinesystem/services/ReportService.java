@@ -1,51 +1,64 @@
 package edu.uth.childvaccinesystem.services;
 
-import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.entities.Report;
-import edu.uth.childvaccinesystem.entities.User;
-import edu.uth.childvaccinesystem.entities.Vaccine;
-import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import edu.uth.childvaccinesystem.repositories.ReportRepository;
-import edu.uth.childvaccinesystem.repositories.UserRepository;
-import edu.uth.childvaccinesystem.repositories.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Service
 public class ReportService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private VaccineRepository vaccineRepository;
-
-    @Autowired
     private ReportRepository reportRepository;
 
-    public List<User> getAllUsersWithAppointments() {
-        return userRepository.findAll();
+    // Create
+    @Transactional
+    public String createReport(Report report) {
+        // Check if a report with the same childId and vaccineId already exists
+        if (reportRepository.existsByChildIdAndVaccineId(report.getChildId(), report.getVaccineId())) {
+            return "Report already exists for this child and vaccine";
+        }
+        report.setCreatedAt(LocalDateTime.now());
+        report.setUpdatedAt(LocalDateTime.now());
+        reportRepository.save(report);
+        return "Report created successfully";
     }
 
-    public List<Vaccine> getAllUsedVaccines() {
-        return vaccineRepository.findAll();
+    // Read All
+    public List<Report> getAllReports() {
+        return reportRepository.findAll();
     }
 
-    public List<Appointment> getAppointmentsForMonth(int year, int month) {
-        YearMonth yearMonth = YearMonth.of(year, month);
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
-        return appointmentRepository.findAllByDateBetween(startDate, endDate);
+    // Read One
+    public Optional<Report> getReportById(Long id) {
+        return reportRepository.findById(id);
     }
 
-    public Report saveReport(Report report) {
-        return reportRepository.save(report);
+    // Update
+    @Transactional
+    public String updateReport(Long id, Report reportDetails) {
+        Optional<Report> report = reportRepository.findById(id);
+        if (report.isPresent()) {
+            Report existingReport = report.get();
+            existingReport.setTitle(reportDetails.getTitle());
+            existingReport.setContent(reportDetails.getContent());
+            existingReport.setUpdatedAt(LocalDateTime.now());
+            reportRepository.save(existingReport);
+            return "Report updated successfully";
+        }
+        return "Report not found";
+    }
+
+    // Delete
+    @Transactional
+    public String deleteReport(Long id) {
+        reportRepository.deleteById(id);
+        return "Report deleted successfully";
     }
 }

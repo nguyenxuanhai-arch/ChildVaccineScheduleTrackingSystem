@@ -14,6 +14,10 @@ public class VaccineService {
 
     // Create (Thêm vaccine)
     public long createVaccine(Vaccine vaccine) {
+        if (vaccineRepository.existsByName(vaccine.getName())) {
+            throw new RuntimeException("Vaccine already exists");
+            
+        }
         return vaccineRepository.save(vaccine).getId();
     }
 

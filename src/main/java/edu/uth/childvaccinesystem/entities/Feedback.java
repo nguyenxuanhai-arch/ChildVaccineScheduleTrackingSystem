@@ -12,7 +12,12 @@ public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String comments;
+
+    @ManyToOne
+    @JoinColumn(name = "user_username", nullable = false)
+    private User user;
+
+    private String message;
     private int rating;
     private LocalDateTime createdAt;
 

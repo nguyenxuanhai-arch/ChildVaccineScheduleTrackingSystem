@@ -7,4 +7,5 @@ import edu.uth.childvaccinesystem.entities.Vaccine;
 
 @Repository
 public interface VaccineRepository extends JpaRepository<Vaccine, Long> {
+    boolean existsByName(String name);
 }

@@ -7,4 +7,5 @@ import edu.uth.childvaccinesystem.entities.Report;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
+    boolean existsByChildIdAndVaccineId(Long childId, Long vaccineId);
 }

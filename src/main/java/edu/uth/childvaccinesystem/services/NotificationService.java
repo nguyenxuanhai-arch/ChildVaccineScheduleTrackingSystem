@@ -13,13 +13,19 @@ public class NotificationService {
     private NotificationRepository notificationRepository;
 
     // Gửi thông báo
-    public Notification sendNotification(Long userId, String message) {
+    public String sendNotification(Long userId, String message) {
+        // Kiểm tra xem thông báo đã tồn tại chưa
+        if (notificationRepository.existsByUserIdAndMessage(userId, message)) {
+            return "Notification already exists for this user and message";
+        }
+        
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setMessage(message);
         notification.setStatus(true); // Đánh dấu đã gửi
 
-        return notificationRepository.save(notification);
+        notificationRepository.save(notification);
+        return "Notification sent successfully";
     }
 
     // Lấy danh sách thông báo của một người dùng

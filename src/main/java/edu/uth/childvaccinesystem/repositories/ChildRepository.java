@@ -13,4 +13,6 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     List<Child> findByDob(LocalDate dob);
 
+    boolean existsByNameAndDob(String name, LocalDate dob);
+
 }

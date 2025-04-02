@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import edu.uth.childvaccinesystem.filters.JwtAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -23,11 +24,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ADMIN > ROLE_ADMIN\nUSER > ROLE_USER"); // Ánh xạ role
-        return roleHierarchy;
-    }
+public RoleHierarchy roleHierarchy() {
+    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+    roleHierarchy.setHierarchy("""
+        ADMIN > ROLE_ADMIN
+        STAFF > ROLE_STAFF
+        USER > ROLE_USER
+    """);
+    return roleHierarchy;
+}
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -37,13 +42,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable()) // Tắt CSRF
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/**").hasRole("ADMIN") // Chỉ ADMIN mới truy cập được
-                .requestMatchers("/user/**").authenticated()   // User phải đăng nhập
-                .anyRequest().permitAll()                      // Các trang còn lại truy cập tự do
+                // ADMIN có toàn quyền
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
+                
+                // STAFF có quyền đọc dữ liệu
+                .requestMatchers(HttpMethod.GET, "/feedback", "/dashboard", "/child").hasRole("STAFF")
+                .requestMatchers(HttpMethod.PUT, "/appointments/{id}/cancel").hasRole("STAFF")
+
+                // USER chỉ có thể tạo dữ liệu
+                .requestMatchers(HttpMethod.POST, "/feedback", "/appointments/book").hasRole("USER")
+
+                // Cho phép mọi người truy cập các API còn lại
+                .anyRequest().permitAll()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Inject filter đúng cách
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 }
