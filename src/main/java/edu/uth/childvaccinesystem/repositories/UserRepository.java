@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.uth.childvaccinesystem.entities.User;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.createdAt > :date")
     List<User> findByCreatedAtAfter(@Param("date") String date);
+
+    long countByCreatedAtBetween(LocalDate startOfMonth, LocalDate endOfMonth);
 }

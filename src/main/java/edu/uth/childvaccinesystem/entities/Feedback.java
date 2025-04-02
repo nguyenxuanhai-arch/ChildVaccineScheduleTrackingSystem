@@ -20,4 +20,14 @@ public class Feedback {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    public Object getContent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getContent'");
+    }
+
+    public void setContent(Object content) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setContent'");
+    }
 }

@@ -42,7 +42,7 @@ public class FeedbackService {
     public Feedback updateFeedback(Long id, Feedback updatedFeedback) {
         return feedbackRepository.findById(id).map(feedback -> {
             feedback.setContent(updatedFeedback.getContent());
-            feedback.setUpdatedAt(LocalDateTime.now());
+            feedback.setCreatedAt(LocalDateTime.now());
             return feedbackRepository.save(feedback);
         }).orElseThrow(() -> new RuntimeException("Feedback not found with id " + id));
     }

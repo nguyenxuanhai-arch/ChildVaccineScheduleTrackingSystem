@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import edu.uth.childvaccinesystem.entities.Feedback;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -21,4 +22,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT f FROM Feedback f WHERE f.createdDate > :date")
     List<Feedback> findByCreatedDateAfter(@Param("date") String date);
+
+    List<Feedback> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

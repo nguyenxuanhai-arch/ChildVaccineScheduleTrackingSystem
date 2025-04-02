@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.entities;
+package edu.uth.childvaccinesystem.services;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,11 +37,13 @@ public class User {
         this.role = role;
     }
 
+    // Phương thức tự động thiết lập thời gian tạo trước khi lưu vào cơ sở dữ liệu
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
+    // Getters và Setters
     public Long getId() {
         return id;
     }

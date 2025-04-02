@@ -10,10 +10,14 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-
+    
     List<Appointment> findAllByDateBetween(LocalDate startDate, LocalDate endDate);
 
     List<Appointment> findByChildId(Long childId);
 
     List<Appointment> findByDate(LocalDate date);
+
+    long countByDate(LocalDate date);
+
+    long countByDateBetween(LocalDate startDate, LocalDate endDate);
 }
