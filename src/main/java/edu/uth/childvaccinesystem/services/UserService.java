@@ -1,5 +1,6 @@
 package edu.uth.childvaccinesystem.services;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,6 +36,7 @@ public class UserService implements UserDetailsService {
         user.setUsername(registerDTO.getUsername());
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         user.setRole(registerDTO.getRole());
+        user.setCreatedAt(LocalDateTime.now());
 
         userRepository.save(user);
         return "User registered successfully!";

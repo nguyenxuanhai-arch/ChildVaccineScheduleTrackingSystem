@@ -16,7 +16,8 @@ public class Appointment {
     private Long id;
 
     private String status;
-    private LocalDate date;
+    private LocalDate createAt;
+    private LocalDate finishAt;
 
     @ManyToOne
     @JoinColumn(name = "child_id", nullable = false)

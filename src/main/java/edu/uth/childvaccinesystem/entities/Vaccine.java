@@ -38,6 +38,9 @@ public class Vaccine {
     @NotNull
     private LocalDateTime updatedAt;
 
+    @Column(name = "used")
+    private Boolean used;
+
     public Vaccine() {}
 
     public Vaccine(String name, String manufacturer, String lotNumber, String expirationDate) {

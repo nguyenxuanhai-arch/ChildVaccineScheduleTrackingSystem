@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.servlet.http.HttpServletRequest;
 import edu.uth.childvaccinesystem.dtos.RegisterDTO;
 import edu.uth.childvaccinesystem.dtos.request.LoginRequest;
@@ -42,32 +41,34 @@ public class AuthsController {
             );
             UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
 
+            // Lấy danh sách roles thay vì join thành chuỗi
             String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(", "));
-            String token = jwtUtil.generateToken(userDetails.getUsername() , role);
+                .findFirst()
+                .orElse("USER");
+
+            String token = jwtUtil.generateToken(userDetails.getUsername(), role);
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập");
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterDTO registerDTO) {
         String result = userService.registerUser(registerDTO);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/profile")
     public String getUserProfile(HttpServletRequest request) {
-        // Lấy token từ header Authorization
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return "Missing or invalid token!";
         }
 
-        // Cắt bỏ "Bearer " để lấy token thực sự
         String token = authHeader.substring(7);
-        
-        return "Token: " + token; // Test xem có nhận được token không
+        return "Token: " + token; // Debugging
     }
 }

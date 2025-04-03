@@ -56,8 +56,10 @@ public class PaymentService {
         return "Payment deleted successfully";
     }
 
-    // Tính tổng doanh thu
-    public double getTotalRevenue() {
-        return paymentRepository.getTotalRevenue();
-    }
+//     // Tính tổng doanh thu
+//     public double getTotalRevenue() {
+//         // Logic để tính tổng doanh thu
+//         Double revenue = paymentRepository.getTotalRevenue();// logic của bạn để lấy dữ liệu doanh thu
+//         return (revenue != null) ? revenue : 0.0;
+//     }
 }

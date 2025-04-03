@@ -5,17 +5,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
+
     @GetMapping("/layout")
     public String layoutPage() {
-        return "master/_layout";
+        return "master/_layout"; // Trả về layout
     }
+
     @GetMapping("/about")
     public String aboutPage() {
-        return "index";
+        return "index"; // Trả về trang About
     }
+
     @GetMapping("/home")
-    public String HomePage() {
-        return "home";//goi den html page 
+    public String homePage() {
+        return "home"; // Trả về trang Home
     }
 }
-//Layout ...

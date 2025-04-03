@@ -1,5 +1,6 @@
 package edu.uth.childvaccinesystem.entities;
 
+import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +28,9 @@ public class User {
     private String password;
     
     private String role;
+
+    @Column(nullable = false, updatable = false)
+private LocalDateTime createdAt;
 
     public User() {}
 

@@ -1,23 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" >
-<!--th:include="master/_layout"-->
-<div th:replace="master/head :: head"></div>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
 <body>
-    <div class="layout-wrapper layout-content-navbar">
-        <div class="layout-container">
-            <div th:replace="master/_layoutmenu::layout-menu"></div>
-            <div class="layout-page">
-                <div th:replace="master/_layoutnavbar::layout-navbar"></div>
-                <div class="content-wrapper">
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        <th:block th:fragment="content" >
-                           <h2>Noi dung trang web </h2>
-                        </th:block>
-                    </div>
-                </div>
-                <!-- <div th:replace="master/_layoutfooter::layout-footer"></div> -->
-            </div>
-        </div>
+    <!-- Kế thừa layout -->
+    <div th:replace="~{templates/master/_layout :: content}">
+        <h1>Welcome to the Home Page</h1>
+        <p>This is the home page of the Child Vaccine System.</p>
     </div>
 </body>
 </html>

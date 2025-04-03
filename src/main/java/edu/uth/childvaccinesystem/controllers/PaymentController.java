@@ -39,8 +39,8 @@ public class PaymentController {
     }
 
     // API lấy tổng doanh thu
-    @GetMapping("/total")
-    public double getTotalRevenue() {
-        return paymentService.getTotalRevenue();
-    }
+    // @GetMapping("/total")
+    // public double getTotalRevenue() {
+    //     return paymentService.getTotalRevenue();
+    // }
 }
