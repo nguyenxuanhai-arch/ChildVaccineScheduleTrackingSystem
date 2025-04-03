@@ -1,36 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Vaccine System</title>
+    <title th:text="${title} ?: 'Vaccine System'">Vaccine System</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Vaccine System</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/home">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="auth/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="auth/register">Register</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <!-- Thêm menu -->
+    <div th:replace="master/menu :: menu"></div>
 
-    <div class="container mt-4">
-        <!-- Fragment này sẽ được thay thế bởi nội dung của trang con -->
-        <div th:fragment="content">
-            <p>This is the default content.</p>
-        </div>
-    </div>
+    <div th:replace="master/content :: content"></div>
 </body>
 </html>

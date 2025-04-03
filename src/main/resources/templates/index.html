@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>About</title>
+    <title th:text="'Index - Vaccine System'">Index</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 <body>
-    <!-- Kế thừa layout và thay thế phần 'content' trong layout -->
-    <div th:replace="~{master/_layout :: content}">
-        <h1>About Us</h1>
-        <p>This is the about page of the Child Vaccine System.</p>
+    <!-- Kế thừa layout và thay thế phần 'content' -->
+    <div th:replace="master/menu :: menu"></div>
+        <h1>Welcome to the Index Page</h1>
+        <p>This is the index page of the Child Vaccine System.</p>
     </div>
 </body>
 </html>

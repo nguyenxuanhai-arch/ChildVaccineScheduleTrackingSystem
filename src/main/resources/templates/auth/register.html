@@ -3,8 +3,11 @@
 <head>
     <title>Register</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/auth/register.css}">
 </head>
 <body>
+    <div th:replace="master/menu :: menu"></div>
     <div class="container">
         <h2>Register</h2>
         <form th:action="@{/auths/register}" method="post" id="registerForm">
@@ -37,7 +40,7 @@
 
                 if (response.ok) {
                     alert('Registration successful');
-                    window.location.href = '/layout'; // Redirect to login page
+                    window.location.href = '/'; // Redirect to login page
                 } else {
                     alert('Registration failed');
                 }

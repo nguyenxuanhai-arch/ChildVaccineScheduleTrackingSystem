@@ -2,9 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/auth/login.css}">
 </head>
 <body>
+    <div th:replace="master/menu :: menu"></div>
     <div class="container">
         <h2>Login</h2>
         <form th:action="@{/auths/login}" method="post" id="loginForm">
@@ -42,7 +43,7 @@
                 if (response.ok) {
                     const result = await response.json();
                     localStorage.setItem('token', result.token); // Save token to localStorage
-                    window.location.href = '/layout'; // Redirect to profile page
+                    window.location.href = '/'; // Redirect to profile page
                 } else {
                     errorMessage.style.display = 'block'; // Show error if login fails
                 }

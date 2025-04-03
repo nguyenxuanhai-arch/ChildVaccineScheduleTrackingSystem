@@ -1,101 +1,27 @@
-<nav th:fragment="layout-navbar" 
-class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-id="layout-navbar"
->
-<div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-  <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-    <i class="bx bx-menu bx-sm"></i>
-  </a>
+<div th:fragment="content">
+    <h1>Welcome to the Vaccine System</h1>
+    <p>This is the default content for the Vaccine System.</p>
 </div>
 
-<div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-  <!-- Search -->
-  <div class="navbar-nav align-items-center">
-    <div class="nav-item d-flex align-items-center">
-      <i class="bx bx-search fs-4 lh-0"></i>
-      <input
-        type="text"
-        class="form-control border-0 shadow-none"
-        placeholder="Search..."
-        aria-label="Search..."
-      />
-    </div>
-  </div>
-  <!-- /Search -->
+<div th:fragment="about">
+<p>Welcome to the <strong>Child Vaccine System</strong>. Our platform is designed to help parents and caregivers easily schedule vaccine appointments for children. We aim to make vaccination a seamless and accessible process for everyone, ensuring the health and safety of our community.</p>
 
-  <ul class="navbar-nav flex-row align-items-center ms-auto">
-    <!-- Place this tag where you want the button to render. -->
-    <li class="nav-item lh-1 me-3">
-      <a
-        class="github-button"
-        href="https://github.com/themeselection/sneat-html-admin-template-free"
-        data-icon="octicon-star"
-        data-size="large"
-        data-show-count="true"
-        aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-        >Star</a
-      >
-    </li>
+<h2>Our Mission</h2>
+<p>Our mission is to provide a user-friendly, reliable system for scheduling vaccine appointments. We want to ensure that children get the vaccines they need on time, without hassle. The system is built with accessibility and convenience in mind, allowing parents to book appointments at a time and location that suits them best.</p>
 
-    <!-- User -->
-    <li class="nav-item navbar-dropdown dropdown-user dropdown">
-      <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-        <div class="avatar avatar-online">
-          <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-        </div>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item" href="#">
-            <div class="d-flex">
-              <div class="flex-shrink-0 me-3">
-                <div class="avatar avatar-online">
-                  <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
-                </div>
-              </div>
-              <div class="flex-grow-1">
-                <span class="fw-semibold d-block">John Doe</span>
-                <small class="text-muted">Admin</small>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <div class="dropdown-divider"></div>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">
-            <i class="bx bx-user me-2"></i>
-            <span class="align-middle">My Profile</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">
-            <i class="bx bx-cog me-2"></i>
-            <span class="align-middle">Settings</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">
-            <span class="d-flex align-items-center align-middle">
-              <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-              <span class="flex-grow-1 align-middle">Billing</span>
-              <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <div class="dropdown-divider"></div>
-        </li>
-        <li>
-          <a class="dropdown-item" th:href="@{/auth/login-user}">
-            <i class="bx bx-power-off me-2"></i>
-            <span class="align-middle">Log Out</span>
-          </a>
-        </li>
-      </ul>
-    </li>
-    <!--/ User -->
-  </ul>
+<h2>How It Works</h2>
+<p>The Child Vaccine System is simple to use. Parents can:</p>
+<ul>
+    <li>Choose a nearby vaccination center</li>
+    <li>Select a convenient time slot</li>
+    <li>Fill in the necessary details (child's name, age, etc.)</li>
+    <li>Receive a confirmation for the appointment</li>
+</ul>
+<p>Appointments are managed in real-time to avoid overbooking, so parents can trust that their spot is secured.</p>
+
+<h2>Why Vaccination is Important</h2>
+<p>Vaccines are vital to the health of children and communities. They protect children from serious diseases, prevent outbreaks, and help maintain herd immunity. By scheduling regular vaccine appointments, you help keep your child safe while contributing to the overall well-being of society.</p>
+
+<h2>Contact Us</h2>
+<p>If you have any questions or need assistance with scheduling, feel free to reach out to us at <strong>support@vaccineplatform.com</strong>. We are here to help!</p>
 </div>
-</nav>
