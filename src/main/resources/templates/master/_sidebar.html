@@ -1,0 +1,21 @@
+<div th:fragment="sidebar">
+    <div class="sidebar bg-light p-3 shadow-sm" style="width: 220px; min-height: 100vh;">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/}">🏠 Trang chủ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/schedule}">📅 Đặt lịch</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/vaccines}">💉 Danh sách vaccine</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/profile}">👤 Thông tin cá nhân</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/about}">ℹ️ Giới thiệu</a>
+            </li>
+        </ul>
+    </div>
+</div>

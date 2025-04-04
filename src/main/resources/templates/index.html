@@ -3,13 +3,16 @@
 <head>
     <title th:text="'Index - Vaccine System'">Index</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 <body>
-    <!-- Kế thừa layout và thay thế phần 'content' -->
-    <div th:replace="master/menu :: menu"></div>
-        <h1>Welcome to the Index Page</h1>
-        <p>This is the index page of the Child Vaccine System.</p>
+    <div th:replace="master/_header :: header"></div>
+    <div class="main-container">
+        <div th:replace="master/_sidebar :: sidebar" class="sidebar"></div>
+        <div class="content">
+            <div th:replace="master/content :: content"></div>
+        </div>
     </div>
 </body>
 </html>

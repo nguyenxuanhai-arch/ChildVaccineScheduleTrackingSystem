@@ -3,11 +3,10 @@
 <head>
     <title>Register</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-    <link rel="stylesheet" th:href="@{/css/auth/register.css}">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div th:replace="master/menu :: menu"></div>
+    <div th:replace="master/_header :: header"></div>
     <div class="container">
         <h2>Register</h2>
         <form th:action="@{/auths/register}" method="post" id="registerForm">
@@ -21,6 +20,12 @@
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
+        <div id="errorMessage" class="alert alert-danger mt-2" style="display: none;">
+            Registration failed. Please try again.
+        </div>
+        <div id="successMessage" class="alert alert-success mt-2" style="display: none;">
+            Registration successful! Redirecting to login page...
+        </div>
     </div>
 
     <script>
@@ -29,24 +34,29 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const role = 'USER';
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
             try {
                 const response = await fetch('http://localhost:8080/auths/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username, password, role})
+                    body: JSON.stringify({ username, password, role })
                 });
 
                 if (response.ok) {
-                    alert('Registration successful');
-                    window.location.href = '/'; // Redirect to login page
+                    successMessage.style.display = 'block';
+                    setTimeout(function() {
+                        window.location.href = '/login'; // Redirect to login page after 3 seconds
+                    }, 3000); // 3 seconds delay before redirect
                 } else {
-                    alert('Registration failed');
+                    errorMessage.style.display = 'block'; // Show error if registration fails
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Registration failed');
+                errorMessage.style.display = 'block'; // Show error if something goes wrong
             }
         };
     </script>

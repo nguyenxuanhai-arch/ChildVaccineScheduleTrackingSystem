@@ -24,15 +24,15 @@ public class SecurityConfig {
     }
 
     @Bean
-public RoleHierarchy roleHierarchy() {
-    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-    roleHierarchy.setHierarchy("""
-        ADMIN > ROLE_ADMIN
-        STAFF > ROLE_STAFF
-        USER > ROLE_USER
-    """);
-    return roleHierarchy;
-}
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("""
+            ADMIN > ROLE_ADMIN
+            STAFF > ROLE_STAFF
+            USER > ROLE_USER
+        """);
+        return roleHierarchy;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -46,7 +46,7 @@ public RoleHierarchy roleHierarchy() {
             .authorizeHttpRequests(auth -> auth
                 // ADMIN có toàn quyền
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/users", "/dashboard" ,"/vaccines", "/appointments").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users", "/dashboard", "/vaccines", "/appointments").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/users", "/vaccines", "/appointments").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
@@ -59,14 +59,22 @@ public RoleHierarchy roleHierarchy() {
                 .requestMatchers(HttpMethod.POST, "/feedback", "/appointments/book", "/vaccines").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/feedback", "notifications/{userId}").hasRole("USER")
 
+                // Các API liên quan đến đăng nhập và đăng ký
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers("/auth/register").permitAll()
-
+                .requestMatchers("/auth/logout").permitAll()  // Đảm bảo có quyền truy cập
                 .requestMatchers("/auths/login").permitAll()
                 // Cho phép mọi người truy cập các API còn lại
                 .anyRequest().permitAll()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            // Đăng xuất: cấu hình đăng xuất
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")  // URL đăng xuất
+                .logoutSuccessUrl("/")  // Sau khi đăng xuất thành công, chuyển hướng về trang chủ
+                .invalidateHttpSession(true)  // Hủy session khi đăng xuất
+                .clearAuthentication(true)  // Xóa thông tin xác thực của người dùng
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // Thêm filter JWT
             .build();
     }
 }

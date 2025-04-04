@@ -2,11 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="'About - Vaccine System'">About</title>
-    <link rel="stylesheet" th:href="@{/css/about.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div th:replace="master/menu :: menu"></div>
-    <div th:replace="master/content :: about"></div>
-    
+    <div th:replace="master/_header :: header"></div>
+    <div class="main-container">
+        <div th:replace="master/_sidebar :: sidebar" class="sidebar"></div>
+        <div class="content">
+            <div th:replace="~{master/content :: about}">
+        </div>
+    </div>
 </body>
 </html>

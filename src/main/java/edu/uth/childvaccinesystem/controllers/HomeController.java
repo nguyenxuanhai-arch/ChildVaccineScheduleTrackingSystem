@@ -7,20 +7,15 @@ import org.springframework.ui.Model;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/layout")
     public String layoutPage() {
         return "master/_layout"; // Trả về layout
     }
 
-    @GetMapping("/index")
-    public String aboutPage() {
-        return "index"; // Trả về trang About
-    }
-
-    @GetMapping("/home")
+    @GetMapping("/")
     public String homePage(Model model) {
         model.addAttribute("title", "Home - Vaccine System");
-        return "home";
+        return "index";
     }
 
     @GetMapping("/about")
