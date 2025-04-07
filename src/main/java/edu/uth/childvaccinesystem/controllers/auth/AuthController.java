@@ -24,10 +24,14 @@ public class AuthController {
         return "auth/login"; // Ensure this maps to the correct template path
     }
 
+    @GetMapping("/profile")
+    public String profile() {
+        return "auth/profile"; // Đường dẫn đến file profile.html
+    }
+
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // Hủy session hoặc token (nếu cần)
-        SecurityContextHolder.clearContext(); // Xóa thông tin xác thực của người dùng hiện tại
-        return "redirect:/"; // Chuyển hướng về trang chủ sau khi đăng xuất
+        SecurityContextHolder.clearContext(); // Xóa thông tin người dùng hiện tại
+        return "redirect:/"; // Điều hướng về trang chủ
     }
 }

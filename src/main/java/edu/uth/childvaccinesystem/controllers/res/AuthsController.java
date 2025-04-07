@@ -20,6 +20,7 @@ import edu.uth.childvaccinesystem.dtos.request.LoginRequest;
 import edu.uth.childvaccinesystem.dtos.response.AuthResponse;
 import edu.uth.childvaccinesystem.services.UserService;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
+import edu.uth.childvaccinesystem.entities.User;
 
 @RestController
 @RequestMapping("/auths")
@@ -41,7 +42,6 @@ public class AuthsController {
             );
             UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
 
-            // Lấy danh sách roles thay vì join thành chuỗi
             String role = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .findFirst()
@@ -57,18 +57,33 @@ public class AuthsController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterDTO registerDTO) {
         String result = userService.registerUser(registerDTO);
+
+        if (result.equals("User already exists!")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/profile")
-    public String getUserProfile(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
+public ResponseEntity<?> getUserProfile(HttpServletRequest request) {
+    String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return "Missing or invalid token!";
-        }
-
-        String token = authHeader.substring(7);
-        return "Token: " + token; // Debugging
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid token!");
     }
+
+    String token = authHeader.substring(7);
+    String username = jwtUtil.extractUsername(token);
+
+    // Trả về toàn bộ thông tin User thay vì UserDetails
+    User user = userService.getUserByUsername(username);
+
+    if (user != null) {
+        return ResponseEntity.ok(user);
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+    }
+
 }

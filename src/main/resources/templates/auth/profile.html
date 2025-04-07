@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="master/_header :: header"></div>
+    <div class="container mt-4">
+        <h2>👤 Thông tin cá nhân</h2>
+        <div id="profileInfo" class="mt-3">
+            <!-- Thông tin người dùng sẽ được hiển thị ở đây -->
+        </div>
+    </div>
+    <script th:src="@{/js/auth/profile.js}"></script>
+</body>
+</html>

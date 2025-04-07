@@ -7,11 +7,6 @@ import org.springframework.ui.Model;
 @Controller
 public class HomeController {
 
-    @GetMapping("/layout")
-    public String layoutPage() {
-        return "master/_layout"; // Trả về layout
-    }
-
     @GetMapping("/")
     public String homePage(Model model) {
         model.addAttribute("title", "Home - Vaccine System");

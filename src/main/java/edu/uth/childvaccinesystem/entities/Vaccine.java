@@ -41,6 +41,10 @@ public class Vaccine {
     @Column(name = "used")
     private Boolean used;
 
+    @Lob  
+    @Column(name = "image")
+    private byte[] image;
+
     public Vaccine() {}
 
     public Vaccine(String name, String manufacturer, String lotNumber, String expirationDate) {

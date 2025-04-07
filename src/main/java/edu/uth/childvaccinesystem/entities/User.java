@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,11 +27,14 @@ public class User {
 
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
-    
     private String role;
-
+    private String name;
+    private String phone;
+    private String email;
+    private String address;
+    
     @Column(nullable = false, updatable = false)
-private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public User() {}
 

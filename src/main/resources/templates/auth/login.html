@@ -2,15 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-
+    <link rel="stylesheet" th:href="@{/css/auth/login.css}">
 </head>
 <body>
-    <div th:replace="master/_header :: header"></div>
     <div class="container">
         <h2>Login</h2>
-        <form th:action="@{/auths/login}" method="post" id="loginForm">
+        <form id="loginForm">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" class="form-control" placeholder="Enter username" name="username" required>
@@ -19,41 +16,15 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" class="form-control" placeholder="Enter password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="button" class="btn btn-primary" onclick="submitLogin()">Login</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='/auth/register'">Đăng ký</button>
+            <button type="button" class="btn btn-light" onclick="window.location.href='/'">Quay lại trang chủ</button>
         </form>
         <div id="errorMessage" class="alert alert-danger mt-2" style="display: none;">
             Invalid username or password.
         </div>
     </div>
-
-    <script>
-        document.getElementById('loginForm').onsubmit = async function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-
-            try {
-                const response = await fetch('http://localhost:8080/auths/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    localStorage.setItem('token', result.token); // Save token to localStorage
-                    window.location.href = '/'; // Redirect to profile page
-                } else {
-                    errorMessage.style.display = 'block'; // Show error if login fails
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                errorMessage.style.display = 'block'; // Show error if something goes wrong
-            }
-        };
-    </script>
+        
+    <script th:src="@{/js/auth/login.js}"></script>
 </body>
 </html>

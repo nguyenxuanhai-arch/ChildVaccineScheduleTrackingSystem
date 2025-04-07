@@ -15,10 +15,16 @@ import edu.uth.childvaccinesystem.repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
@@ -27,18 +33,29 @@ public class UserService implements UserDetailsService {
             user.getUsername(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(user.getRole()))
         );
     }
+
     public String registerUser(RegisterDTO registerDTO) {
         if (userRepository.existsByUsername(registerDTO.getUsername())) {
             return "User already exists!";
         }
 
-        User user = new User();
-        user.setUsername(registerDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
-        user.setRole(registerDTO.getRole());
-        user.setCreatedAt(LocalDateTime.now());
+        try {
+            User user = new User();
+            user.setUsername(registerDTO.getUsername());
+            user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+            user.setRole(registerDTO.getRole());
+            user.setCreatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
-        return "User registered successfully!";
+            userRepository.save(user);
+            return "User registered successfully!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Registration failed due to server error!";
+        }
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }

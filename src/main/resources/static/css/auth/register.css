@@ -16,6 +16,14 @@ body {
   align-items: center;
 }
 
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 /* Phần tử chứa form đăng ký */
 .container {
   background-color: #fff;
@@ -37,7 +45,7 @@ h2 {
 
 /* Các trường nhập liệu */
 input[type="text"],
-input[type="email"],
+input[type="username"],
 input[type="password"] {
   width: 100%;
   padding: 12px;
@@ -50,7 +58,7 @@ input[type="password"] {
 
 /* Hiệu ứng khi focus vào trường input */
 input[type="text"]:focus,
-input[type="email"]:focus,
+input[type="username"]:focus,
 input[type="password"]:focus {
   border-color: #007bff;
   background-color: #fff;
@@ -72,7 +80,7 @@ button {
 
 /* Hiệu ứng hover cho nút đăng ký */
 button:hover {
-  background-color: #0056b3;
+  background-color: #e5e7e9;
 }
 
 /* Thêm khoảng cách giữa các phần tử */
@@ -98,5 +106,5 @@ form {
 
 /* Thêm khoảng cách dưới form */
 form {
-  margin-top: 20px;
+  margin-top: 30px;
 }

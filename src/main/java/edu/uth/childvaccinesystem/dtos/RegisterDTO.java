@@ -8,6 +8,12 @@ public class RegisterDTO {
     private String password;
     private String role;
 
+    public RegisterDTO(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+    
     public String getUsername() {
         return username;
     }
