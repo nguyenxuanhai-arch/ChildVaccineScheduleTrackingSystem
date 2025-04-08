@@ -49,3 +49,17 @@ document.getElementById('registerForm').onsubmit = async function(event) {
         errorMessage.style.display = 'block';
     }
 };
+
+  const toggle = document.getElementById("darkModeToggle");
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    // Lưu vào localStorage nếu muốn nhớ chế độ
+    localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+  });
+
+  // Tự động bật dark mode nếu đã bật trước đó
+  window.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark-mode");
+    }
+  });

@@ -1,21 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.getElementById("darkModeToggle");
-    const body = document.body;
+const toggleBtn = document.getElementById('darkModeToggle');
 
-    // Kiểm tra xem có Dark Mode được lưu trong Local Storage không
-    if (localStorage.getItem("dark-mode") === "enabled") {
-        body.classList.add("dark-mode");
+  toggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    toggleBtn.textContent = isDark ? '☀️' : '🌙';
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      toggleBtn.textContent = '☀️';
     }
-
-    // Xử lý khi bấm nút
-    toggleButton.addEventListener("click", function () {
-        body.classList.toggle("dark-mode");
-
-        // Lưu trạng thái vào Local Storage
-        if (body.classList.contains("dark-mode")) {
-            localStorage.setItem("dark-mode", "enabled");
-        } else {
-            localStorage.setItem("dark-mode", "disabled");
-        }
-    });
-});
+  });

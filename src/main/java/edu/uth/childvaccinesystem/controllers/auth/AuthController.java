@@ -29,9 +29,19 @@ public class AuthController {
         return "auth/profile"; // Đường dẫn đến file profile.html
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextHolder.clearContext(); // Xóa thông tin người dùng hiện tại
-        return "redirect:/"; // Điều hướng về trang chủ
+        // Clear JWT token from cookies
+        jakarta.servlet.http.Cookie jwtCookie = new jakarta.servlet.http.Cookie("jwt", null);
+        jwtCookie.setMaxAge(0);
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+
+        // Clear security context
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/";
     }
 }

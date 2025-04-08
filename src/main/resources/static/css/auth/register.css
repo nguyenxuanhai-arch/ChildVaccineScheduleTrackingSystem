@@ -1,76 +1,53 @@
-/* Reset default margin and padding */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
-/* Đặt font cho toàn bộ trang */
+
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* Phần tử chứa form đăng ký */
 .container {
-  background-color: #fff;
+  background-color: var(--form-bg);
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  transition: background-color 0.3s ease;
 }
 
-/* Tiêu đề */
-h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* Các trường nhập liệu */
 input[type="text"],
 input[type="username"],
 input[type="password"] {
   width: 100%;
   padding: 12px;
   margin: 10px 0;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 5px;
   font-size: 16px;
-  background-color: #f8f9fa;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Hiệu ứng khi focus vào trường input */
-input[type="text"]:focus,
-input[type="username"]:focus,
-input[type="password"]:focus {
-  border-color: #007bff;
+input:focus {
+  border-color: var(--button-bg);
   background-color: #fff;
   outline: none;
+  color: #000;
 }
 
-/* Nút đăng ký */
-button {
+button,
+.btn-primary {
   width: 100%;
   padding: 12px;
   border-radius: 5px;
-  background-color: #007bff;
+  background-color: var(--button-bg);
   border: none;
   font-size: 16px;
   color: white;
@@ -78,33 +55,7 @@ button {
   transition: background-color 0.3s ease;
 }
 
-/* Hiệu ứng hover cho nút đăng ký */
-button:hover {
-  background-color: #e5e7e9;
-}
-
-/* Thêm khoảng cách giữa các phần tử */
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Thêm hiệu ứng nhẹ cho form */
-.container {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Hiệu ứng fade-in cho form */
-@keyframes fadeIn {
-  from {
-      opacity: 0;
-  }
-  to {
-      opacity: 1;
-  }
-}
-
-/* Thêm khoảng cách dưới form */
-form {
-  margin-top: 30px;
+button:hover,
+.btn-primary:hover {
+  background-color: var(--button-hover);
 }

@@ -1,21 +1,74 @@
 <div th:fragment="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
-        <a class="navbar-brand" href="/">Vaccine System</a>
+        <div class="d-flex align-items-center">
+            <img id="avatarHeader" th:src="@{/img/OIP.jpg}" alt="Avatar" width="40" height="40" class="rounded-circle me-2 border" style="object-fit: cover;">
+            <a class="navbar-brand" href="/">Vaccines for children</a>
+        </div>
+        <!-- Nút Toggle để mở menu mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Nội dung sẽ thu gọn trên mobile -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
+                    <a class="nav-link" th:href="@{/about}">ℹ️ Giới thiệu</a>
                 </li>
 
-                <!-- Hiển thị nút Login và Register nếu người dùng chưa đăng nhập -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/services}">☎ Dịch vụ</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/vaccines}">📖 Danh sách vaccine</a>
+                </li>
+
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/auth/change-email}">📧Quản lí trẻ em</a>
+                </li>
+                
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/vaccines}"> Đặt lịch tiêm vaccine</a>
+                </li>
+
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="/auth/login">Login</a>
+                    <a class="btn btn-primary btn-lg mx-2" th:href="@{auth/login}" role="button">Đăng nhập</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" href="/auth/register">Register</a>
+                    <a class="btn btn-success btn-lg mx-2" th:href="@{auth/register}" role="button">Đăng ký</a>
+                </li>
+                
+                <button id="darkModeToggle">🌙</button>
+
+                <li class="nav-item dropdown" id="avatarDropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img id="navbarAvatar"  alt="Avatar" class="rounded-circle me-2" width="32" height="32">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" th:href="@{/auth/profile}">ℹ️Profile</a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/auth/change-password}">🔑Đổi mật khẩu</a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/auth/change-email}">📧Đổi email</a>
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form th:action="@{/auth/logout}" method="post">
+                                <button type="submit" class="dropdown-item">🚪Đăng xuất</button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

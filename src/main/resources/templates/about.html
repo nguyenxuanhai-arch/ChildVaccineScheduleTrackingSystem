@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <title th:text="'About - Vaccine System'">About</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{css/style.css}">
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
     <div class="main-container">
-        <div th:replace="master/_sidebar :: sidebar" class="sidebar"></div>
         <div class="content">
             <div th:replace="~{master/content :: about}">
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/auth/profile.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

@@ -1,18 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title th:text="'Index - Vaccine System'">Index</title>
+    <title th:text="'Index - Vaccine System'">Services</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{css/style.css}">
-
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
     <div class="main-container">
-        <div th:replace="master/_sidebar :: sidebar" class="sidebar"></div>
         <div class="content">
-            <div th:replace="master/content :: content"></div>
+            <div class="container mt-5">
+            <div class="jumbotron">
+                <h1 class="display-4">Chào mừng đến với Hệ thống Theo dõi Lịch tiêm chủng Trẻ em</h1>
+                <p class="lead">Theo dõi lịch tiêm chủng của con bạn một cách dễ dàng và hiệu quả.</p>
+                <hr class="my-4">
+                <p >Bắt đầu bằng cách đăng nhập hoặc đăng ký tài khoản mới.</p>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h3>Tính năng chính:</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item">Theo dõi lịch tiêm chủng</li>
+                            <li class="list-group-item">Nhận nhắc nhở về các mũi tiêm sắp tới</li>
+                            <li class="list-group-item">Truy cập thông tin chi tiết về vaccine</li>
+                            <li class="list-group-item">Theo dõi hồ sơ nhiều trẻ em</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Tại sao chọn chúng tôi?</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item">Giao diện dễ sử dụng</li>
+                            <li class="list-group-item">Lưu trữ dữ liệu an toàn</li>
+                            <li class="list-group-item">Hướng dẫn y tế chuyên môn</li>
+                            <li class="list-group-item">Hỗ trợ 24/7</li>
+                            <li class="list-group-item">Đầy đủ vắc xin chính hãng, thế hệ mới, kể cả loại thường xuyên khan hiếm</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/auth/profile.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html>

@@ -1,3 +1,24 @@
+:root {
+  --bg-color: #f4f7fa;
+  --text-color: #333;
+  --form-bg: #fff;
+  --input-bg: #f8f9fa;
+  --input-border: #ddd;
+  --button-bg: #007bff;
+  --button-hover: #0056b3;
+}
+
+body.dark-mode {
+  --bg-color: #3e4042;
+  --text-color: #e0e0e0;
+  --form-bg: #2f3133;
+  --input-bg: #4c4d4f;
+  --input-border: #555;
+  --button-bg: #3498db;
+  --button-hover: #2980b9;
+}
+
+
 /* Reset default margin and padding */
 * {
   margin: 0;

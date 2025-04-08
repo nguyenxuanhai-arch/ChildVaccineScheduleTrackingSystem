@@ -17,4 +17,10 @@ public class HomeController {
     public String about() {
         return "about"; // Trả về trang About
     }
+
+    @GetMapping("/services")
+    public String service()
+    {
+        return "services"; // Trả về trang Service
+    }
 }

@@ -42,39 +42,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                // ADMIN có toàn quyền
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/users", "/dashboard", "/vaccines", "/appointments").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/users", "/vaccines", "/appointments").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/users/{id}", "/vaccines/{id}", "/appointments/{id}").hasRole("ADMIN")
-                
-                // STAFF có quyền đọc dữ liệu
-                .requestMatchers(HttpMethod.GET, "/feedback", "/dashboard", "/child").hasRole("STAFF")
-                .requestMatchers(HttpMethod.PUT, "/appointments/{id}/cancel").hasRole("STAFF")
-
-                // USER chỉ có thể tạo dữ liệu
-                .requestMatchers(HttpMethod.POST, "/feedback", "/appointments/book", "/vaccines").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/feedback", "notifications/{userId}").hasRole("USER")
-
-                // Các API liên quan đến đăng nhập và đăng ký
-                .requestMatchers("/auth/login").permitAll()
-                .requestMatchers("/auth/register").permitAll()
-                .requestMatchers("/auth/logout").permitAll()  // Đảm bảo có quyền truy cập
-                .requestMatchers("/auths/login").permitAll()
-                // Cho phép mọi người truy cập các API còn lại
-                .anyRequest().permitAll()
-            )
-            // Đăng xuất: cấu hình đăng xuất
-            .logout(logout -> logout
-                .logoutUrl("/auth/logout")  // URL đăng xuất
-                .logoutSuccessUrl("/")  // Sau khi đăng xuất thành công, chuyển hướng về trang chủ
-                .invalidateHttpSession(true)  // Hủy session khi đăng xuất
-                .clearAuthentication(true)  // Xóa thông tin xác thực của người dùng
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)  // Thêm filter JWT
-            .build();
+    .csrf(csrf -> csrf.disable())
+    .authorizeHttpRequests(auth -> auth
+        .requestMatchers(
+            "/", "/about", "/services",
+            "/auth/login", "/auth/register", "/auth/logout", 
+            "/auths/login", "/auths/register", 
+            "/css/**", "/js/**",
+            "/favicon.ico", "/images/**", "/fonts/**", "/webjars/**",
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
+        ).permitAll()
+        .requestMatchers("/auth/profile").permitAll()
+        .anyRequest().authenticated()
+    )
+    .logout(logout -> logout
+        .logoutUrl("/auth/logout")
+        .logoutSuccessUrl("/")
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID", "jwt")
+    )
+    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+    .build();
     }
 }

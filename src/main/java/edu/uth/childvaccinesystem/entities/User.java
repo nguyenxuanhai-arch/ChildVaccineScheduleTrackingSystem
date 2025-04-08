@@ -32,6 +32,10 @@ public class User {
     private String phone;
     private String email;
     private String address;
+
+    @Lob
+    @Column(name = "data", columnDefinition = "LONGBLOB")
+    private byte[] data;
     
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
