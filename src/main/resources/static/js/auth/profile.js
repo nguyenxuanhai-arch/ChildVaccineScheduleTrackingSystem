@@ -95,3 +95,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+async function loadNavbarAvatar() {
+    const avatarImg = document.getElementById('navbarAvatar');
+
+    try {
+        const response = await fetch('/auths/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const user = await response.json();
+            if (user.data) {
+                avatarImg.src = `data:image/jpeg;base64,${user.data}`;
+            } else {
+                avatarImg.src = '/img/default-avatar.jpg'; // fallback nếu không có ảnh
+            }
+        } else {
+            avatarImg.src = '/img/default-avatar.jpg';
+        }
+    } catch (error) {
+        console.error("Lỗi tải avatar header:", error);
+        avatarImg.src = '/img/default-avatar.jpg';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadNavbarAvatar();
+});

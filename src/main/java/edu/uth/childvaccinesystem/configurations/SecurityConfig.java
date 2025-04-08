@@ -49,7 +49,7 @@ public class SecurityConfig {
             "/auth/login", "/auth/register", "/auth/logout", 
             "/auths/login", "/auths/register", 
             "/css/**", "/js/**",
-            "/favicon.ico", "/images/**", "/fonts/**", "/webjars/**",
+            "/favicon.ico", "/img/**", "/fonts/**", "/webjars/**",
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
         ).permitAll()
         .requestMatchers("/auth/profile").permitAll()
