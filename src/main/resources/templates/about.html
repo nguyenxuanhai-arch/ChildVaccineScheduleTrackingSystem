@@ -4,14 +4,18 @@
     <title th:text="'About - Vaccine System'">About</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
     <div class="main-container">
         <div class="content">
-            <div th:replace="~{master/content :: about}">
+            
         </div>
     </div>
+
+    <div th:replace="master/_footer :: footer"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/main.js}"></script>

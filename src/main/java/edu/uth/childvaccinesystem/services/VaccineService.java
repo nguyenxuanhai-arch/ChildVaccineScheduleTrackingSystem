@@ -13,12 +13,12 @@ public class VaccineService {
     private VaccineRepository vaccineRepository;
 
     // Create (Thêm vaccine)
-    public long createVaccine(Vaccine vaccine) {
+    public Vaccine createVaccine(Vaccine vaccine) {
         if (vaccineRepository.existsByName(vaccine.getName())) {
             throw new RuntimeException("Vaccine already exists");
             
         }
-        return vaccineRepository.save(vaccine).getId();
+        return vaccineRepository.save(vaccine);
     }
 
     // Read (Lấy thông tin vaccine theo ID)

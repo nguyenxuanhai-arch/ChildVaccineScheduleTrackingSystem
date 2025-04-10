@@ -314,3 +314,73 @@ body {
   background-color: var(--link-hover-bg);
   color: #3498db;
 }
+
+.footer .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer .col-md-4 {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.footer h5 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+h1, h2 {
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #34495e;
+}
+
+.img-fluid {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.text-center h5 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.text-center p {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+/* Dark mode styles for the about page */
+body.dark-mode .content {
+    background-color: #3e4042; /* Màu nền tối */
+    color: #e0e0e0; /* Màu chữ sáng */
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h5 {
+    color: #ffffff; /* Màu chữ trắng cho tiêu đề */
+}
+
+body.dark-mode p, 
+body.dark-mode li {
+    color: #dcdcdc; /* Màu chữ sáng cho đoạn văn và danh sách */
+}
+
+body.dark-mode .img-fluid {
+    border: 2px solid #ffffff; /* Viền trắng cho hình ảnh */
+}

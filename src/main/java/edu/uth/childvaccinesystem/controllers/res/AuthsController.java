@@ -44,7 +44,7 @@ public class AuthsController {
     private UserService userService;
 
     @PostMapping(value = "/login", produces = "application/json")
-public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
     try {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -89,7 +89,7 @@ public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletReq
     }
 
     @GetMapping("/profile")
-public ResponseEntity<?> getUserProfile(HttpServletRequest request) {
+    public ResponseEntity<?> getUserProfile(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
