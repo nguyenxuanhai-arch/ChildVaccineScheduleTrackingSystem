@@ -3,6 +3,8 @@ package edu.uth.childvaccinesystem.services;
 import edu.uth.childvaccinesystem.entities.Vaccine;
 import edu.uth.childvaccinesystem.repositories.VaccineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -30,6 +32,11 @@ public class VaccineService {
     // Read (Lấy tất cả vaccine)
     public List<Vaccine> getAllVaccines() {
         return vaccineRepository.findAll();
+    }
+
+    // Read (Lấy tất cả vaccine với phân trang)
+    public Page<Vaccine> getAllVaccinesWithPagination(Pageable pageable) {
+        return vaccineRepository.findAll(pageable);
     }
 
     // Update (Cập nhật vaccine)

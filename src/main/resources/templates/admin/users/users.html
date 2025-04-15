@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <!--begin::Head-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Admin - User Management</title> <!-- Changed Title -->
+    <!--begin::Primary Meta Tags-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="Admin - User Management" />
+    <meta name="author" content="Your Name/Company" /> <!-- Changed Author -->
+    <meta name="description" content="Admin dashboard for Child Vaccine Schedule Tracking System - User Management." /> <!-- Changed Description -->
+    <!--end::Primary Meta Tags-->
+    <!--begin::Fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+      integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+      crossorigin="anonymous"
+    />
+    <!--end::Fonts-->
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+      integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(OverlayScrollbars)-->
+    <!--begin::Third Party Plugin(Bootstrap Icons)-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
+      crossorigin="anonymous"
+    />
+    <!--end::Third Party Plugin(Bootstrap Icons)-->
+    <!--begin::Required Plugin(AdminLTE)-->
+    <!-- Make sure the path is correct for your project structure -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+    <!--end::Required Plugin(AdminLTE)-->
+
+    <!-- Optional: Add CSS for DataTables if you plan to use it -->
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> -->
+
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper">
+      <!--begin::Header-->
+      <!-- Include Header Fragment (Recommended) or Copy Header HTML -->
+      <!-- Option 1: Using Thymeleaf Fragment (Create fragments/header.html) -->
+      <!-- <div th:replace="~{admin/fragments/header :: header}"></div> -->
+
+      <!-- Option 2: Copy Header HTML from dashboard.html (Less maintainable) -->
+      <nav class="app-header navbar navbar-expand bg-body">
+        <div class="container-fluid">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                <i class="bi bi-list"></i>
+              </a>
+            </li>
+            <li class="nav-item d-none d-md-block"><a th:href="@{/admin/dashboard}" class="nav-link">Home</a></li>
+            <!-- <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Contact</a></li> -->
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+              </a>
+            </li>
+           
+          </ul>
+        </div>
+      </nav>
+      <!--end::Header-->
+
+      <!--begin::Sidebar-->
+      <!-- Include Sidebar Fragment (Recommended) or Copy Sidebar HTML -->
+      <!-- Option 1: Using Thymeleaf Fragment (Create fragments/sidebar.html) -->
+      <!-- <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div> -->
+
+      <!-- Option 2: Copy Sidebar HTML from dashboard.html (Less maintainable) -->
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <div class="sidebar-brand">
+          <a th:href="@{/admin}" class="brand-link">
+            <img
+              th:src="@{/dist/assets/img/AdminLTELogo.png}"
+              alt="App Logo"
+              class="brand-image opacity-75 shadow"
+            />
+            <span class="brand-text fw-light">Vaccine Tracker</span>
+          </a>
+        </div>
+        <div class="sidebar-wrapper">
+            <nav class="mt-2">
+              <ul
+                class="nav sidebar-menu flex-column"
+                data-lte-toggle="treeview"
+                role="menu"
+                data-accordion="false"
+              >
+                <!-- Dashboard -->
+                <li class="nav-item">
+                  <a th:href="@{/admin}" class="nav-link"> <!-- Add active class logic later -->
+                    <i class="nav-icon bi bi-speedometer"></i>
+                    <p>Dashboard</p>
+                  </a>
+                </li>
+                <!-- Quản lí Rating, Feedback -->
+                <li class="nav-item">
+                  <a href="#" class="nav-link"> <!-- th:href="@{/admin/ratings}" -->
+                    <i class="nav-icon bi bi-star-half"></i>
+                    <p>Quản lí Rating, Feedback</p>
+                  </a>
+                </li>
+                <!-- Quản lí Hồ sơ trẻ em -->
+                <li class="nav-item">
+                  <a href="#" class="nav-link"> <!-- th:href="@{/admin/children}" -->
+                    <i class="nav-icon bi bi-person-badge"></i>
+                    <p>Quản lí Hồ sơ trẻ em</p>
+                  </a>
+                </li>
+                <!-- Quản lí Người dùng -->
+                <li class="nav-item">
+                    <!-- Add 'active' class dynamically based on current page -->
+                    <a th:href="@{/admin/users}" class="nav-link active">
+                      <i class="nav-icon bi bi-people-fill"></i>
+                      <p>Quản lí Người dùng</p>
+                    </a>
+                  </li>
+                <!-- Quản lí Vaccine -->
+                <li class="nav-item">
+                  <a href="#" class="nav-link"> <!-- th:href="@{/admin/vaccines}" -->
+                    <i class="nav-icon bi bi-shield-plus"></i>
+                    <p>Quản lí Vaccine</p>
+                  </a>
+                </li>
+                <!-- Quản lí Thanh toán -->
+                <li class="nav-item">
+                  <a href="#" class="nav-link"> <!-- th:href="@{/admin/payments}" -->
+                    <i class="nav-icon bi bi-credit-card"></i>
+                    <p>Quản lí Thanh toán</p>
+                  </a>
+                </li>
+                <!-- Quản lí Đặt lịch vaccine -->
+                <li class="nav-item">
+                  <a href="#" class="nav-link"> <!-- th:href="@{/admin/appointments}" -->
+                    <i class="nav-icon bi bi-calendar-check"></i>
+                    <p>Quản lí Đặt lịch vaccine</p>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+      </aside>
+      <!--end::Sidebar-->
+
+      <!--begin::App Main-->
+      <main class="app-main">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-6">
+                <h3 class="mb-0">User Management</h3> <!-- Changed Header Title -->
+              </div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a th:href="@{/admin}">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">
+                    User Management
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end::App Content Header-->
+
+        <!--begin::App Content-->
+        <div class="app-content">
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-12">
+                <!--begin::Card-->
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">User List</h3>
+                    <div class="card-tools">
+                      <!-- Add New User Button -->
+                      <a th:href="@{/admin/users/new}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-lg"></i> Add New User
+                      </a>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <!-- Optional: Add success/error messages -->
+                    <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                      <span th:text="${message}"></span>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                      <span th:text="${error}"></span>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- User Table -->
+                    <table id="userTable" class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th>Full Name</th> <!-- Example additional field -->
+                          <th>Role</th>
+                          <th>Status</th> <!-- Example: Active/Inactive -->
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Loop through users passed from the controller -->
+                        <!-- Replace 'users' with the actual variable name from your model -->
+                        <tr th:each="user : ${users}">
+                          <td th:text="${user.id}">1</td>
+                          <td th:text="${user.username}">user.name</td>
+                          <td th:text="${user.email}">user@example.com</td>
+                          <td th:text="${user.fullName}">User Full Name</td>
+                          <!-- Example: Display roles -->
+                          <td>
+                              <span th:each="role, iterStat : ${user.roles}"
+                                    th:text="${role.name} + (${iterStat.last} ? '' : ', ')">ROLE_USER</span>
+                          </td>
+                          <td>
+                              <span th:if="${user.enabled}" class="badge bg-success">Active</span>
+                              <span th:unless="${user.enabled}" class="badge bg-secondary">Inactive</span>
+                          </td>
+                          <td>
+                            <!-- Edit Button -->
+                            <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-warning btn-sm me-1" title="Edit">
+                              <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <!-- Delete Button (using a form for POST/DELETE) -->
+                            <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                <!-- Add CSRF token if enabled -->
+                                <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+                                <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            <!-- Optional: View Details Button -->
+                            <!-- <a th:href="@{/admin/users/view/{id}(id=${user.id})}" class="btn btn-info btn-sm ms-1" title="View Details">
+                              <i class="bi bi-eye"></i>
+                            </a> -->
+                          </td>
+                        </tr>
+                        <!-- Display message if no users found -->
+                        <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="7" class="text-center">No users found.</td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <th>ID</th>
+                          <th>Username</th>
+                          <th>Email</th>
+                          <th>Full Name</th>
+                          <th>Role</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                  <!-- Optional: Add Pagination Controls -->
+                  <!-- <div class="card-footer clearfix">
+                       Pagination elements go here
+                  </div> -->
+                </div>
+                <!--end::Card-->
+              </div>
+            </div>
+            <!--end::Row-->
+          </div><!--end::Container-->
+        </div><!--end::App Content-->
+      </main>
+      <!--end::App Main-->
+
+      <!--begin::Footer-->
+      <!-- Include Footer Fragment (Recommended) or Copy Footer HTML -->
+      <!-- Option 1: Using Thymeleaf Fragment (Create fragments/footer.html) -->
+      <!-- <div th:replace="~{admin/fragments/footer :: footer}"></div> -->
+
+      <!-- Option 2: Copy Footer HTML from dashboard.html (Less maintainable) -->
+      <footer class="app-footer">
+        <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+        <strong>
+          Copyright &copy; 2024&nbsp;
+          <a href="#" class="text-decoration-none">Your Company</a>.
+        </strong>
+        All rights reserved.
+      </footer>
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+
+    <!--begin::Script-->
+    <!--begin::Third Party Plugin(OverlayScrollbars)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+      integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Third Party Plugin(OverlayScrollbars)--><!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(popperjs for Bootstrap 5)--><!--begin::Required Plugin(Bootstrap 5)-->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+    <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
+    <!-- Make sure the path is correct -->
+    <script th:src="@{/dist/js/adminlte.js}"></script>
+    <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+    <script>
+      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
+          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+            scrollbars: {
+              theme: 'os-theme-light', // Or 'os-theme-dark'
+              autoHide: 'leave',
+              clickScroll: true,
+            },
+          });
+        }
+      });
+    </script>
+    <!--end::OverlayScrollbars Configure-->
+
+    <!-- Optional: Add JS for DataTables -->
+    <!-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script> -->
+    <!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
+    <!-- <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> -->
+    <!-- <script>
+      $(document).ready(function() {
+        $('#userTable').DataTable(); // Initialize DataTables
+      });
+    </script> -->
+
+    <!-- Custom Scripts -->
+    <script>
+        // Logout function (same as dashboard)
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = /*[[@{/logout}]]*/ '/logout';
+            // Add CSRF token if needed
+            document.body.appendChild(form);
+            form.submit();
+        }
+        const signOutButton = document.getElementById('signOutBtn');
+        if (signOutButton) {
+            signOutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+        }
+
+        // Sidebar active state (simple version, might need refinement)
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .nav-link');
+
+            sidebarLinks.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                // Remove active from all links first
+                link.classList.remove('active');
+                if (link.closest('.nav-item')) {
+                    link.closest('.nav-item').classList.remove('menu-open'); // Close treeviews
+                }
+
+                // Add active to the matching link
+                if (linkPath && currentPath.startsWith(linkPath) && linkPath !== '#') {
+                    link.classList.add('active');
+                    // Optional: Open parent treeview if it exists
+                    const parentTreeview = link.closest('.nav-item.has-treeview'); // Adjust selector if needed
+                    if (parentTreeview) {
+                        parentTreeview.classList.add('menu-open');
+                        const parentLink = parentTreeview.querySelector('.nav-link');
+                        if (parentLink) parentLink.classList.add('active');
+                    }
+                }
+            });
+
+             // Ensure Dashboard is active if on dashboard page specifically
+             if (currentPath === /*[[@{/admin/dashboard}]]*/ '/admin/dashboard') {
+                 const dashboardLink = document.querySelector('.sidebar-menu a[href="' + /*[[@{/admin/dashboard}]]*/ '/admin/dashboard' + '"]');
+                 if (dashboardLink) dashboardLink.classList.add('active');
+             }
+        });
+    </script>
+    <!--end::Script-->
+  </body>
+  <!--end::Body-->
+</html>

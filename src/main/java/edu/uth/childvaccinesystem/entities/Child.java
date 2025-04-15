@@ -18,6 +18,9 @@ public class Child {
     private String name;
     @Column(name = "dob") 
     private LocalDate dob;
+    
+    @Column(name = "parent_username")
+    private String parentUsername;
 
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Appointment> appoinments = new HashSet<>();

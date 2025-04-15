@@ -1,25 +1,44 @@
-<footer class="footer mt-auto py-3 bg-light" th:fragment="footer">
+<!-- Footer Fragment -->
+<footer class="footer mt-auto py-4 bg-light" th:fragment="footer">
     <div class="container">
-        <div class="row d-flex justify-content-between">
-            <div class="col-md-4">
-                <h5>Liên hệ</h5>
-                <p>Email: hainx0952@ut.edu.vn<br>
-                   Điện thoại: (84) 123-456-789</p>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Liên hệ</h5>
+                <p class="mb-2">
+                    <i class="fas fa-envelope me-2"></i>
+                    Email: hainx0952@ut.edu.vn
+                </p>
+                <p class="mb-0">
+                    <i class="fas fa-phone me-2"></i>
+                    Điện thoại: (84) 123-456-789
+                </p>
             </div>
-            <div class="col-md-4">
-                <h5>Địa chỉ</h5>
-                <p>02 Võ OanhC<br>
-                   Quận Bình Thạnh, Thành phố HCM</p>
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Địa chỉ</h5>
+                <p class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>
+                    02 Võ Oanh<br>
+                    Quận Bình Thạnh, Thành phố HCM
+                </p>
             </div>
-            <div class="col-md-4">
-                <h5>Theo dõi chúng tôi</h5>
-                <p><a href="https://www.facebook.com/xangjjj22/" target="_blank">Facebook</a><br>
-                    <a href="https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem" target="_blank">Github Repo</a><br>
-                   Instagram</p>
+            <div class="col-md-4 mb-4">
+                <h5 class="mb-3">Theo dõi chúng tôi</h5>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/xangjjj22/" target="_blank" class="text-decoration-none me-3">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a><br>
+                    <a href="https://github.com/nguyenxuanhai-arch/ChildVaccineScheduleTrackingSystem" target="_blank" class="text-decoration-none me-3">
+                        <i class="fab fa-github"></i> Github
+                    </a><br>
+                    <a href="#" class="text-decoration-none">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="text-center mt-3">
-            <p>&copy; 2024 Hệ thống Theo dõi Lịch tiêm chủng. All rights reserved.</p>
+        <hr class="my-4">
+        <div class="text-center">
+            <p class="mb-0">&copy; 2024 Hệ thống Theo dõi Lịch tiêm chủng. All rights reserved.</p>
         </div>
     </div>
 </footer>

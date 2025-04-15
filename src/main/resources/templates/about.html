@@ -1,23 +1,220 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title th:text="'About - Vaccine System'">About</title>
+    <title>Về chúng tôi - Vaccine System</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .about-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg?w=1380&t=st=1709355245~exp=1709355845~hmac=4f5f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+        .mission-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        .value-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        .value-icon {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-item {
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .timeline-year {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
-    <div class="main-container">
-        <div class="content">
-            
+
+    <!-- Hero Section -->
+    <div class="about-hero">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Về Chúng Tôi</h1>
+            <p class="lead">Đồng hành cùng bạn trong hành trình bảo vệ sức khỏe trẻ em</p>
+        </div>
+    </div>
+
+    <!-- Mission & Vision Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mission-card">
+                    <h2 class="mb-4">Sứ Mệnh</h2>
+                    <p>Chúng tôi cam kết mang đến dịch vụ tiêm chủng an toàn, hiệu quả và tiện lợi nhất cho trẻ em Việt Nam. Với hệ thống quản lý tiêm chủng hiện đại, chúng tôi giúp phụ huynh dễ dàng theo dõi và đảm bảo lịch tiêm chủng đầy đủ cho con.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mission-card">
+                    <h2 class="mb-4">Tầm Nhìn</h2>
+                    <p>Trở thành hệ thống quản lý tiêm chủng hàng đầu tại Việt Nam, góp phần nâng cao tỷ lệ tiêm chủng và giảm thiểu các bệnh truyền nhiễm ở trẻ em. Chúng tôi hướng tới một tương lai nơi mọi trẻ em đều được bảo vệ bởi vaccine.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Values Section -->
+    <div class="container mb-5">
+        <h2 class="text-center mb-5">Giá Trị Cốt Lõi</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="value-card">
+                    <i class="fas fa-heart value-icon"></i>
+                    <h3>Tận Tâm</h3>
+                    <p>Luôn đặt sức khỏe và sự an toàn của trẻ em lên hàng đầu trong mọi hoạt động</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <i class="fas fa-certificate value-icon"></i>
+                    <h3>Chất Lượng</h3>
+                    <p>Cam kết cung cấp dịch vụ và sản phẩm đạt tiêu chuẩn cao nhất</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <i class="fas fa-sync value-icon"></i>
+                    <h3>Đổi Mới</h3>
+                    <p>Không ngừng cải tiến và áp dụng công nghệ mới để nâng cao chất lượng dịch vụ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Team Section -->
+    <div class="container mb-5">
+        <h2 class="text-center mb-5">Đội Ngũ Chuyên Gia</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Doctor">
+                    <h4>TS.BS Nguyễn Văn A</h4>
+                    <p class="text-muted">Giám đốc Y khoa</p>
+                    <p>Hơn 15 năm kinh nghiệm trong lĩnh vực nhi khoa và tiêm chủng</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Doctor">
+                    <h4>PGS.TS Trần Thị B</h4>
+                    <p class="text-muted">Trưởng khoa Nhi</p>
+                    <p>Chuyên gia đầu ngành về tiêm chủng trẻ em</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Doctor">
+                    <h4>TS.BS Lê Văn C</h4>
+                    <p class="text-muted">Trưởng phòng Nghiên cứu</p>
+                    <p>Chuyên gia về vaccine và dịch tễ học</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline Section -->
+    <div class="container mb-5">
+        <h2 class="text-center mb-5">Chặng Đường Phát Triển</h2>
+        <div class="timeline">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="timeline-item">
+                        <div class="timeline-year">2023</div>
+                        <h4>Thành lập hệ thống</h4>
+                        <p>Khởi động dự án với mục tiêu xây dựng hệ thống quản lý tiêm chủng hiện đại</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2024</div>
+                        <h4>Mở rộng dịch vụ</h4>
+                        <p>Phát triển thêm nhiều tính năng mới và mở rộng phạm vi hoạt động</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2025</div>
+                        <h4>Phát triển toàn diện</h4>
+                        <p>Trở thành một trong những hệ thống quản lý tiêm chủng hàng đầu tại Việt Nam</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <h2 class="mb-4">Liên Hệ Với Chúng Tôi</h2>
+                <p class="mb-4">Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi nào về dịch vụ tiêm chủng</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <i class="fas fa-phone-alt mb-3 value-icon"></i>
+                        <h4>Điện thoại</h4>
+                        <p>1900 1234</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-envelope mb-3 value-icon"></i>
+                        <h4>Email</h4>
+                        <p>info@vaccine.com</p>
+                    </div>
+                    <div class="col-md-4">
+                        <i class="fas fa-map-marker-alt mb-3 value-icon"></i>
+                        <h4>Địa chỉ</h4>
+                        <p>123 Đường ABC, Quận XYZ, TP.HCM</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div th:replace="master/_footer :: footer"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/auth/profile.js}"></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
+
 </body>
 </html>

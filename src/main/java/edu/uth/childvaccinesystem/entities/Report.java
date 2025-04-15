@@ -16,7 +16,11 @@ public class Report {
 
     private String title;
     private String content;
+
+    @JoinColumn(name = "child_id", nullable = false)
     private Long childId;
+
+    @JoinColumn(name = "vaccine_id", nullable = false)
     private Long vaccineId;
 
     @Column(name = "created_at")

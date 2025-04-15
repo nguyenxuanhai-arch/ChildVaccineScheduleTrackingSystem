@@ -30,6 +30,7 @@ import edu.uth.childvaccinesystem.utils.JwtUtil;
 import edu.uth.childvaccinesystem.entities.User;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/auths")
@@ -142,5 +143,22 @@ public ResponseEntity<?> updateProfile(
 
     return ResponseEntity.ok("Cập nhật thành công");
 }
+
+@GetMapping("/verify-token")
+    public ResponseEntity<?> verifyToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            try {
+                String username = jwtUtil.extractUsername(token);
+                return ResponseEntity.ok(Collections.singletonMap("username", username));
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authorization header missing");
+    }
 
 }

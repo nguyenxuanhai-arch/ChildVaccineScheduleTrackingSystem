@@ -27,12 +27,20 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new org.springframework.security.core.userdetails.User(
-            user.getUsername(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority(user.getRole()))
-        );
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    String role = user.getRole();
+    if (!role.startsWith("ROLE_")) {
+        role = "ROLE_" + role; // thêm prefix nếu thiếu
     }
+
+    return new org.springframework.security.core.userdetails.User(
+        user.getUsername(), user.getPassword(),
+        Collections.singleton(new SimpleGrantedAuthority(role))
+    );
+}
+
 
     public String registerUser(RegisterDTO registerDTO) {
         if (userRepository.existsByUsername(registerDTO.getUsername())) {

@@ -1,15 +1,22 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.dtos.response.VaccineResponse;
-    import edu.uth.childvaccinesystem.entities.Vaccine;
+import edu.uth.childvaccinesystem.entities.Vaccine;
 import edu.uth.childvaccinesystem.services.VaccineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/vaccine")
@@ -58,11 +65,20 @@ public class VaccineController {
         return response;
     }
         
-    // Read (Lấy tất cả vaccine)
+    // Read (Lấy tất cả vaccine với phân trang)
     @GetMapping("/vaccine-list")
-    public List<VaccineResponse> getAllVaccines() {
-        List<Vaccine> vaccines = vaccineService.getAllVaccines();
-        return vaccines.stream().map(vaccine -> {
+    public Map<String, Object> getAllVaccines(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+        
+        Pageable pageable = PageRequest.of(page, size, 
+            Sort.by(direction.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy));
+        
+        org.springframework.data.domain.Page<Vaccine> pageVaccines = vaccineService.getAllVaccinesWithPagination(pageable);
+        
+        List<VaccineResponse> vaccines = pageVaccines.getContent().stream().map(vaccine -> {
             VaccineResponse response = new VaccineResponse();
             response.setId(vaccine.getId());
             response.setName(vaccine.getName());
@@ -70,9 +86,17 @@ public class VaccineController {
             response.setLotNumber(vaccine.getLotNumber());
             response.setExpirationDate(vaccine.getExpirationDate());
             response.setPrice(vaccine.getPrice());
-            response.setImageBase64(vaccine.getImageBase64()); // Trả về Base64
+            response.setImageBase64(vaccine.getImageBase64());
             return response;
-        }).toList();
+        }).collect(toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("vaccines", vaccines);
+        response.put("currentPage", pageVaccines.getNumber());
+        response.put("totalItems", pageVaccines.getTotalElements());
+        response.put("totalPages", pageVaccines.getTotalPages());
+
+        return response;
     }
 
     // Update

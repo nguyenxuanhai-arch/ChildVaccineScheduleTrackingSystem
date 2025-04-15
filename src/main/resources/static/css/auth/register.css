@@ -5,106 +5,305 @@
   box-sizing: border-box;
 }
 
-/* Đặt font cho toàn bộ trang */
+/* Font and background for the entire page */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f7fa;
-  color: #333;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  background-color: #e9ecef;
+  color: #212529;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #1a1d21;
+  color: #e9ecef;
 }
 
-/* Phần tử chứa form đăng ký */
-.container {
-  background-color: #fff;
-  padding: 40px;
+/* Register Box Styles */
+.register-box {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 450px;
+  margin: 2rem auto;
+}
+
+body.dark-mode .register-box {
+  background: #2d3338;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.register-box:hover {
+  transform: translateY(-5px);
+}
+
+/* Form Controls */
+.form-control {
+  border: 2px solid #e9ecef;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-/* Tiêu đề */
-h2 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* Các trường nhập liệu */
-input[type="text"],
-input[type="username"],
-input[type="password"] {
-  width: 100%;
   padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  background-color: #f8f9fa;
-}
-
-/* Hiệu ứng khi focus vào trường input */
-input[type="text"]:focus,
-input[type="username"]:focus,
-input[type="password"]:focus {
-  border-color: #007bff;
+  height: auto;
+  font-size: 1rem;
+  transition: all 0.3s ease;
   background-color: #fff;
-  outline: none;
+  color: #212529;
 }
 
-/* Nút đăng ký */
-button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 5px;
+body.dark-mode .form-control {
+  background-color: #1a1d21;
+  border-color: #40464e;
+  color: #e9ecef;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+body.dark-mode .form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Custom Checkbox */
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: #007bff;
   background-color: #007bff;
-  border: none;
-  font-size: 16px;
-  color: white;
+}
+
+.custom-control-label {
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  user-select: none;
 }
 
-/* Hiệu ứng hover cho nút đăng ký */
-button:hover {
-  background-color: #e5e7e9;
+body.dark-mode .custom-control-label {
+  color: #e9ecef;
 }
 
-/* Thêm khoảng cách giữa các phần tử */
-form {
-  display: flex;
-  flex-direction: column;
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
-/* Thêm hiệu ứng nhẹ cho form */
-.container {
-  animation: fadeIn 0.5s ease-in-out;
+.btn-primary {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  border: none;
+  color: white;
 }
 
-/* Hiệu ứng fade-in cho form */
+.btn-primary:hover {
+  background: linear-gradient(45deg, #0056b3, #003d80);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+body.dark-mode .btn-primary:hover {
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn-outline-secondary {
+  border-color: #e9ecef;
+}
+
+body.dark-mode .btn-outline-secondary {
+  border-color: #40464e;
+  color: #e9ecef;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #40464e;
+  border-color: #007bff;
+}
+
+/* Password Toggle Button */
+#togglePassword,
+#toggleConfirmPassword {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 12px;
+  height: 100%;
+}
+
+body.dark-mode .input-group-append .btn {
+  background-color: #1a1d21;
+  color: #e9ecef;
+}
+
+/* Links */
+a {
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #007bff;
+}
+
+body.dark-mode a {
+  color: #3b89ff;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #0056b3;
+}
+
+body.dark-mode a:hover {
+  color: #69a3ff;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 8px;
+  border: none;
+  margin-top: 1rem;
+}
+
+.alert-danger {
+  background-color: #fff2f2;
+  color: #dc3545;
+}
+
+body.dark-mode .alert-danger {
+  background-color: #2c1f1f;
+  color: #ff4d4d;
+}
+
+.alert-success {
+  background-color: #f2fff5;
+  color: #28a745;
+}
+
+body.dark-mode .alert-success {
+  background-color: #1f2c22;
+  color: #4dff77;
+}
+
+/* Text Styles */
+h2 {
+  color: #2d3748;
+  font-weight: 700;
+}
+
+body.dark-mode h2 {
+  color: #e9ecef;
+}
+
+.text-muted {
+  color: #718096 !important;
+}
+
+body.dark-mode .text-muted {
+  color: #8b949e !important;
+}
+
+/* Help Text */
+.form-text {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+body.dark-mode .form-text {
+  color: #8b949e;
+}
+
+/* Logo Image */
+img.rounded-circle {
+  border: 3px solid #007bff;
+  padding: 3px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.2);
+}
+
+body.dark-mode img.rounded-circle {
+  background: #2d3338;
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.4);
+}
+
+/* Form Animation */
 @keyframes fadeIn {
-  from {
-      opacity: 0;
-  }
-  to {
-      opacity: 1;
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Thêm khoảng cách dưới form */
-form {
-  margin-top: 30px;
+.register-box {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Form Spacing */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Container Adjustments */
+.min-vh-100 {
+  padding: 2rem 0;
+}
+
+/* Terms Checkbox */
+.custom-control {
+  padding-left: 1.75rem;
+}
+
+.custom-control-label::before,
+.custom-control-label::after {
+  width: 1.25rem;
+  height: 1.25rem;
+  left: -1.75rem;
+  top: 0.125rem;
+}
+
+/* Input Group */
+.input-group {
+  position: relative;
+}
+
+.input-group .form-control {
+  border-right: none;
+  padding-right: 50px;
+}
+
+.input-group-append {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 4;
+}
+
+.input-group-append .btn {
+  border-left: none;
+  background: white;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .register-box {
+    margin: 1rem;
+    padding: 1.5rem !important;
+  }
+  
+  .btn-lg {
+    padding: 10px 16px;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
 }
