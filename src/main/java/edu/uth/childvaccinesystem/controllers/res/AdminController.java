@@ -1,4 +1,3 @@
-
 package edu.uth.childvaccinesystem.controllers.res;
 
 import org.springframework.stereotype.Controller;
@@ -28,5 +27,35 @@ public class AdminController {
     @GetMapping("/vaccines")
     public String vaccines() {
         return "admin/vaccines";
+    }
+
+    @GetMapping("/reports")
+    public String reports() {
+        return "admin/reports/reports";
+    }
+
+    @GetMapping("/payments")
+    public String payments() {
+        return "admin/payments/payments";
+    }
+
+    @GetMapping("/notifications")
+    public String notifications() {
+        return "admin/notifications/notifications";
+    }
+
+    @GetMapping("/feedbacks")
+    public String feedbacks() {
+        return "admin/feedbacks/feedbacks";
+    }
+
+    @GetMapping("/children")
+    public String children() {
+        return "admin/children/children";
+    }
+    
+    @GetMapping("/appointments")
+    public String appointments() {
+        return "admin/appointments/appointments";
     }
 }
