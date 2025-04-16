@@ -7,19 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import edu.uth.childvaccinesystem.entities.Appointment;
+import edu.uth.childvaccinesystem.dtos.request.AppointmentRequest;
 import edu.uth.childvaccinesystem.services.AppointmentService;
 
 @RestController
 @RequestMapping("/appointments")
-public class AppoinmentController 
-{
+public class AppoinmentController {
 
     @Autowired
     private AppointmentService appointmentService;
 
     @PostMapping("/book")
-    public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) {
-        Appointment bookedAppointment = appointmentService.bookAppointment(appointment);
+    public ResponseEntity<Appointment> bookAppointment(@RequestBody AppointmentRequest request) {
+        Appointment bookedAppointment = appointmentService.bookAppointment(request);
         return ResponseEntity.ok(bookedAppointment);
     }
 

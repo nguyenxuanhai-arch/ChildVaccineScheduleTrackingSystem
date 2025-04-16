@@ -17,19 +17,12 @@ public class Vaccine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Vaccine name cannot be blank")
-    @Size(max = 100, message = "Vaccine name must not exceed 100 characters")
     private String name;
 
-    @NotBlank(message = "Manufacturer cannot be blank")
-    @Size(max = 100, message = "Manufacturer name must not exceed 100 characters")
     private String manufacturer;
 
-    @NotBlank(message = "Lot number cannot be blank")
-    @Size(max = 50, message = "Lot number must not exceed 50 characters")
     private String lotNumber;
 
-    @NotBlank(message = "Expiration date cannot be blank")
     private String expirationDate;
 
     @NotNull

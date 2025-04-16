@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title>Quản lý Vaccine</title>
+    <title>Đặt Lịch Tiêm Chủng</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/vaccine-list.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .booking-btn {
+            background-color: #28a745;
+            color: white;
+            transition: all 0.3s;
+        }
+        .booking-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        #appointmentModal .form-group {
+            margin-bottom: 1rem;
+        }
+        .time-slot {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            margin: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .time-slot:hover {
+            background-color: #f8f9fa;
+        }
+        .time-slot.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .time-slot.disabled {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            color: #6c757d;
+        }
+        .alert-floating {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
@@ -15,7 +58,7 @@
         <div class="content">
             <!-- Page Header -->
             <div class="page-header">
-                <h1 class="text-center mb-4">Quản lý Vaccine</h1>
+                <h1 class="text-center mb-4">Đặt Lịch Tiêm Chủng</h1>
                 <div class="header-actions">
                     <div class="search-box">
                         <i class="fas fa-search search-icon"></i>
@@ -24,9 +67,6 @@
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <button class="btn btn-primary add-btn" onclick="showCreateForm()" sec:authorize="isAuthenticated()">
-                        <i class="fas fa-plus"></i> Thêm Vaccine
-                    </button>
                 </div>
             </div>
 
@@ -43,6 +83,30 @@
             <!-- Grid View -->
             <div class="row" id="vaccine-cards">
                 <!-- Grid cards will be added here by JavaScript -->
+                <template id="vaccine-card-template">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <img class="card-img-top" src="" alt="Vaccine Image">
+                            <div class="card-body">
+                                <h5 class="card-title"></h5>
+                                <p class="card-text manufacturer"><strong>Nhà sản xuất:</strong> <span></span></p>
+                                <p class="card-text lot-number"><strong>Số lô:</strong> <span></span></p>
+                                <p class="card-text expiration"><strong>Hạn sử dụng:</strong> <span></span></p>
+                                <p class="card-text price"><strong>Giá thành:</strong> <span></span> VNĐ</p>
+                                <div class="card-actions">
+                                    <button class="btn btn-sm btn-success booking-btn" 
+                                        data-id="${vaccine.id}" 
+                                        data-name="${vaccine.name}" 
+                                        data-price="${vaccine.price}" 
+                                        data-appointment-id="${existingAppointmentId}"
+                                        onclick="showBookingModal(this.dataset.id, this.dataset.name, this.dataset.price, this.dataset.appointmentId)">
+                                        <i class="fas fa-edit"></i> Sửa lịch tiêm
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </div>
 
             <!-- Pagination -->
@@ -70,83 +134,65 @@
                     </thead>
                     <tbody id="vaccine-body">
                         <!-- Table rows will be added here by JavaScript -->
+                        <template id="vaccine-row-template">
+                            <tr>
+                                <td class="name"></td>
+                                <td class="manufacturer"></td>
+                                <td class="lot-number"></td>
+                                <td class="expiration"></td>
+                                <td class="price"></td>
+                                <td class="image"><img src="" alt="Vaccine" width="50"></td>
+                                <td>
+                                    <button class="btn btn-sm btn-success booking-btn" onclick="showBookingModal(this.dataset.id, this.dataset.name, this.dataset.price)">
+                                        <i class="fas fa-calendar-check"></i> Đặt lịch
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Modal Form -->
-    <div class="modal fade" id="vaccineModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header" sec:authorize="isAuthenticated()">
-                    <h5 class="modal-title" id="modalTitle">
-                        <i class="fas fa-syringe"></i> 
-                        <span>Thêm Vaccine</span>
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="vaccineForm" class="needs-validation" novalidate>
-                        <input type="hidden" id="vaccineId">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="name">Tên Vaccine <span class="text-danger">*</span></label>
-                                    <input type="text" id="name" class="form-control" placeholder="Nhập tên vaccine" required>
-                                    <div class="invalid-feedback">Vui lòng nhập tên vaccine</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="manufacturer">Nhà sản xuất <span class="text-danger">*</span></label>
-                                    <input type="text" id="manufacturer" class="form-control" placeholder="Nhập nhà sản xuất" required>
-                                    <div class="invalid-feedback">Vui lòng nhập nhà sản xuất</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="lotNumber">Số lô <span class="text-danger">*</span></label>
-                                    <input type="text" id="lotNumber" class="form-control" placeholder="Nhập số lô" required>
-                                    <div class="invalid-feedback">Vui lòng nhập số lô</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="expirationDate">Hạn sử dụng <span class="text-danger">*</span></label>
-                                    <input type="date" id="expirationDate" class="form-control" required>
-                                    <div class="invalid-feedback">Vui lòng chọn hạn sử dụng</div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="price">Giá thành <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <input type="number" id="price" class="form-control" placeholder="Nhập giá thành" required>
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">VNĐ</span>
-                                        </div>
-                                        <div class="invalid-feedback">Vui lòng nhập giá thành</div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="image">Hình ảnh</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="image" accept="image/*">
-                                        <label class="custom-file-label" for="image">Chọn file...</label>
-                                    </div>
-                                    <div id="imagePreview" class="mt-2"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Đóng
-                    </button>
-                    <button type="button" class="btn btn-primary" onclick="saveVaccine()">
-                        <i class="fas fa-save"></i> Lưu
-                    </button>
-                </div>
-            </div>
+    <!-- Appointment Booking Modal -->
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Đặt lịch tiêm cho <span id="vaccineNameTitle"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+        <div class="modal-body">
+          <form id="bookingForm">
+            <input type="hidden" id="vaccineId">
+            <div class="mb-3">
+              <label for="childId" class="form-label">ID Trẻ em</label>
+              <input type="number" class="form-control" id="childId" required>
+            </div>
+            <div class="mb-3">
+              <label for="appointmentDate" class="form-label">Ngày hẹn</label>
+              <input type="date" class="form-control" id="appointmentDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="appointmentTime" class="form-label">Giờ hẹn</label>
+              <input type="time" class="form-control" id="appointmentTime" required>
+            </div>
+            <div class="mb-3">
+              <label for="notes" class="form-label">Ghi chú</label>
+              <textarea class="form-control" id="notes" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Xác nhận đặt lịch</button>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
+  
+
+    <!-- Success/Error Alert -->
+    <div id="alertContainer"></div>
 
     <div th:replace="master/_footer :: footer"></div>
 
@@ -155,5 +201,159 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script th:src="@{/js/vaccine-list.js}"></script>
+    <script>
+        // Set minimum date for appointment booking to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = formattedDate;
+        });
+        
+        // Show booking modal 
+        function showBookingModal(vaccineId, vaccineName, vaccinePrice) {
+            document.getElementById('bookingVaccineId').value = vaccineId;
+            document.getElementById('bookingVaccineName').textContent = vaccineName;
+            document.getElementById('bookingVaccinePrice').textContent = new Intl.NumberFormat('vi-VN').format(vaccinePrice);
+            
+            // Reset form
+            document.getElementById('appointmentForm').reset();
+            document.getElementById('timeSlots').innerHTML = '<div class="text-center text-muted p-3">Vui lòng chọn ngày tiêm để xem các khung giờ</div>';
+            
+            // Show modal
+            const appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+            appointmentModal.show();
+        }
+        
+        // Load time slots based on selected date
+        function loadTimeSlots() {
+            const selectedDate = document.getElementById('appointmentDate').value;
+            if (!selectedDate) return;
+            
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Đang tải khung giờ...</div>';
+            
+            // Simulate API call to get available time slots
+            setTimeout(() => {
+                // Example time slots (in real app, these would come from your API)
+                const timeSlots = [
+                    { time: '08:00', available: true },
+                    { time: '08:30', available: true },
+                    { time: '09:00', available: true },
+                    { time: '09:30', available: false },
+                    { time: '10:00', available: true },
+                    { time: '10:30', available: true },
+                    { time: '11:00', available: false },
+                    { time: '14:00', available: true },
+                    { time: '14:30', available: true },
+                    { time: '15:00', available: true },
+                    { time: '15:30', available: false },
+                    { time: '16:00', available: true },
+                    { time: '16:30', available: true }
+                ];
+                
+                // Display time slots
+                timeSlotsContainer.innerHTML = '';
+                timeSlots.forEach(slot => {
+                    const slotElement = document.createElement('div');
+                    slotElement.className = `time-slot ${slot.available ? '' : 'disabled'}`;
+                    slotElement.textContent = slot.time;
+                    
+                    if (slot.available) {
+                        slotElement.addEventListener('click', () => selectTimeSlot(slot.time, slotElement));
+                    }
+                    
+                    timeSlotsContainer.appendChild(slotElement);
+                });
+            }, 500);
+        }
+        
+        // Handle time slot selection
+        function selectTimeSlot(time, element) {
+            // Clear previous selection
+            document.querySelectorAll('.time-slot.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Mark this slot as selected
+            element.classList.add('selected');
+            document.getElementById('appointmentTime').value = time;
+        }
+        
+        // Book appointment
+        function bookAppointment() {
+            const form = document.getElementById('appointmentForm');
+            
+            // Check if form is valid
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+            
+            // Get form data
+            const appointmentData = {
+                vaccineId: document.getElementById('bookingVaccineId').value,
+                patientName: document.getElementById('patientName').value,
+                patientAge: document.getElementById('patientAge').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                appointmentDate: document.getElementById('appointmentDate').value,
+                appointmentTime: document.getElementById('appointmentTime').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            // Send to API
+            fetch('/appointments/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(appointmentData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Có lỗi xảy ra khi đặt lịch');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('appointmentModal'));
+                modal.hide();
+                
+                // Show success message
+                showAlert('Đặt lịch tiêm chủng thành công! Chúng tôi sẽ liên hệ để xác nhận.', 'success');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Đã xảy ra lỗi: ' + error.message, 'danger');
+            });
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+            
+            const alertHTML = `
+                <div id="${alertId}" class="alert alert-${type} alert-dismissible fade show alert-floating" role="alert">
+                    ${message}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            `;
+            
+            alertContainer.insertAdjacentHTML('beforeend', alertHTML);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                const alertElement = document.getElementById(alertId);
+                if (alertElement) {
+                    alertElement.classList.remove('show');
+                    setTimeout(() => alertElement.remove(), 150);
+                }
+            }, 5000);
+        }
+    </script>
 </body>
 </html>
