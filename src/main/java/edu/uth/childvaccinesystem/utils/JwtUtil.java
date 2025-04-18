@@ -23,8 +23,20 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            String username = Jwts.parser()
+                                 .setSigningKey(secretKey)
+                                 .parseClaimsJws(token)
+                                 .getBody()
+                                 .getSubject();  // Lấy username từ token
+            System.out.println("Username từ token: " + username); // Debug log
+            return username;
+        } catch (Exception e) {
+            throw new RuntimeException("Token không hợp lệ");
+        }
     }
+    
+    
 
     public boolean validateToken(String token, UserDetails userDetails) {
         return extractUsername(token).equals(userDetails.getUsername());
