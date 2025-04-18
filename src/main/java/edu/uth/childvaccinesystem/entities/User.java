@@ -7,16 +7,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
 @Table(name = "user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,9 +41,12 @@ public class User {
     @Lob
     @Column(name = "data", columnDefinition = "LONGBLOB")
     private byte[] data;
-    
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "parent")
+    private Set<Child> children;  // Mối quan hệ giữa User và Child
 
     public User() {}
 

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt lịch tiêm</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Đặt lịch tiêm cho trẻ</h1>
+
+    <!-- Form thêm bé mới -->
+    <div id="addChildSection">
+        <h2>Thêm bé mới</h2>
+        <form id="addChildForm">
+            <label for="childName">Tên bé:</label>
+            <input type="text" id="childName" name="childName" required>
+            
+            <label for="childDob">Ngày sinh:</label>
+            <input type="date" id="childDob" name="childDob" required>
+            
+            <label for="childGender">Giới tính:</label>
+            <select id="childGender" name="childGender" required>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+            </select>
+            
+            <button type="submit">Thêm bé</button>
+        </form>
+        <p id="addChildMessage"></p>
+    </div>
+
+    <!-- Form đặt lịch tiêm -->
+    <div id="appointmentSection">
+        <h2>Đặt lịch tiêm</h2>
+        <form id="appointmentForm">
+            <label for="childId">Chọn bé:</label>
+            <select id="childId" name="childId" required></select>
+
+            <label for="vaccineId">Chọn vắc xin:</label>
+            <select id="vaccineId" name="vaccineId" required></select>
+
+            <label for="appointmentDate">Ngày tiêm:</label>
+            <input type="date" id="appointmentDate" name="appointmentDate" required>
+
+            <label for="appointmentTime">Giờ tiêm:</label>
+            <input type="time" id="appointmentTime" name="appointmentTime" required>
+
+            <label for="notes">Ghi chú:</label>
+            <textarea id="notes" name="notes" rows="3"></textarea>
+
+            <button type="submit">Đặt lịch</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChildren();
+            loadVaccines();
+        });
+
+        // Hàm format giới tính
+        function formatGender(gender) {
+            if (!gender) return "Không rõ";
+            const normalized = gender.toLowerCase();
+            if (normalized === 'male') return 'Nam';
+            if (normalized === 'female') return 'Nữ';
+            return gender;
+        }
+
+        // Tải danh sách bé của phụ huynh
+        function loadChildren() {
+            const token = localStorage.getItem('token');
+
+            axios.get('/child/by-parent', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                console.log('Dữ liệu trả về từ API:', response.data);  // Kiểm tra dữ liệu
+                const childSelect = document.getElementById('childId');
+                childSelect.innerHTML = ''; // Clear old options
+                if (response.data && response.data.length > 0) {
+                    response.data.forEach(child => {
+                        const option = document.createElement('option');
+                        option.value = child.id;
+                        option.text = `${child.name} - ${formatGender(child.gender)} - ${child.dob}`;
+                        childSelect.appendChild(option);
+                    });
+                } else {
+                    document.getElementById('message').textContent = 'Không có trẻ em nào!';
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi load danh sách bé:', error);
+                document.getElementById('message').textContent = 'Không thể tải danh sách bé!';
+            });
+        }
+
+
+
+
+        // Tải danh sách vắc xin
+        function loadVaccines() {
+            axios.get('/vaccine/vaccine-list')
+                .then(response => {
+                    const vaccineSelect = document.getElementById('vaccineId');
+                    vaccineSelect.innerHTML = '';
+
+                    response.data.vaccines.forEach(vaccine => {
+                        const option = document.createElement('option');
+                        option.value = vaccine.id;
+                        option.text = vaccine.name;
+                        vaccineSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi load danh sách vắc xin:', error);
+                    document.getElementById('message').textContent = 'Không thể tải danh sách vắc xin!';
+                });
+        }
+
+        // Thêm bé mới
+                document.getElementById('addChildForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const data = {
+                name: document.getElementById('childName').value,
+                dob: document.getElementById('childDob').value,
+                gender: document.getElementById('childGender').value
+            };
+
+            const token = localStorage.getItem('token');
+
+            axios.post('/child/add', data, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                document.getElementById('addChildMessage').textContent = response.data;  // Hiển thị thông báo từ server
+                loadChildren();  // Load lại danh sách bé
+            })
+            .catch(error => {
+                document.getElementById('addChildMessage').textContent = '❌ Thêm bé thất bại!';
+                console.error(error);
+            });
+        });
+
+
+        // Đặt lịch tiêm
+        document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const data = {
+                childId: document.getElementById('childId').value,
+                vaccineId: document.getElementById('vaccineId').value,
+                appointmentDate: document.getElementById('appointmentDate').value,
+                appointmentTime: document.getElementById('appointmentTime').value,
+                notes: document.getElementById('notes').value
+            };
+
+            axios.post('/appointments/book', data)
+                .then(response => {
+                    document.getElementById('message').textContent = '✅ Đặt lịch thành công!';
+                    document.getElementById('appointmentForm').reset();
+                })
+                .catch(error => {
+                    document.getElementById('message').textContent = '❌ Đặt lịch thất bại!';
+                    console.error(error);
+                });
+        });
+    </script>
+</body>
+</html>

@@ -55,11 +55,10 @@ public class SecurityConfig {
 
                 .requestMatchers(HttpMethod.GET, "/vaccine/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/vaccine").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/vaccine/**").authenticated()
-                .requestMatchers(HttpMethod.DELETE, "/vaccine/**").authenticated()
-
+                .requestMatchers(HttpMethod.PUT, "/vaccine/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/vaccine/**").hasRole("ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-
+                .requestMatchers("/appointments/**").hasAnyRole("USER", "ADMIN", "STAFF")
                 .anyRequest().authenticated() // moved here
             )
             .formLogin(form -> form

@@ -6,19 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadVaccines();
     initializeViewToggle();
     initializeSearchEvents();
-    initializeBookingButtonEvent();
 });
 
-// View Toggle
 function initializeViewToggle() {
     document.querySelectorAll('.btn-toggle').forEach(button => {
         button.addEventListener('click', function() {
             const view = this.dataset.view;
             currentView = view;
 
-            document.querySelectorAll('.btn-toggle').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('.btn-toggle').forEach(btn => btn.classList.remove('active'));
             this.classList.add('active');
 
             document.getElementById('vaccine-cards').style.display = view === 'grid' ? 'flex' : 'none';
@@ -29,36 +25,20 @@ function initializeViewToggle() {
     });
 }
 
-// Booking button (event delegation)
-function initializeBookingButtonEvent() {
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.booking-btn');
-        if (btn) {
-            const id = btn.dataset.id;
-            const name = btn.dataset.name;
-            const price = btn.dataset.price;
-            showBookingModal(id, name, price);
-        }
-    });
-}
-
-// Search functionality
 function initializeSearchEvents() {
     const input = document.getElementById('searchInput');
-    if (!input) return;
+    const button = document.getElementById('searchButton');
+    if (!input || !button) return;
 
-    input.addEventListener('keyup', function(e) {
-        if (e.key === 'Enter') {
-            searchVaccine();
-        }
+    // Bấm nút tìm kiếm
+    button.addEventListener('click', function() {
+        searchVaccine();
     });
 
-    // Optional: Real-time search (debounce)
-    // let timeout;
-    // input.addEventListener('input', () => {
-    //     clearTimeout(timeout);
-    //     timeout = setTimeout(() => searchVaccine(), 300);
-    // });
+    // Gõ đến đâu search đến đó (real-time)
+    input.addEventListener('input', function () {
+        searchVaccine();
+    });
 }
 
 function searchVaccine() {
@@ -87,7 +67,6 @@ function clearSearch() {
     loadVaccines(0);
 }
 
-// Load vaccines
 function loadVaccines(page = 0, size = 6) {
     showLoading();
 
@@ -115,42 +94,29 @@ function displayGridView(vaccines) {
     container.innerHTML = '';
 
     vaccines.forEach(vaccine => {
-        const card = createVaccineCard(vaccine);
-        container.appendChild(card);
-    });
-}
-
-function createVaccineCard(vaccine) {
-    const card = document.createElement('div');
-    card.className = 'col-md-4 mb-4';
-    card.innerHTML = `
-        <div class="card h-100">
-            <div class="card-img-container">
-                <img src="data:image/jpeg;base64,${vaccine.imageBase64}" 
-                     class="card-img-top" 
-                     alt="${vaccine.name}"
-                     onerror="this.src='/img/default-vaccine.jpg'">
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">${vaccine.name}</h5>
-                <p class="card-text">
-                    <strong>Nhà sản xuất:</strong> ${vaccine.manufacturer}<br>
-                    <strong>Số lô:</strong> ${vaccine.lotNumber}<br>
-                    <strong>Hạn sử dụng:</strong> ${formatDate(vaccine.expirationDate)}<br>
-                    <strong>Giá:</strong> ${formatCurrency(vaccine.price)}
-                </p>
-                <div class="card-actions">
-                    <button class="btn btn-success booking-btn"
-                            data-id="${vaccine.id}"
-                            data-name="${vaccine.name}"
-                            data-price="${vaccine.price}">
-                        <i class="fas fa-calendar-check"></i> Đặt lịch tiêm
-                    </button>
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <div class="card h-100">
+                <div class="card-img-container">
+                    <img src="data:image/jpeg;base64,${vaccine.imageBase64}" 
+                         class="card-img-top" 
+                         alt="${vaccine.name}"
+                         onerror="this.src='/img/default-vaccine.jpg'">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${vaccine.name}</h5>
+                    <p class="card-text">
+                        <strong>Nhà sản xuất:</strong> ${vaccine.manufacturer}<br>
+                        <strong>Số lô:</strong> ${vaccine.lotNumber}<br>
+                        <strong>Hạn sử dụng:</strong> ${formatDate(vaccine.expirationDate)}<br>
+                        <strong>Giá:</strong> ${formatCurrency(vaccine.price)}
+                    </p>
                 </div>
             </div>
-        </div>
-    `;
-    return card;
+        `;
+        container.appendChild(card);
+    });
 }
 
 function displayListView(vaccines) {
@@ -170,14 +136,6 @@ function displayListView(vaccines) {
                      alt="${vaccine.name}" 
                      style="width: 50px; height: 50px; object-fit: cover;"
                      onerror="this.src='/img/default-vaccine.jpg'">
-            </td>
-            <td>
-                <button class="btn btn-success booking-btn"
-                        data-id="${vaccine.id}"
-                        data-name="${vaccine.name}"
-                        data-price="${vaccine.price}">
-                    <i class="fas fa-calendar-check"></i> Đặt lịch
-                </button>
             </td>
         `;
         tbody.appendChild(row);
@@ -227,81 +185,12 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
-// Optional: Loading indicator
 function showLoading() {
     const loader = document.getElementById('loading-indicator');
     if (loader) loader.style.display = 'block';
 }
+
 function hideLoading() {
     const loader = document.getElementById('loading-indicator');
     if (loader) loader.style.display = 'none';
 }
-let isEdit = false; // Flag kiểm tra sửa hay tạo mới
-
-function showBookingModal(id, name, price, appointmentId = null) {
-    document.getElementById('vaccineNameTitle').textContent = name;
-    document.getElementById('vaccineId').value = id;
-    
-    // Nếu là sửa, điền thông tin hiện tại vào modal
-    if (appointmentId) {
-        isEdit = true;
-        document.getElementById('appointmentId').value = appointmentId; // ID của cuộc hẹn
-        // Fetch thông tin cuộc hẹn từ backend (lấy trước khi sửa) 
-        fetch(`/appointments/${appointmentId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('appointmentDate').value = data.appointmentDate;
-                document.getElementById('appointmentTime').value = data.appointmentTime;
-                document.getElementById('notes').value = data.notes;
-            })
-            .catch(error => console.error('Lỗi khi lấy thông tin cuộc hẹn:', error));
-    } else {
-        isEdit = false;
-        document.getElementById('appointmentForm').reset(); // Reset form nếu tạo mới
-    }
-
-    const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
-    modal.show();
-}
-
-document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const vaccineId = document.getElementById('vaccineId').value;
-    const childId = document.getElementById('childId').value;
-    const appointmentDate = document.getElementById('appointmentDate').value;
-    const appointmentTime = document.getElementById('appointmentTime').value;
-    const notes = document.getElementById('notes').value;
-    const appointmentId = document.getElementById('appointmentId').value;
-
-    const appointmentData = {
-        vaccine: { id: vaccineId },
-        child: { id: childId },
-        appointmentDate: appointmentDate,
-        appointmentTime: appointmentTime,
-        notes: notes
-    };
-
-    const url = isEdit ? `/appointments/${appointmentId}` : '/appointments/book';
-    const method = isEdit ? 'PUT' : 'POST';
-
-    fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(appointmentData)
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('Lỗi khi đặt hoặc sửa lịch');
-        return response.json();
-    })
-    .then(data => {
-        alert(isEdit ? "Cập nhật lịch tiêm thành công!" : "Đặt lịch thành công!");
-        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
-    })
-    .catch(error => {
-        console.error(error);
-        alert("Có lỗi xảy ra khi đặt hoặc sửa lịch. Vui lòng thử lại.");
-    });
-});

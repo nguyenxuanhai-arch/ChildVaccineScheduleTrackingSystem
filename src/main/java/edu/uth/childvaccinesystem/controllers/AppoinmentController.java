@@ -1,21 +1,24 @@
 package edu.uth.childvaccinesystem.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.dtos.request.AppointmentRequest;
 import edu.uth.childvaccinesystem.services.AppointmentService;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 @RequestMapping("/appointments")
 public class AppoinmentController {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @GetMapping
+    public String appointmentsPage() {
+        return "appointments/appointments"; // đúng đường dẫn tới file HTML bạn để trong templates
+    }
 
     @PostMapping("/book")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody AppointmentRequest request) {

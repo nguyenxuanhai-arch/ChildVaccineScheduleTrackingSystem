@@ -1,7 +1,9 @@
 package edu.uth.childvaccinesystem.services;
 
 import edu.uth.childvaccinesystem.entities.Child;
+import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.repositories.ChildRepository;
+import edu.uth.childvaccinesystem.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,6 +14,9 @@ public class ChildService {
 
     @Autowired
     private ChildRepository childRepository;
+
+    @Autowired
+    private UserRepository userRepository;  // Thêm UserRepository để truy vấn User
 
     public List<Child> getAllChildren() {
         return childRepository.findAll();
@@ -24,22 +29,29 @@ public class ChildService {
         return childRepository.findById(id);
     }
 
-    public String saveChild(Child child) {
-        // Check if a child with the same name and date of birth already exists
-        if (childRepository.existsByNameAndDob(child.getName(), child.getDob())) {
-            return "Child already exists with the same name and date of birth";
+    public List<Child> getChildrenByParentUsername(String parentUsername) {
+        // Tìm User từ username
+        User parent = userRepository.findByUsername(parentUsername);  // Sử dụng UserRepository để tìm User
+        if (parent != null) {
+            List<Child> children = childRepository.findByParent(parent);  // Sử dụng mối quan hệ với User
+            System.out.println("Danh sách trẻ em cho " + parentUsername + ": " + children.size()); // Debug log
+            return children;
         }
-        childRepository.save(child).getId();
-        return "Child saved successfully";
+        return List.of(); // Trả về danh sách trống nếu không tìm thấy User
+    }
+
+    public void saveChild(Child child) {
+        childRepository.save(child);  // Kiểm tra lưu trẻ em vào database
     }
 
     public String updateChild(Long id, Child childDetails) {
         Optional<Child> optionalChild = childRepository.findById(id);
-        if (optionalChild.isPresent()) {
+        if (optionalChild.isPresent()) {    
             Child child = optionalChild.get();
             child.setName(childDetails.getName());
             child.setDob(childDetails.getDob());
-            childRepository.save(child).getId();
+            childRepository.save(child);
+            return String.valueOf(child.getId());
         }
         return "Child not found";
     }
