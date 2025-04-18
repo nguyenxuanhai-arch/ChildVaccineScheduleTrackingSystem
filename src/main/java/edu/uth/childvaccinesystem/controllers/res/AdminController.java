@@ -9,10 +9,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 @Controller
 @RequestMapping("/admin")
@@ -30,7 +35,13 @@ public class AdminController {
     }
 
     @GetMapping()
-    public String dashboard() {
+    public String dashboard(Model model) {
+        // Add statistics to the model
+        model.addAttribute("totalVaccines", vaccineService.getAllVaccines().size());
+        model.addAttribute("totalUsers", userService.getAllUsers().size());
+        model.addAttribute("todaySchedules", 0); // Replace with actual data when available
+        model.addAttribute("pendingSchedules", 0); // Replace with actual data when available
+        
         return "admin/dashboard";
     }
 
@@ -121,27 +132,51 @@ public class AdminController {
     @PostMapping("/vaccines/save")
     public String saveVaccine(
         @ModelAttribute Vaccine vaccine,
-        @RequestParam(value = "imageBase64", required = false) MultipartFile imageFile,
+        @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+        RedirectAttributes redirectAttributes,
         Model model
     ) {
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
-                // Chuyển đổi hình ảnh sang chuỗi Base64
-                String base64Image = Base64.getEncoder().encodeToString(imageFile.getBytes());
+                // Compress image if needed
+                byte[] compressedImage = compressImage(imageFile.getBytes());
+                String base64Image = Base64.getEncoder().encodeToString(compressedImage);
                 vaccine.setImageBase64(base64Image);
             }
 
             if (vaccine.getId() == null) {
-                vaccineService.createVaccine(vaccine); // Tạo mới vaccine
+                vaccineService.createVaccine(vaccine);
+                redirectAttributes.addFlashAttribute("message", "Vaccine created successfully");
             } else {
-                vaccineService.updateVaccine(vaccine.getId(), vaccine); // Cập nhật vaccine
+                vaccineService.updateVaccine(vaccine.getId(), vaccine);
+                redirectAttributes.addFlashAttribute("message", "Vaccine updated successfully");
             }
-            return "redirect:/admin/vaccines"; // Chuyển hướng về danh sách vaccine
+            return "redirect:/admin/vaccines";
         } catch (Exception e) {
-            model.addAttribute("vaccine", vaccine); // Truyền lại dữ liệu vaccine vào model
-            model.addAttribute("error", "Failed to save vaccine: " + e.getMessage()); // Truyền thông báo lỗi vào model
-            return "admin/vaccines/vaccine-form"; // Quay lại form với thông báo lỗi
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("vaccine", vaccine);
+            return "admin/vaccines/vaccine-form";
         }
+    }
+
+    private byte[] compressImage(byte[] imageData) throws IOException {
+        BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imageData));
+        
+        // Create a new buffered image with RGB color model
+        BufferedImage compressedImage = new BufferedImage(
+            originalImage.getWidth(), 
+            originalImage.getHeight(), 
+            BufferedImage.TYPE_INT_RGB
+        );
+        
+        // Draw the original image onto the new image
+        compressedImage.createGraphics().drawImage(originalImage, 0, 0, null);
+        
+        // Write to ByteArrayOutputStream with JPEG compression
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(compressedImage, "jpg", outputStream);
+        
+        return outputStream.toByteArray();
     }
 
     @PostMapping("/vaccines/delete/{id}")

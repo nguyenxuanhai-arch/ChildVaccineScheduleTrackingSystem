@@ -17,7 +17,7 @@ public class Child {
     private Long id;
     private String name;
     @Column(name = "dob") 
-    private LocalDate dob;
+    private LocalDate dob;        
     
     @Column(name = "parent_username")
     private String parentUsername;
