@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import jakarta.persistence.PrePersist;
 @Entity
 @Getter
 @Setter
@@ -46,5 +47,9 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 }
