@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Vaccine Form</title>
+  </head>
+  <body>
+    <h1 th:if="${vaccine.id == null}">Create Vaccine</h1>
+    <h1 th:if="${vaccine.id != null}">Edit Vaccine</h1>
+
+    <!-- Hiển thị thông báo lỗi -->
+    <div th:if="${error}" style="color: red">
+      <p th:text="${error}"></p>
+    </div>
+
+    <form
+      th:action="@{/admin/vaccines/save}"
+      th:object="${vaccine}"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="hidden" th:field="*{id}" />
+
+      <label for="name">Tên:</label>
+      <input type="text" id="name" th:field="*{name}" required />
+      <br />
+
+      <label for="manufacturer">Nhà sản xuất:</label>
+      <input
+        type="text"
+        id="manufacturer"
+        th:field="*{manufacturer}"
+        required
+      />
+      <br />
+
+      <label for="lotNumber">Số lượng:</label>
+      <input type="text" id="lotNumber" th:field="*{lotNumber}" required />
+      <br />
+
+      <label for="price">Giá:</label>
+      <input type="number" id="price" th:field="*{price}" required />
+      <br />
+
+      <label for="expirationDate">Hạn sử dụng:</label>
+      <input
+        type="text"
+        id="expirationDate"
+        th:field="*{expirationDate}"
+        required
+      />
+      <br />
+
+      <label for="imageBase64">Hình ảnh:</label>
+      <input type="file" id="imageBase64" name="imageBase64" accept="image/*" />
+      <br />
+
+      <button type="submit">Save</button>
+      <a th:href="@{/admin/vaccines}">Cancel</a>
+    </form>
+  </body>
+</html>
