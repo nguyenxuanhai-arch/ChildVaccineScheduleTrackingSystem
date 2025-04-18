@@ -100,7 +100,7 @@ public class VaccineController {
 
     // Update
     @PutMapping("/{id}")
-    public long updateVaccine(@PathVariable Long id, @ModelAttribute Vaccine vaccine) {
+    public Vaccine updateVaccine(@PathVariable Long id, @ModelAttribute Vaccine vaccine) {
         return vaccineService.updateVaccine(id, vaccine);
     }
 

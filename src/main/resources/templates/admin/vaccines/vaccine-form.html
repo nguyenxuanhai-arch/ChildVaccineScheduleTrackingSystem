@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Vaccine Form</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 th:if="${vaccine.id == null}">Create Vaccine</h1>
+      <h1 th:if="${vaccine.id != null}">Edit Vaccine</h1>
+
+      <div th:if="${error}" class="alert alert-danger" role="alert">
+        <p th:text="${error}"></p>
+      </div>
+
+      <form
+        th:action="@{/admin/vaccines/save}"
+        th:object="${vaccine}"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+          <label for="name">Tên:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            th:field="*{name}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="manufacturer">Nhà sản xuất:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="manufacturer"
+            th:field="*{manufacturer}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lotNumber">Số lượng:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="lotNumber"
+            th:field="*{lotNumber}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="price">Giá:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="price"
+            th:field="*{price}"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="expirationDate">Hạn sử dụng:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="expirationDate"
+            th:field="*{expirationDate}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="imageFile">Hình ảnh:</label>
+          <input
+            type="file"
+            class="form-control"
+            id="imageFile"
+            name="imageFile"
+            accept="image/*"
+            onchange="validateFileSize(this)"
+          />
+          <img
+            th:if="${vaccine.imageBase64}"
+            th:src="@{'data:image/jpeg;base64,' + ${vaccine.imageBase64}}"
+            alt="Current Image"
+            style="max-width: 200px; margin-top: 10px"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/admin/vaccines}" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+
+    <script>
+      function validateFileSize(input) {
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (input.files[0].size > maxSize) {
+          alert("File size must be less than 10MB");
+          input.value = "";
+        }
+      }
+    </script>
+  </body>
+</html>

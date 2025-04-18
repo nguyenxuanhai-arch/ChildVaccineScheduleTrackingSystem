@@ -38,6 +38,7 @@ public class Appointment {
         COMPLETED,
         CANCELLED,
         RESCHEDULED
+        // chưa làm 
     }
     
 }

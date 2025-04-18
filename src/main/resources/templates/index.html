@@ -1,214 +1,305 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
     <title>Trang chủ - Vaccine System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      th:href="@{/img/favicon/apple-touch-icon.png}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      th:href="@{/img/favicon/favicon-32x32.png}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      th:href="@{/img/favicon/favicon-16x16.png}"
+    />
+    <link rel="manifest" th:href="@{/img/favicon/site.webmanifest}" />
+    <link
+      rel="mask-icon"
+      th:href="@{/img/favicon/safari-pinned-tab.svg}"
+      color="#5bbad5"
+    />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
     <!-- CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
     <style>
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/free-photo/doctor-vaccinating-little-girl_23-2148880290.jpg?w=1380&t=st=1709355245~exp=1709355845~hmac=4f5f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
-            margin-bottom: 50px;
-        }
-        .feature-card {
-            border: none;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-            background: #fff;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #007bff;
-        }
-        .cta-section {
-            background: #007bff;
-            color: white;
-            padding: 60px 0;
-            margin: 50px 0;
-        }
-        .testimonial-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        }
-        .testimonial-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-        }
+      .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("https://img.freepik.com/free-photo/doctor-vaccinating-little-girl_23-2148880290.jpg?w=1380&t=st=1709355245~exp=1709355845~hmac=4f5f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f");
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0;
+        margin-bottom: 50px;
+      }
+      .feature-card {
+        border: none;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+        background: #fff;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      }
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+      .feature-icon {
+        font-size: 2.5rem;
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+      }
+      .cta-section {
+        background: #007bff;
+        color: white;
+        padding: 60px 0;
+        margin: 50px 0;
+      }
+      .testimonial-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      }
+      .testimonial-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+      }
     </style>
-</head>
-<body class="d-flex flex-column min-vh-100">
+  </head>
+  <body class="d-flex flex-column min-vh-100">
     <!-- Header -->
     <div th:replace="master/_header :: header"></div>
 
     <!-- Hero Section -->
     <div class="hero-section">
-        <div class="container text-center">
-            <h1 class="display-4 mb-4">Bảo Vệ Sức Khỏe Con Yêu</h1>
-            <p class="lead mb-4">Hệ thống theo dõi và quản lý tiêm chủng cho trẻ em hiện đại, an toàn và tiện lợi</p>
-            <div class="mt-4">
-                <a th:href="@{/auth/register}" sec:authorize="isAnonymous()" class="btn btn-primary btn-lg mr-3">Đăng Ký Ngay</a>
-                <a th:href="@{/services}" class="btn btn-outline-light btn-lg">Tìm Hiểu Thêm</a>
-            </div>
+      <div class="container text-center">
+        <h1 class="display-4 mb-4">Bảo Vệ Sức Khỏe Con Yêu</h1>
+        <p class="lead mb-4">
+          Hệ thống theo dõi và quản lý tiêm chủng cho trẻ em hiện đại, an toàn
+          và tiện lợi
+        </p>
+        <div class="mt-4">
+          <a
+            th:href="@{/auth/register}"
+            sec:authorize="isAnonymous()"
+            class="btn btn-primary btn-lg mr-3"
+            >Đăng Ký Ngay</a
+          >
+          <a th:href="@{/services}" class="btn btn-outline-light btn-lg"
+            >Tìm Hiểu Thêm</a
+          >
         </div>
+      </div>
     </div>
 
     <!-- Features Section -->
     <div class="container mb-5">
-        <h2 class="text-center mb-5">Tính Năng Nổi Bật</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-calendar-check feature-icon"></i>
-                    <h3>Đặt Lịch Tiêm Chủng</h3>
-                    <p>Dễ dàng đặt lịch tiêm chủng trực tuyến với giao diện thân thiện, linh hoạt thời gian</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-bell feature-icon"></i>
-                    <h3>Nhắc Lịch Thông Minh</h3>
-                    <p>Tự động nhắc lịch tiêm chủng qua email và SMS, đảm bảo không bỏ lỡ mũi tiêm nào</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <h3>Theo Dõi Phát Triển</h3>
-                    <p>Ghi nhận và theo dõi sự phát triển của trẻ qua các chỉ số quan trọng</p>
-                </div>
-            </div>
+      <h2 class="text-center mb-5">Tính Năng Nổi Bật</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-calendar-check feature-icon"></i>
+            <h3>Đặt Lịch Tiêm Chủng</h3>
+            <p>
+              Dễ dàng đặt lịch tiêm chủng trực tuyến với giao diện thân thiện,
+              linh hoạt thời gian
+            </p>
+          </div>
         </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-bell feature-icon"></i>
+            <h3>Nhắc Lịch Thông Minh</h3>
+            <p>
+              Tự động nhắc lịch tiêm chủng qua email và SMS, đảm bảo không bỏ lỡ
+              mũi tiêm nào
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-chart-line feature-icon"></i>
+            <h3>Theo Dõi Phát Triển</h3>
+            <p>
+              Ghi nhận và theo dõi sự phát triển của trẻ qua các chỉ số quan
+              trọng
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Statistics Section -->
     <div class="container mb-5">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">5000+</div>
-                    <p>Trẻ em được bảo vệ</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">20+</div>
-                    <p>Loại vaccine</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">98%</div>
-                    <p>Khách hàng hài lòng</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number">24/7</div>
-                    <p>Hỗ trợ trực tuyến</p>
-                </div>
-            </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">5000+</div>
+            <p>Trẻ em được bảo vệ</p>
+          </div>
         </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">20+</div>
+            <p>Loại vaccine</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">98%</div>
+            <p>Khách hàng hài lòng</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <p>Hỗ trợ trực tuyến</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- CTA Section -->
     <div class="cta-section">
-        <div class="container text-center">
-            <h2 class="mb-4">Bắt Đầu Ngay Hôm Nay</h2>
-            <p class="lead mb-4">Đăng ký tài khoản miễn phí và bắt đầu theo dõi lịch tiêm chủng cho con yêu của bạn</p>
-            <a th:href="@{/auth/register}" class="btn btn-light btn-lg">Đăng Ký Miễn Phí</a>
-        </div>
+      <div class="container text-center">
+        <h2 class="mb-4">Bắt Đầu Ngay Hôm Nay</h2>
+        <p class="lead mb-4">
+          Đăng ký tài khoản miễn phí và bắt đầu theo dõi lịch tiêm chủng cho con
+          yêu của bạn
+        </p>
+        <a th:href="@{/auth/register}" class="btn btn-light btn-lg"
+          >Đăng Ký Miễn Phí</a
+        >
+      </div>
     </div>
 
     <!-- Testimonials Section -->
     <div class="container mb-5">
-        <h2 class="text-center mb-5">Khách Hàng Nói Gì Về Chúng Tôi</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="testimonial-card text-center">
-                    <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Testimonial" class="testimonial-img">
-                    <h4>Chị Nguyễn Thị Hương</h4>
-                    <p class="text-muted">Mẹ bé Na</p>
-                    <p>"Hệ thống rất tiện lợi, giúp tôi theo dõi lịch tiêm của con dễ dàng. Đội ngũ y tế rất tận tâm và chuyên nghiệp."</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="testimonial-card text-center">
-                    <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Testimonial" class="testimonial-img">
-                    <h4>Anh Trần Văn Minh</h4>
-                    <p class="text-muted">Bố bé Bảo</p>
-                    <p>"Đặt lịch tiêm rất dễ dàng, nhân viên tư vấn nhiệt tình. Tôi rất yên tâm khi cho con tiêm chủng tại đây."</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="testimonial-card text-center">
-                    <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Testimonial" class="testimonial-img">
-                    <h4>Chị Lê Thị Mai</h4>
-                    <p class="text-muted">Mẹ bé Sữa</p>
-                    <p>"Hệ thống nhắc lịch rất hữu ích, giúp tôi không bao giờ bỏ lỡ mũi tiêm nào của con. Cảm ơn đội ngũ!"</p>
-                </div>
-            </div>
+      <h2 class="text-center mb-5">Khách Hàng Nói Gì Về Chúng Tôi</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="testimonial-card text-center">
+            <img
+              src="https://randomuser.me/api/portraits/women/1.jpg"
+              alt="Testimonial"
+              class="testimonial-img"
+            />
+            <h4>Chị Nguyễn Thị Hương</h4>
+            <p class="text-muted">Mẹ bé Na</p>
+            <p>
+              "Hệ thống rất tiện lợi, giúp tôi theo dõi lịch tiêm của con dễ
+              dàng. Đội ngũ y tế rất tận tâm và chuyên nghiệp."
+            </p>
+          </div>
         </div>
+        <div class="col-md-4">
+          <div class="testimonial-card text-center">
+            <img
+              src="https://randomuser.me/api/portraits/men/1.jpg"
+              alt="Testimonial"
+              class="testimonial-img"
+            />
+            <h4>Anh Trần Văn Minh</h4>
+            <p class="text-muted">Bố bé Bảo</p>
+            <p>
+              "Đặt lịch tiêm rất dễ dàng, nhân viên tư vấn nhiệt tình. Tôi rất
+              yên tâm khi cho con tiêm chủng tại đây."
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="testimonial-card text-center">
+            <img
+              src="https://randomuser.me/api/portraits/women/2.jpg"
+              alt="Testimonial"
+              class="testimonial-img"
+            />
+            <h4>Chị Lê Thị Mai</h4>
+            <p class="text-muted">Mẹ bé Sữa</p>
+            <p>
+              "Hệ thống nhắc lịch rất hữu ích, giúp tôi không bao giờ bỏ lỡ mũi
+              tiêm nào của con. Cảm ơn đội ngũ!"
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Why Choose Us Section -->
     <div class="container mb-5">
-        <h2 class="text-center mb-5">Tại Sao Chọn Chúng Tôi</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-shield-alt feature-icon"></i>
-                    <h3>An Toàn Tối Đa</h3>
-                    <p>Tuân thủ nghiêm ngặt quy trình tiêm chủng an toàn theo tiêu chuẩn của Bộ Y tế</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-user-md feature-icon"></i>
-                    <h3>Đội Ngũ Chuyên Nghiệp</h3>
-                    <p>Y bác sĩ giàu kinh nghiệm, được đào tạo chuyên sâu về tiêm chủng trẻ em</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <i class="fas fa-clock feature-icon"></i>
-                    <h3>Tiện Lợi</h3>
-                    <p>Đặt lịch online 24/7, theo dõi tiêm chủng mọi lúc mọi nơi qua hệ thống</p>
-                </div>
-            </div>
+      <h2 class="text-center mb-5">Tại Sao Chọn Chúng Tôi</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3>An Toàn Tối Đa</h3>
+            <p>
+              Tuân thủ nghiêm ngặt quy trình tiêm chủng an toàn theo tiêu chuẩn
+              của Bộ Y tế
+            </p>
+          </div>
         </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-user-md feature-icon"></i>
+            <h3>Đội Ngũ Chuyên Nghiệp</h3>
+            <p>
+              Y bác sĩ giàu kinh nghiệm, được đào tạo chuyên sâu về tiêm chủng
+              trẻ em
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-card text-center">
+            <i class="fas fa-clock feature-icon"></i>
+            <h3>Tiện Lợi</h3>
+            <p>
+              Đặt lịch online 24/7, theo dõi tiêm chủng mọi lúc mọi nơi qua hệ
+              thống
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Footer -->
@@ -221,17 +312,21 @@
     <script th:src="@{/js/main.js}"></script>
     <!-- Custom Scripts -->
     <script>
-        // Initialize tooltips and popovers
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
-        });
-        
-        // Dark mode toggle
-        document.getElementById('darkModeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+      // Initialize tooltips and popovers
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover();
+      });
+
+      // Dark mode toggle
+      document
+        .getElementById("darkModeToggle")
+        .addEventListener("click", function () {
+          document.body.classList.toggle("dark-mode");
+          this.textContent = document.body.classList.contains("dark-mode")
+            ? "☀️"
+            : "🌙";
         });
     </script>
-</body>
+  </body>
 </html>

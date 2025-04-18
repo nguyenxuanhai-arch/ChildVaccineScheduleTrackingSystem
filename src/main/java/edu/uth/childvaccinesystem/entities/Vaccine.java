@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @Setter
 @Entity
+@Table(name = "vaccine")
 public class Vaccine {
 
     @Id
@@ -29,7 +30,7 @@ public class Vaccine {
     private Double price; // Giá thành vaccine
 
     @Lob
-    @Column(name = "image_base64", columnDefinition = "TEXT")
+    @Column(name = "image_base64", columnDefinition = "LONGTEXT")
     private String imageBase64; // Hình ảnh vaccine dưới dạng Base64
 
     @NotNull
