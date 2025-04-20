@@ -4,329 +4,769 @@
   xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
 >
   <head>
-    <title>Trang chủ - Vaccine System</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Favicon -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      th:href="@{/img/favicon/apple-touch-icon.png}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      th:href="@{/img/favicon/favicon-32x32.png}"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      th:href="@{/img/favicon/favicon-16x16.png}"
-    />
-    <link rel="manifest" th:href="@{/img/favicon/site.webmanifest}" />
-    <link
-      rel="mask-icon"
-      th:href="@{/img/favicon/safari-pinned-tab.svg}"
-      color="#5bbad5"
-    />
-    <meta name="msapplication-TileColor" content="#da532c" />
-    <meta name="theme-color" content="#ffffff" />
-
-    <!-- CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-
+    <title>Vaccine System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-      .hero-section {
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-          url("https://img.freepik.com/free-photo/doctor-vaccinating-little-girl_23-2148880290.jpg?w=1380&t=st=1709355245~exp=1709355845~hmac=4f5f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f9f8f");
-        background-size: cover;
-        background-position: center;
-        color: white;
-        padding: 100px 0;
-        margin-bottom: 50px;
-      }
-      .feature-card {
-        border: none;
-        border-radius: 10px;
-        padding: 25px;
-        margin-bottom: 30px;
-        transition: transform 0.3s ease;
-        background: #fff;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      }
-      .feature-card:hover {
-        transform: translateY(-5px);
-      }
-      .feature-icon {
-        font-size: 2.5rem;
-        color: #007bff;
-        margin-bottom: 20px;
-      }
-      .stat-card {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .stat-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #007bff;
-      }
-      .cta-section {
-        background: #007bff;
-        color: white;
-        padding: 60px 0;
-        margin: 50px 0;
-      }
-      .testimonial-card {
-        background: #fff;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px 0;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      }
-      .testimonial-img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        margin-bottom: 15px;
-      }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('https://images.unsplash.com/photo-1576765975429-d2d5cf999e4d?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            padding: 160px 0;
+            color: white;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-section p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .hero-buttons .btn {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-buttons .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+        
+        .hero-buttons .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+        }
+        
+        .hero-buttons .btn-outline-light:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-card {
+            border-radius: 15px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .counter-section {
+            background: linear-gradient(rgba(0, 123, 255, 0.9), rgba(0, 123, 255, 0.9)), 
+                url('https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 80px 0;
+            margin: 60px 0;
+        }
+        
+        .counter-box {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .counter-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .counter-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .testimonial-section {
+            background-color: var(--bg-light);
+            padding: 80px 0;
+            margin-bottom: 60px;
+        }
+        
+        .testimonial-card {
+            border-radius: 15px;
+            padding: 30px;
+            margin: 15px;
+            background-color: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: "\201C";
+            font-size: 80px;
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            color: var(--primary-color);
+            opacity: 0.3;
+            font-family: serif;
+        }
+        
+        .testimonial-text {
+            margin-bottom: 20px;
+            font-style: italic;
+            color: var(--text-color);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+        
+        .testimonial-info h5 {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .testimonial-info small {
+            color: var(--text-muted);
+        }
+        
+        .slick-prev, .slick-next {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .slick-prev:before, .slick-next:before {
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 20px;
+            opacity: 1;
+        }
+        
+        .slick-prev:before {
+            content: '\f104';
+        }
+        
+        .slick-next:before {
+            content: '\f105';
+        }
+        
+        .slick-prev:hover, .slick-next:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .slick-dots li button:before {
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+        
+        .slick-dots li.slick-active button:before {
+            color: var(--primary-color);
+        }
+        
+        .cta-section {
+            padding: 80px 0;
+            background-color: var(--bg-light);
+            border-radius: 15px;
+            margin-bottom: 60px;
+        }
+        
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .cta-content p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+        }
+        
+        .cta-buttons .btn {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 30px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-buttons .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+        
+        .cta-buttons .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+        }
+        
+        .cta-buttons .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .cta-buttons .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--text-color);
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        .section-title p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* New Vaccine Schedule Section */
+        .schedule-section {
+            padding: 80px 0;
+            background-color: var(--bg-light);
+            margin-bottom: 60px;
+        }
+        
+        .schedule-card {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .schedule-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .schedule-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .schedule-content {
+            padding: 20px;
+        }
+        
+        .schedule-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-age {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .schedule-vaccines {
+            color: var(--text-muted);
+        }
+        
+        .schedule-note {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding: 15px;
+            background-color: rgba(var(--primary-color-rgb), 0.05);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .vaccine-info-graphic {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .vaccine-info-graphic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .info-box {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .info-box-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .info-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .info-box p {
+            color: var(--text-muted);
+        }
+        
+        /* Dark mode enhancements */
+        html[data-theme='dark'] .schedule-header {
+            background-color: var(--primary-dark);
+        }
+        
+        html[data-theme='dark'] .schedule-note {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        html[data-theme='dark'] .counter-section {
+            background: linear-gradient(rgba(0, 70, 140, 0.9), rgba(0, 70, 140, 0.9)), 
+                url('https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?q=80&w=1920&auto=format&fit=crop');
+        }
+        
+        @media (max-width: 767px) {
+            .hero-section {
+                padding: 100px 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-buttons .btn {
+                margin-bottom: 15px;
+            }
+            
+            .counter-box {
+                margin-bottom: 30px;
+            }
+            
+            .cta-content h2 {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons .btn {
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            
+            .schedule-card {
+                margin-bottom: 20px;
+            }
+        }
     </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
   </head>
-  <body class="d-flex flex-column min-vh-100">
-    <!-- Header -->
+  <body>
     <div th:replace="master/_header :: header"></div>
-
+    
     <!-- Hero Section -->
     <div class="hero-section">
-      <div class="container text-center">
-        <h1 class="display-4 mb-4">Bảo Vệ Sức Khỏe Con Yêu</h1>
-        <p class="lead mb-4">
-          Hệ thống theo dõi và quản lý tiêm chủng cho trẻ em hiện đại, an toàn
-          và tiện lợi
-        </p>
-        <div class="mt-4">
-          <a
-            th:href="@{/auth/register}"
-            sec:authorize="isAnonymous()"
-            class="btn btn-primary btn-lg mr-3"
-            >Đăng Ký Ngay</a
-          >
-          <a th:href="@{/services}" class="btn btn-outline-light btn-lg"
-            >Tìm Hiểu Thêm</a
-          >
+        <div class="container text-center">
+            <h1>Chăm Sóc Sức Khỏe Cho Trẻ Em</h1>
+            <p>Hệ thống theo dõi lịch tiêm chủng giúp phụ huynh dễ dàng quản lý việc tiêm chủng của con mình và nhận thông báo kịp thời khi đến hạn.</p>
+            <div class="hero-buttons">
+                <a href="/register" class="btn btn-primary">Đăng Ký Ngay</a>
+                <a href="/service" class="btn btn-outline-light">Dịch Vụ Của Chúng Tôi</a>
+            </div>
         </div>
-      </div>
     </div>
-
+    
     <!-- Features Section -->
-    <div class="container mb-5">
-      <h2 class="text-center mb-5">Tính Năng Nổi Bật</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-calendar-check feature-icon"></i>
-            <h3>Đặt Lịch Tiêm Chủng</h3>
-            <p>
-              Dễ dàng đặt lịch tiêm chủng trực tuyến với giao diện thân thiện,
-              linh hoạt thời gian
-            </p>
-          </div>
+    <div class="container">
+        <div class="section-title">
+            <h2>Tính Năng Nổi Bật</h2>
+            <p>Hệ thống của chúng tôi cung cấp các công cụ tiên tiến giúp phụ huynh dễ dàng theo dõi lịch tiêm chủng của con</p>
         </div>
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-bell feature-icon"></i>
-            <h3>Nhắc Lịch Thông Minh</h3>
-            <p>
-              Tự động nhắc lịch tiêm chủng qua email và SMS, đảm bảo không bỏ lỡ
-              mũi tiêm nào
-            </p>
-          </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check feature-icon"></i>
+                    <h3 class="feature-title">Nhắc Lịch Tiêm Chủng</h3>
+                    <p>Nhận thông báo tự động qua email hoặc SMS khi đến hạn tiêm chủng theo lịch trình được cá nhân hóa cho trẻ.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <h3 class="feature-title">Truy Cập Mọi Lúc Mọi Nơi</h3>
+                    <p>Xem và quản lý lịch tiêm chủng của con mình từ mọi thiết bị với giao diện thân thiện với người dùng.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-clipboard-list feature-icon"></i>
+                    <h3 class="feature-title">Lịch Sử Tiêm Chủng Đầy Đủ</h3>
+                    <p>Theo dõi lịch sử tiêm chủng đầy đủ của trẻ, bao gồm loại vaccine, ngày tiêm và phản ứng sau tiêm.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-laptop-medical feature-icon"></i>
+                    <h3 class="feature-title">Hồ Sơ Y Tế Điện Tử</h3>
+                    <p>Lưu trữ và truy cập thông tin sức khỏe của trẻ một cách an toàn và bảo mật trên hệ thống.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-clock feature-icon"></i>
+                    <h3 class="feature-title">Đặt Lịch Hẹn Dễ Dàng</h3>
+                    <p>Đặt lịch hẹn tiêm chủng trực tuyến, chọn thời gian phù hợp và nhận xác nhận tự động.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-user-md feature-icon"></i>
+                    <h3 class="feature-title">Tư Vấn Y Tế Chuyên Nghiệp</h3>
+                    <p>Nhận tư vấn từ các chuyên gia y tế về lịch tiêm chủng và các vấn đề sức khỏe của trẻ.</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-chart-line feature-icon"></i>
-            <h3>Theo Dõi Phát Triển</h3>
-            <p>
-              Ghi nhận và theo dõi sự phát triển của trẻ qua các chỉ số quan
-              trọng
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <!-- Statistics Section -->
-    <div class="container mb-5">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="stat-card">
-            <div class="stat-number">5000+</div>
-            <p>Trẻ em được bảo vệ</p>
-          </div>
+    
+    <!-- New Vaccine Schedule Section -->
+    <div class="schedule-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Lịch Tiêm Chủng Khuyến Nghị</h2>
+                <p>Hướng dẫn đầy đủ về các loại vaccine cần thiết cho từng độ tuổi của trẻ</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="schedule-card">
+                        <div class="schedule-header">
+                            Lịch tiêm chủng cho trẻ từ 0-24 tháng tuổi
+                        </div>
+                        <div class="schedule-content">
+                            <div class="schedule-item">
+                                <span class="schedule-age">Sơ sinh</span>
+                                <span class="schedule-vaccines">Viêm gan B (mũi 1)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">1 tháng</span>
+                                <span class="schedule-vaccines">BCG, Viêm gan B (mũi 2)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">2 tháng</span>
+                                <span class="schedule-vaccines">5 trong 1 (mũi 1), Bại liệt (mũi 1)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">3 tháng</span>
+                                <span class="schedule-vaccines">5 trong 1 (mũi 2), Bại liệt (mũi 2)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">4 tháng</span>
+                                <span class="schedule-vaccines">5 trong 1 (mũi 3), Bại liệt (mũi 3)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">9 tháng</span>
+                                <span class="schedule-vaccines">Sởi (mũi 1)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">12 tháng</span>
+                                <span class="schedule-vaccines">Viêm não Nhật Bản (mũi 1, 2)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">18 tháng</span>
+                                <span class="schedule-vaccines">Sởi-Quai bị-Rubella, Viêm não Nhật Bản (mũi 3)</span>
+                            </div>
+                            <div class="schedule-note">
+                                <i class="fas fa-info-circle mr-2"></i> Lịch tiêm chủng này có thể được điều chỉnh theo tình trạng sức khỏe và nhu cầu cụ thể của từng trẻ. Vui lòng tham khảo ý kiến bác sĩ để có lịch tiêm chủng phù hợp nhất.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="schedule-card">
+                        <div class="schedule-header">
+                            Lịch tiêm chủng cho trẻ từ 2-18 tuổi
+                        </div>
+                        <div class="schedule-content">
+                            <div class="schedule-item">
+                                <span class="schedule-age">2-3 tuổi</span>
+                                <span class="schedule-vaccines">Viêm não Nhật Bản (mũi 4)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">4-6 tuổi</span>
+                                <span class="schedule-vaccines">Bại liệt (mũi 4), DPT (mũi 4)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">8-10 tuổi</span>
+                                <span class="schedule-vaccines">Viêm não Nhật Bản (mũi 5)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">11-12 tuổi</span>
+                                <span class="schedule-vaccines">HPV (cho bé gái), Uốn ván-Bạch hầu (Td)</span>
+                            </div>
+                            <div class="schedule-item">
+                                <span class="schedule-age">16-18 tuổi</span>
+                                <span class="schedule-vaccines">Viêm màng não cầu khuẩn</span>
+                            </div>
+                            <div class="schedule-note">
+                                <i class="fas fa-info-circle mr-2"></i> Ngoài lịch tiêm chủng cơ bản, còn có các loại vaccine khác như: Thủy đậu, Cúm, Viêm gan A, Phế cầu, Rotavirus, Thương hàn... Bạn có thể tham khảo thêm với bác sĩ về nhu cầu và lợi ích của từng loại.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <i class="fas fa-shield-virus info-box-icon"></i>
+                        <h3>Tại sao tiêm chủng quan trọng?</h3>
+                        <p>Tiêm chủng giúp bảo vệ trẻ em khỏi nhiều bệnh nguy hiểm, một số trong đó có thể gây tử vong. Khi tiêm vaccine, hệ miễn dịch của trẻ sẽ tạo ra các kháng thể để chống lại bệnh mà không cần phải mắc bệnh đó trước.</p>
+                        <p>Tiêm chủng không chỉ bảo vệ cá nhân trẻ mà còn góp phần ngăn chặn sự lây lan của dịch bệnh trong cộng đồng, đặc biệt là bảo vệ những người có hệ miễn dịch yếu.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="vaccine-info-graphic">
+                        <img src="https://images.unsplash.com/photo-1632168844625-b22d7b40133c?q=80&w=1920&auto=format&fit=crop" alt="Vaccine Information">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <div class="stat-number">20+</div>
-            <p>Loại vaccine</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <div class="stat-number">98%</div>
-            <p>Khách hàng hài lòng</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <div class="stat-number">24/7</div>
-            <p>Hỗ trợ trực tuyến</p>
-          </div>
-        </div>
-      </div>
     </div>
-
+    
+    <!-- Counter Section -->
+    <div class="counter-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="counter-box">
+                        <span class="counter-number">5000+</span>
+                        <span class="counter-text">Trẻ Em</span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="counter-box">
+                        <span class="counter-number">20+</span>
+                        <span class="counter-text">Loại Vaccine</span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="counter-box">
+                        <span class="counter-number">30+</span>
+                        <span class="counter-text">Bác Sĩ Chuyên Khoa</span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="counter-box">
+                        <span class="counter-number">95%</span>
+                        <span class="counter-text">Khách Hàng Hài Lòng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonial Section -->
+    <div class="testimonial-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Phản Hồi Từ Phụ Huynh</h2>
+                <p>Những chia sẻ từ các phụ huynh đã sử dụng hệ thống của chúng tôi</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Hệ thống rất dễ sử dụng và tiện lợi. Tôi luôn được nhắc nhở kịp thời khi đến lịch tiêm chủng cho con. Đội ngũ y tế chuyên nghiệp và tận tâm.</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Phụ huynh" class="testimonial-img">
+                        <div class="testimonial-info">
+                            <h5>Nguyễn Thị Hương</h5>
+                            <small>Mẹ bé Na, 2 tuổi</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Là một người bố bận rộn, tôi rất hài lòng với hệ thống nhắc lịch tiêm chủng. Giờ đây tôi không còn lo bỏ lỡ bất kỳ mũi tiêm quan trọng nào cho con.</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Phụ huynh" class="testimonial-img">
+                        <div class="testimonial-info">
+                            <h5>Trần Văn Minh</h5>
+                            <small>Bố bé An, 3 tuổi</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Tôi rất an tâm khi biết mình có thể theo dõi đầy đủ lịch sử tiêm chủng của con. Các bác sĩ luôn tư vấn chi tiết và tận tình mỗi khi tôi có thắc mắc.</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="Phụ huynh" class="testimonial-img">
+                        <div class="testimonial-info">
+                            <h5>Lê Thị Mai</h5>
+                            <small>Mẹ bé Phong, 14 tháng</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Với lịch làm việc bận rộn, tôi rất thoải mái khi có thể đặt lịch hẹn online và nhận thông báo qua email. Dịch vụ tiêm chủng chuyên nghiệp và an toàn.</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Phụ huynh" class="testimonial-img">
+                        <div class="testimonial-info">
+                            <h5>Phạm Thị Lan</h5>
+                            <small>Mẹ bé Minh, 4 tuổi</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- CTA Section -->
-    <div class="cta-section">
-      <div class="container text-center">
-        <h2 class="mb-4">Bắt Đầu Ngay Hôm Nay</h2>
-        <p class="lead mb-4">
-          Đăng ký tài khoản miễn phí và bắt đầu theo dõi lịch tiêm chủng cho con
-          yêu của bạn
-        </p>
-        <a th:href="@{/auth/register}" class="btn btn-light btn-lg"
-          >Đăng Ký Miễn Phí</a
-        >
-      </div>
+    <div class="container">
+        <div class="cta-section">
+            <div class="cta-content">
+                <h2>Bảo Vệ Sức Khỏe Cho Con Bạn Ngay Hôm Nay</h2>
+                <p>Đăng ký tài khoản miễn phí để bắt đầu theo dõi lịch tiêm chủng của con bạn và nhận các thông báo quan trọng</p>
+                <div class="cta-buttons">
+                    <a href="/register" class="btn btn-primary">Đăng Ký Ngay</a>
+                    <a href="/contact" class="btn btn-outline-primary">Liên Hệ Tư Vấn</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Testimonials Section -->
-    <div class="container mb-5">
-      <h2 class="text-center mb-5">Khách Hàng Nói Gì Về Chúng Tôi</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="testimonial-card text-center">
-            <img
-              src="https://randomuser.me/api/portraits/women/1.jpg"
-              alt="Testimonial"
-              class="testimonial-img"
-            />
-            <h4>Chị Nguyễn Thị Hương</h4>
-            <p class="text-muted">Mẹ bé Na</p>
-            <p>
-              "Hệ thống rất tiện lợi, giúp tôi theo dõi lịch tiêm của con dễ
-              dàng. Đội ngũ y tế rất tận tâm và chuyên nghiệp."
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="testimonial-card text-center">
-            <img
-              src="https://randomuser.me/api/portraits/men/1.jpg"
-              alt="Testimonial"
-              class="testimonial-img"
-            />
-            <h4>Anh Trần Văn Minh</h4>
-            <p class="text-muted">Bố bé Bảo</p>
-            <p>
-              "Đặt lịch tiêm rất dễ dàng, nhân viên tư vấn nhiệt tình. Tôi rất
-              yên tâm khi cho con tiêm chủng tại đây."
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="testimonial-card text-center">
-            <img
-              src="https://randomuser.me/api/portraits/women/2.jpg"
-              alt="Testimonial"
-              class="testimonial-img"
-            />
-            <h4>Chị Lê Thị Mai</h4>
-            <p class="text-muted">Mẹ bé Sữa</p>
-            <p>
-              "Hệ thống nhắc lịch rất hữu ích, giúp tôi không bao giờ bỏ lỡ mũi
-              tiêm nào của con. Cảm ơn đội ngũ!"
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Why Choose Us Section -->
-    <div class="container mb-5">
-      <h2 class="text-center mb-5">Tại Sao Chọn Chúng Tôi</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-shield-alt feature-icon"></i>
-            <h3>An Toàn Tối Đa</h3>
-            <p>
-              Tuân thủ nghiêm ngặt quy trình tiêm chủng an toàn theo tiêu chuẩn
-              của Bộ Y tế
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-user-md feature-icon"></i>
-            <h3>Đội Ngũ Chuyên Nghiệp</h3>
-            <p>
-              Y bác sĩ giàu kinh nghiệm, được đào tạo chuyên sâu về tiêm chủng
-              trẻ em
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="feature-card text-center">
-            <i class="fas fa-clock feature-icon"></i>
-            <h3>Tiện Lợi</h3>
-            <p>
-              Đặt lịch online 24/7, theo dõi tiêm chủng mọi lúc mọi nơi qua hệ
-              thống
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
+    
     <div th:replace="master/_footer :: footer"></div>
-
+    
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
-    <!-- Custom Scripts -->
     <script>
-      // Initialize tooltips and popovers
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-        $('[data-toggle="popover"]').popover();
-      });
-
-      // Dark mode toggle
-      document
-        .getElementById("darkModeToggle")
-        .addEventListener("click", function () {
-          document.body.classList.toggle("dark-mode");
-          this.textContent = document.body.classList.contains("dark-mode")
-            ? "☀️"
-            : "🌙";
+        $(document).ready(function(){
+            $('.testimonial-slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 300,
+                slidesToShow: 2,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 5000,
+                responsive: [
+                    {
+                        breakpoint: 992,
+                        settings: {
+                            slidesToShow: 2
+                        }
+                    },
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            slidesToShow: 1
+                        }
+                    }
+                ]
+            });
         });
     </script>
+    <script th:src="@{/js/auth/profile.js}"></script>
   </body>
 </html>

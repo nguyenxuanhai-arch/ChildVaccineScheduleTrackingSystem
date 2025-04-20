@@ -33,19 +33,17 @@ public class ChildController {
         return ResponseEntity.ok(children);
     }
 
-
-
     @PostMapping("/add")
     public ResponseEntity<String> addChild(@RequestBody Child child, @RequestHeader("Authorization") String token) {
         try {
             String parentUsername = jwtUtil.extractUsername(token.substring(7)); // Giải mã token để lấy username
             child.setParentUsername(parentUsername);  // Gán parentUsername cho trẻ em
-
+            
             // Lưu bé vào cơ sở dữ liệu
             childService.saveChild(child);
             return ResponseEntity.ok("✅ Thêm bé thành công!");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("❌ Thêm bé thất bại!");  // Trả về thông báo lỗi nếu có vấn đề
+            return ResponseEntity.status(500).body("❌ Thêm bé thất bại: " + e.getMessage());  // Trả về thông báo lỗi nếu có vấn đề
         }
     }
 

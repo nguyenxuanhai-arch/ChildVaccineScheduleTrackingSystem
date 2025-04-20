@@ -1,65 +1,177 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Profile</title>
+    <title>Trang cá nhân</title>
     <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/auth/profile.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <style>
+        .child-card {
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s, background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        .child-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .card-header {
+            border-radius: 10px 10px 0 0;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .btn-action {
+            margin-right: 5px;
+        }
+        
+        /* Dark mode compatible styles */
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .card-body {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card-title {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        #updateProfileOverlay {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        #closeUpdateForm {
+            color: var(--text-color);
+        }
+    </style>
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
     <div class="main-container">
         <div class="container mt-4 profile-wrapper">
-                <h2>👤 Thông tin cá nhân</h2>
-                
-                <div id="profileInfo" class="mt-3">
-                    <!-- Thông tin người dùng sẽ được hiển thị ở đây -->
-                </div>
+            <!-- Success and Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <!-- User Profile Section -->
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h2>👤 Thông tin cá nhân</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="profileInfo" class="mt-3">
+                                <!-- Thông tin người dùng sẽ được hiển thị ở đây -->
+                            </div>
 
-                <!-- Nút để hiển thị form cập nhật hồ sơ (đặt ở đây để thuận tiện cho người dùng) -->
-                <div class="mt-3">
-                    <button id="updateProfileButton" class="btn btn-primary">Cập nhật hồ sơ</button>
-                </div>
-
-                <!-- Form cập nhật hồ sơ (ẩn mặc định) -->
-                <!-- Overlay chứa form cập nhật -->
-                <div id="updateProfileOverlay">
-                    <div id="updateProfileFormContainer">
-                        <button id="closeUpdateForm">&times;</button>
-                        <h3>✏️ Cập nhật hồ sơ</h3>
-                        <form id="updateProfileForm" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="name">Tên:</label>
-                                <input type="text" id="name" name="name" class="form-control" required />
+                            <!-- Nút để hiển thị form cập nhật hồ sơ (đặt ở đây để thuận tiện cho người dùng) -->
+                            <div class="mt-3">
+                                <button id="updateProfileButton" class="btn btn-primary">Cập nhật hồ sơ</button>
                             </div>
-                            <div class="form-group">
-                                <label for="phone">Số điện thoại:</label>
-                                <input type="text" id="phone" name="phone" class="form-control" required />
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Địa chỉ email:</label>
-                                <input type="text" id="email" name="email" class="form-control" required />
-                            </div>
-                            <div class="form-group">
-                                <label for="address">Địa chỉ:</label>
-                                <input type="text" id="address" name="address" class="form-control" required />
-                            </div>
-                            <div class="form-group">
-                                <label for="image">Ảnh đại diện:</label>
-                                <input type="file" id="image" name="image" class="form-control-file" accept="image/*" />
-                            </div>
-                            <button type="submit" class="btn btn-success mt-2">Lưu thay đổi</button>
-                        </form>
-                        <div id="updateMessage" class="mt-2"></div>
+                        </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Children Management Section -->
+            <div class="row mb-4">
+                <div class="col-lg-12">
+                    <div class="card shadow">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h2>👶 Quản lý hồ sơ trẻ</h2>
+                            <a th:href="@{/auth/profile/children/add}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Thêm hồ sơ trẻ
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <!-- Children list -->
+                            <div class="row" th:if="${!children.empty}">
+                                <div class="col-md-6 col-lg-4" th:each="child : ${children}">
+                                    <div class="child-card card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0" th:text="${child.name}">Tên trẻ</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Ngày sinh:</strong> <span th:text="${#temporals.format(child.dob, 'dd/MM/yyyy')}">01/01/2020</span></p>
+                                            <p><strong>Giới tính:</strong> <span th:text="${child.gender == 'MALE' ? 'Nam' : 'Nữ'}">Nam</span></p>
+                                            <div class="btn-group mt-2">
+                                                <a th:href="@{/auth/profile/children/{id}(id=${child.id})}" class="btn btn-sm btn-info btn-action">
+                                                    <i class="fas fa-eye"></i> Xem
+                                                </a>
+                                                <a th:href="@{/auth/profile/children/{id}/edit(id=${child.id})}" class="btn btn-sm btn-primary btn-action">
+                                                    <i class="fas fa-edit"></i> Sửa
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- No children message -->
+                            <div class="alert alert-info" th:if="${children.empty}">
+                                <p class="mb-0">Bạn chưa có hồ sơ trẻ nào. Hãy thêm hồ sơ trẻ để quản lý lịch tiêm chủng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form cập nhật hồ sơ (ẩn mặc định) -->
+            <!-- Overlay chứa form cập nhật -->
+            <div id="updateProfileOverlay">
+                <div id="updateProfileFormContainer">
+                    <button id="closeUpdateForm">&times;</button>
+                    <h3>✏️ Cập nhật hồ sơ</h3>
+                    <form id="updateProfileForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="name">Tên:</label>
+                            <input type="text" id="name" name="name" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại:</label>
+                            <input type="text" id="phone" name="phone" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Địa chỉ email:</label>
+                            <input type="text" id="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Địa chỉ:</label>
+                            <input type="text" id="address" name="address" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Ảnh đại diện:</label>
+                            <input type="file" id="image" name="image" class="form-control-file" accept="image/*" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-2">Lưu thay đổi</button>
+                    </form>
+                    <div id="updateMessage" class="mt-2"></div>
                 </div>
             </div>
         </div>
     </div>
     <div th:replace="master/_footer :: footer"></div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
     <script th:src="@{/js/main.js}"></script>
 </body>

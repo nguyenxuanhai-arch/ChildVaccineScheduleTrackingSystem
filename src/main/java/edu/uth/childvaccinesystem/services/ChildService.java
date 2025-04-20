@@ -31,29 +31,60 @@ public class ChildService {
 
     public List<Child> getChildrenByParentUsername(String parentUsername) {
         // Tìm User từ username
-        User parent = userRepository.findByUsername(parentUsername);  // Sử dụng UserRepository để tìm User
-        if (parent != null) {
+        Optional<User> parentOpt = userRepository.findByUsername(parentUsername);  // Sử dụng UserRepository để tìm User
+        if (parentOpt.isPresent()) {
+            User parent = parentOpt.get();
             List<Child> children = childRepository.findByParent(parent);  // Sử dụng mối quan hệ với User
-            System.out.println("Danh sách trẻ em cho " + parentUsername + ": " + children.size()); // Debug log
             return children;
         }
         return List.of(); // Trả về danh sách trống nếu không tìm thấy User
     }
 
     public void saveChild(Child child) {
-        childRepository.save(child);  // Kiểm tra lưu trẻ em vào database
+        // Nếu có parentUsername, tìm parent và set vào child
+        if (child.getParentUsername() != null && !child.getParentUsername().isEmpty()) {
+            Optional<User> parentOpt = userRepository.findByUsername(child.getParentUsername());
+            if (parentOpt.isPresent()) {
+                User parent = parentOpt.get();
+                child.setParent(parent);
+                // Ensure both relationships are set consistently
+                if (child.getParentUsername() == null || !child.getParentUsername().equals(parent.getUsername())) {
+                    child.setParentUsername(parent.getUsername());
+                }
+            }
+        }
+        childRepository.save(child);  // Lưu trẻ em vào database
     }
 
     public String updateChild(Long id, Child childDetails) {
         Optional<Child> optionalChild = childRepository.findById(id);
         if (optionalChild.isPresent()) {    
             Child child = optionalChild.get();
+            
+            // Update all editable fields
             child.setName(childDetails.getName());
             child.setDob(childDetails.getDob());
+            child.setGender(childDetails.getGender());
+            
+            // Keep the relationship fields if they exist in childDetails
+            if (childDetails.getParent() != null) {
+                child.setParent(childDetails.getParent());
+            }
+            
+            if (childDetails.getParentUsername() != null && !childDetails.getParentUsername().isEmpty()) {
+                child.setParentUsername(childDetails.getParentUsername());
+                
+                // Update parent relationship if it doesn't exist
+                if (child.getParent() == null) {
+                    Optional<User> parentOpt = userRepository.findByUsername(childDetails.getParentUsername());
+                    parentOpt.ifPresent(child::setParent);
+                }
+            }
+            
             childRepository.save(child);
             return String.valueOf(child.getId());
         }
-        return "Child not found";
+        throw new RuntimeException("Không tìm thấy hồ sơ trẻ");
     }
 
     public long deleteChild(Long id) {

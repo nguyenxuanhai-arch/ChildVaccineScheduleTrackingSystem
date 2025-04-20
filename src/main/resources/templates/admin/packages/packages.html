@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Vaccine Package Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="Admin - Vaccine Package Management" />
+  <meta name="author" content="Your Name/Company" />
+  <meta name="description" content="Admin dashboard for Child Vaccine Schedule Tracking System - Vaccine Package Management." />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link active">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Quản lí Gói Vaccine</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Quản lí Gói Vaccine
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row mb-3">
+            <div class="col-12">
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link" th:classappend="${packageType == null ? 'active' : ''}" th:href="@{/admin/packages}">All</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" th:classappend="${packageType == 'Standard' ? 'active' : ''}" th:href="@{/admin/packages/standard}">Trọn gói</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" th:classappend="${packageType == 'Custom' ? 'active' : ''}" th:href="@{/admin/packages/custom}">Cá thể hóa</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách Gói Vaccine</h3>
+                  <div class="card-tools">
+                    <a th:href="@{/admin/packages/new}" class="btn btn-primary btn-sm">
+                      <i class="bi bi-plus-lg"></i> Thêm Gói Vaccine
+                    </a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+
+                  <table id="packageTable" class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Loại gói</th>
+                        <th>Giá (VND)</th>
+                        <th>Độ tuổi (tháng)</th>
+                        <th>Số lượng vắc xin</th>
+                        <th>Hình ảnh</th>
+                        <th>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="package : ${packages}">
+                        <td th:text="${package.id}"></td>
+                        <td th:text="${package.name}"></td>
+                        <td th:text="${package.type.displayName}"></td>
+                        <td th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                        <td th:text="${package.ageRangeStart} + ' - ' + ${package.ageRangeEnd}"></td>
+                        <td th:text="${package.vaccines.size()}"></td>
+                        <td>
+                          <img th:if="${package.imageBase64}" th:src="'data:image/jpeg;base64,' + ${package.imageBase64}" alt="Package Image" style="width: 100px; height: auto" />
+                          <span th:unless="${package.imageBase64}">No image</span>
+                        </td>
+                        <td>
+                          <div class="btn-group" role="group">
+                            <a th:href="@{/admin/packages/edit/{id}(id=${package.id})}" class="btn btn-primary btn-sm">
+                              <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/admin/packages/delete/{id}(id=${package.id})}" method="post" style="display: inline" 
+                                onsubmit="return confirm('Are you sure you want to delete this package?');">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr th:if="${#lists.isEmpty(packages)}">
+                        <td colspan="8" class="text-center">No packages found.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Your Company</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+</body>
+</html> 

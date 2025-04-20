@@ -8,18 +8,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 public class CustomErrorController implements ErrorController {
+    
+    private static final Logger logger = Logger.getLogger(CustomErrorController.class.getName());
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         String errorMsg = "";
         String viewName = "error/general-error"; // Trang lỗi chung
+        
+        // Log additional error information
+        Object errorException = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+        Object requestUri = request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
+        Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        
+        logger.log(Level.SEVERE, "Error handling request to: {0}", requestUri);
+        logger.log(Level.SEVERE, "Error message: {0}", errorMessage);
+        
+        if (errorException != null) {
+            logger.log(Level.SEVERE, "Exception: ", (Throwable) errorException);
+        }
 
         if (status != null) {
             Integer statusCode = Integer.valueOf(status.toString());
+            logger.log(Level.SEVERE, "Status code: {0}", statusCode);
 
             if(statusCode == HttpStatus.NOT_FOUND.value()) {
                 errorMsg = "Page Not Found";
@@ -35,16 +52,14 @@ public class CustomErrorController implements ErrorController {
             } else {
                  errorMsg = "An unexpected error occurred";
             }
+            
              model.addAttribute("statusCode", statusCode);
              model.addAttribute("errorMessage", errorMsg);
+             model.addAttribute("requestPath", requestUri);
+             model.addAttribute("exceptionDetails", errorException != null ? errorException.toString() : "None");
         } else {
              model.addAttribute("errorMessage", "An unexpected error occurred");
         }
-
-
-        // Bạn có thể thêm các thông tin lỗi khác vào model nếu cần
-        // model.addAttribute("timestamp", request.getAttribute(RequestDispatcher.ERROR_REQUEST_URI));
-        // model.addAttribute("exception", request.getAttribute(RequestDispatcher.ERROR_EXCEPTION));
 
         return viewName; // Trả về tên của view template (ví dụ: "error/403")
     }

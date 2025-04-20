@@ -163,101 +163,76 @@
         <!--end::Sidebar Brand-->
         <!--begin::Sidebar Wrapper-->
         <div class="sidebar-wrapper">
-            <nav class="mt-2">
-              <!--begin::Sidebar Menu-->
-              <ul
-                class="nav sidebar-menu flex-column"
-                data-lte-toggle="treeview"
-                role="menu"
-                data-accordion="false"
-              >
-                <!-- Dashboard -->
-                <li class="nav-item"> <!-- Removed menu-open for default state -->
-                  <a href="" class="nav-link active"> <!-- Kept active for Dashboard -->
-                    <i class="nav-icon bi bi-speedometer"></i>
-                    <p>
-                      Dashboard
-                    </p>
-                  </a>
-                </li>
+          <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+              <!-- Dashboard -->
+              <li class="nav-item">
+                <a th:href="@{/admin}" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
   
-                <!-- Quản lí Rating, Feedback -->
-                <li class="nav-item">
-                  <a href="#" class="nav-link"> <!-- Add actual link later -->
-                    <i class="nav-icon bi bi-star-half"></i>
-                    <p>
-                      Quản lí Rating, Feedback
-                      <!-- Optional: Add arrow if it becomes a treeview -->
-                      <!-- <i class="nav-arrow bi bi-chevron-right"></i> -->
-                    </p>
-                  </a>
-                  <!-- Optional: Add sub-menu if needed
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="#" class="nav-link">
-                        <i class="nav-icon bi bi-circle"></i>
-                        <p>View Ratings</p>
-                      </a>
-                    </li>
-                  </ul>
-                  -->
-                </li>
+              <!-- Quản lí Rating, Feedback -->
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-star-half"></i>
+                  <p>Quản lí Rating, Feedback</p>
+                </a>
+              </li>
   
-                <!-- Quản lí Hồ sơ trẻ em -->
-                <li class="nav-item">
-                  <a href="#" class="nav-link"> <!-- Add actual link later -->
-                    <i class="nav-icon bi bi-person-badge"></i>
-                    <p>
-                      Quản lí Hồ sơ trẻ em
-                    </p>
-                  </a>
-                </li>
+              <!-- Quản lí Hồ sơ trẻ em -->
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-person-badge"></i>
+                  <p>Quản lí Hồ sơ trẻ em</p>
+                </a>
+              </li>
   
-                <!-- Quản lí Người dùng -->
-                <li class="nav-item">
-                    <a th:href="@{/admin/users}" class="nav-link"> <!-- Updated link -->
-                      <i class="nav-icon bi bi-people-fill"></i>
-                      <p>
-                        Quản lí Người dùng
-                      </p>
-                    </a>
-                  </li>
+              <!-- Quản lí Người dùng -->
+              <li class="nav-item">
+                <a th:href="@{/admin/users}" class="nav-link">
+                  <i class="nav-icon bi bi-people-fill"></i>
+                  <p>Quản lí Người dùng</p>
+                </a>
+              </li>
   
+              <!-- Quản lí Vaccine -->
+              <li class="nav-item">
+                <a th:href="@{/admin/vaccines}" class="nav-link">
+                  <i class="nav-icon bi bi-shield-plus"></i>
+                  <p>Quản lí Vaccine</p>
+                </a>
+              </li>
+              
+              <!-- Quản lí Gói Vaccine -->
+              <li class="nav-item">
+                <a th:href="@{/admin/packages}" class="nav-link active">
+                  <i class="nav-icon bi bi-box-seam"></i>
+                  <p>Quản lí Gói Vaccine</p>
+                </a>
+              </li>
   
-                <!-- Quản lí Vaccine -->
-                <li class="nav-item">
-                  <a th:href="@{/admin/vaccines}" class="nav-link"> <!-- Add actual link later -->
-                    <i class="nav-icon bi bi-shield-plus"></i> <!-- Example icon -->
-                    <p>
-                      Quản lí Vaccine
-                    </p>
-                  </a>
-                </li>
+              <!-- Quản lí Thanh toán -->
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-credit-card"></i>
+                  <p>Quản lí Thanh toán</p>
+                </a>
+              </li>
   
-                <!-- Quản lí Thanh toán -->
-                <li class="nav-item">
-                  <a href="#" class="nav-link"> <!-- Add actual link later -->
-                    <i class="nav-icon bi bi-credit-card"></i>
-                    <p>
-                      Quản lí Thanh toán
-                    </p>
-                  </a>
-                </li>
-  
-                <!-- Quản lí Đặt lịch vaccine -->
-                <li class="nav-item">
-                  <a href="#" class="nav-link"> <!-- Add actual link later -->
-                    <i class="nav-icon bi bi-calendar-check"></i>
-                    <p>
-                      Quản lí Đặt lịch vaccine
-                    </p>
-                  </a>
-                </li>
-  
-              </ul>
-              <!--end::Sidebar Menu-->
-            </nav>
-          </div>
+              <!-- Quản lí Đặt lịch vaccine -->
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-calendar-check"></i>
+                  <p>Quản lí Đặt lịch vaccine</p>
+                </a>
+              </li>
+            </ul>
+            <!--end::Sidebar Menu-->
+          </nav>
+        </div>
           <!--end::Sidebar Wrapper-->
   
       </aside>

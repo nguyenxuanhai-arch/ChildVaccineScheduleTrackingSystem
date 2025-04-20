@@ -19,6 +19,9 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
     
+    @Enumerated(EnumType.STRING)
+    private AppointmentType type;
+    
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
     private LocalDate createAt;
@@ -30,8 +33,12 @@ public class Appointment {
     private Child child;
 
     @ManyToOne
-    @JoinColumn(name = "vaccine_id", nullable = false)
+    @JoinColumn(name = "vaccine_id")
     private Vaccine vaccine;
+    
+    @ManyToOne
+    @JoinColumn(name = "package_id")
+    private VaccinePackage vaccinePackage;
     
     public enum AppointmentStatus {
         SCHEDULED,
@@ -41,4 +48,8 @@ public class Appointment {
         // chưa làm 
     }
     
+    public enum AppointmentType {
+        VACCINE,
+        PACKAGE
+    }
 }

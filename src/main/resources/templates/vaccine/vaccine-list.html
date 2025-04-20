@@ -3,71 +3,369 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt Lịch Tiêm Chủng</title>
+    <title>Bảng giá tiêm chủng - Hệ thống tiêm chủng</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/vaccine-list.css}">
+    <style>
+        .pricing-header {
+            padding-top: 3rem;
+            padding-bottom: 1.5rem;
+            text-align: center;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .package-card {
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s ease;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .package-featured {
+            border: 2px solid #28a745;
+        }
+        .package-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        .badge-featured {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+        }
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .tab-content {
+            padding-top: 2rem;
+        }
+        .age-filter {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .vaccine-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .vaccine-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Dark mode compatibility */
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .card-body {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card-title, h1, h2, h3, h4, h5, h6, .lead {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+        .form-control {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .form-control:focus {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        label {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .table {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .table td, .table th {
+            border-color: var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .nav-tabs {
+            border-color: var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .nav-tabs .nav-link {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border-color: var(--border-color) var(--border-color) var(--card-bg);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
 
     <div class="main-container">
-        <div class="content">
-            <div class="page-header">
-                <h1 class="text-center mb-4">Bảng giá tiêm chủng</h1>
-                <div class="header-actions">
-                    <div class="search-box">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="searchInput" placeholder="Tìm kiếm vắc xin...">
-                        <button id="searchButton">Tìm kiếm</button>
-                        <button class="btn btn-outline-secondary clear-btn" type="button" onclick="clearSearch()">
-                            <i class="fas fa-times"></i>
-                        </button>
+        <div class="container">
+            <!-- Pricing Header -->
+            <div class="pricing-header">
+                <h1 class="display-4">Bảng giá tiêm chủng</h1>
+                <p class="lead">Chúng tôi cung cấp nhiều loại vắc xin và gói tiêm chủng phù hợp với nhu cầu của bạn</p>
+            </div>
+            
+            <!-- Age Filter -->
+            <div class="age-filter">
+                <h4>Tìm gói tiêm phù hợp theo độ tuổi</h4>
+                <form th:action="@{/vaccine-list}" method="get" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="ageInMonths" class="mr-2">Độ tuổi (tháng):</label>
+                        <input type="number" class="form-control" id="ageInMonths" name="ageInMonths" 
+                               min="0" max="240" placeholder="Nhập độ tuổi">
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Tìm kiếm</button>
+                    <a th:href="@{/vaccine-list}" class="btn btn-outline-secondary mb-2 ml-2">Xem tất cả</a>
+                </form>
+            </div>
+            
+            <!-- Age Specific Packages (if filtered) -->
+            <div th:if="${ageSpecificPackages != null && !ageSpecificPackages.empty}" class="mb-5">
+                <h2 class="mb-4">Gói tiêm phù hợp với độ tuổi đã chọn</h2>
+                <div class="row">
+                    <div th:each="package : ${ageSpecificPackages}" class="col-md-4">
+                        <div th:class="${package.featured ? 'card package-card package-featured' : 'card package-card'}">
+                            <div th:if="${package.featured}" class="badge badge-success badge-featured">Đề xuất</div>
+                            <img th:if="${package.imageBase64 != null}" th:src="@{'data:image/jpeg;base64,' + ${package.imageBase64}}" 
+                                 class="card-img-top package-image" th:alt="${package.name}">
+                            <img th:unless="${package.imageBase64 != null}" src="/img/default-package.jpg" 
+                                 class="card-img-top package-image" alt="Default Package Image">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${package.name}">Tên gói</h5>
+                                <p class="package-price" th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">2,000,000 VNĐ</p>
+                                <p class="card-text" th:text="${package.description}">Mô tả gói tiêm chủng</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Độ tuổi: <span th:text="${package.ageRangeStart + ' - ' + package.ageRangeEnd + ' tháng'}"></span>
+                                    </small>
+                                </p>
+                                <a href="#" class="btn btn-outline-primary btn-block">Xem chi tiết</a>
+                                <a href="#" class="btn btn-success btn-block">Đặt lịch tiêm</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="view-toggle mb-4">
-                <button class="btn btn-toggle active" data-view="grid">
-                    <i class="fas fa-th-large"></i> Grid
-                </button>
-                <button class="btn btn-toggle" data-view="list">
-                    <i class="fas fa-list"></i> List
-                </button>
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs nav-fill mb-4" id="packageTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" th:classappend="${activeTab == 'featured' ? 'active' : ''}" 
+                       id="featured-tab" data-toggle="tab" href="#featured" role="tab">
+                       <i class="fas fa-star"></i> Gói đề xuất
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" th:classappend="${activeTab == 'individual' ? 'active' : ''}" 
+                       id="individual-tab" data-toggle="tab" href="#individual" role="tab">
+                       <i class="fas fa-syringe"></i> Tiêm lẻ
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" th:classappend="${activeTab == 'package' ? 'active' : ''}" 
+                       id="package-tab" data-toggle="tab" href="#package" role="tab">
+                       <i class="fas fa-box"></i> Trọn gói
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" th:classappend="${activeTab == 'custom' ? 'active' : ''}" 
+                       id="custom-tab" data-toggle="tab" href="#custom" role="tab">
+                       <i class="fas fa-sliders-h"></i> Cá thể hóa
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content" id="packageTabsContent">
+                <!-- Featured Packages Tab -->
+                <div class="tab-pane fade" th:classappend="${activeTab == 'featured' ? 'show active' : ''}" 
+                     id="featured" role="tabpanel">
+                    <div th:if="${featuredPackages.empty}" class="alert alert-info">
+                        Hiện tại chưa có gói tiêm chủng đề xuất
+                    </div>
+                    <div class="row">
+                        <div th:each="package : ${featuredPackages}" class="col-md-4">
+                            <div class="card package-card package-featured">
+                                <div class="badge badge-success badge-featured">Đề xuất</div>
+                                <img th:if="${package.imageBase64 != null}" th:src="@{'data:image/jpeg;base64,' + ${package.imageBase64}}" 
+                                     class="card-img-top package-image" th:alt="${package.name}">
+                                <img th:unless="${package.imageBase64 != null}" src="/img/default-package.jpg" 
+                                     class="card-img-top package-image" alt="Default Package Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${package.name}">Tên gói</h5>
+                                    <p class="package-price" th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">2,000,000 VNĐ</p>
+                                    <p class="card-text" th:text="${package.description}">Mô tả gói tiêm chủng</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Độ tuổi: <span th:text="${package.ageRangeStart + ' - ' + package.ageRangeEnd + ' tháng'}"></span>
+                                        </small>
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-block">Xem chi tiết</a>
+                                    <a href="#" class="btn btn-success btn-block">Đặt lịch tiêm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Individual Vaccines Tab -->
+                <div class="tab-pane fade" th:classappend="${activeTab == 'individual' ? 'show active' : ''}" 
+                     id="individual" role="tabpanel">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Danh sách vắc xin tiêm lẻ</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên vắc xin</th>
+                                            <th>Nhà sản xuất</th>
+                                            <th>Giá tiêm (VNĐ)</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="vaccine : ${individualVaccines}">
+                                            <td th:text="${vaccine.name}">Tên vắc xin</td>
+                                            <td th:text="${vaccine.manufacturer}">Nhà sản xuất</td>
+                                            <td th:text="${#numbers.formatDecimal(vaccine.price, 0, 'COMMA', 0, 'POINT')}">150,000</td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-primary">Đặt lịch</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Khi tiêm lẻ, bạn sẽ được tính phí tiêm riêng cho mỗi mũi tiêm.
+                    </div>
+                </div>
+                
+                <!-- Standard Packages Tab -->
+                <div class="tab-pane fade" th:classappend="${activeTab == 'package' ? 'show active' : ''}" 
+                     id="package" role="tabpanel">
+                    <div th:if="${standardPackages.empty}" class="alert alert-info">
+                        Hiện tại chưa có gói tiêm chủng trọn gói
+                    </div>
+                    <div class="row">
+                        <div th:each="package : ${standardPackages}" class="col-md-4">
+                            <div th:class="${package.featured ? 'card package-card package-featured' : 'card package-card'}">
+                                <div th:if="${package.featured}" class="badge badge-success badge-featured">Đề xuất</div>
+                                <img th:if="${package.imageBase64 != null}" th:src="@{'data:image/jpeg;base64,' + ${package.imageBase64}}" 
+                                     class="card-img-top package-image" th:alt="${package.name}">
+                                <img th:unless="${package.imageBase64 != null}" src="/img/default-package.jpg" 
+                                     class="card-img-top package-image" alt="Default Package Image">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${package.name}">Tên gói</h5>
+                                    <p class="package-price" th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">2,000,000 VNĐ</p>
+                                    <p class="card-text" th:text="${package.description}">Mô tả gói tiêm chủng</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            Độ tuổi: <span th:text="${package.ageRangeStart + ' - ' + package.ageRangeEnd + ' tháng'}"></span>
+                                        </small>
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-block">Xem chi tiết</a>
+                                    <a href="#" class="btn btn-success btn-block">Đặt lịch tiêm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-success mt-4">
+                        <i class="fas fa-check-circle"></i> Gói tiêm trọn gói giúp bạn tiết kiệm chi phí và được tiêm đầy đủ các vắc xin theo lịch.
+                    </div>
+                </div>
+                
+                <!-- Custom Packages Tab -->
+                <div class="tab-pane fade" th:classappend="${activeTab == 'custom' ? 'show active' : ''}" 
+                     id="custom" role="tabpanel">
+                    <div class="jumbotron">
+                        <h2>Gói tiêm cá thể hóa</h2>
+                        <p class="lead">Tạo một lịch tiêm chủng phù hợp với nhu cầu cụ thể của con bạn</p>
+                        <hr class="my-4">
+                        <p>Chọn các vắc xin bạn muốn tiêm cho con và nhận tư vấn từ các bác sĩ chuyên khoa.</p>
+                        <a class="btn btn-primary btn-lg" href="/appointments/custom" role="button">
+                            <i class="fas fa-calendar-plus"></i> Tạo lịch tiêm cá nhân
+                        </a>
+                    </div>
+                    
+                    <div th:if="${!customPackages.empty}" class="mt-4">
+                        <h3>Một số gói tiêm cá thể hóa mẫu:</h3>
+                        <div class="row">
+                            <div th:each="package : ${customPackages}" class="col-md-4">
+                                <div th:class="${package.featured ? 'card package-card package-featured' : 'card package-card'}">
+                                    <div th:if="${package.featured}" class="badge badge-success badge-featured">Đề xuất</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${package.name}">Tên gói</h5>
+                                        <p class="package-price" th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}">2,000,000 VNĐ</p>
+                                        <p class="card-text" th:text="${package.description}">Mô tả gói tiêm chủng</p>
+                                        <a href="#" class="btn btn-outline-primary btn-block">Xem chi tiết</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="row" id="vaccine-cards"></div>
-
-            <div class="d-flex justify-content-center mt-4">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination" id="pagination"></ul>
-                </nav>
-            </div>
-
-            <div class="table-responsive" id="vaccine-table" style="display: none;">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Tên Vaccine</th>
-                            <th>Nhà sản xuất</th>
-                            <th>Số lô</th>
-                            <th>Hạn sử dụng</th>
-                            <th>Giá thành</th>
-                            <th>Hình ảnh</th>
-                        </tr>
-                    </thead>
-                    <tbody id="vaccine-body"></tbody>
-                </table>
+            
+            <div class="mt-5 mb-4">
+                <h3 class="mb-3">Lưu ý về giá tiêm chủng</h3>
+                <div class="alert alert-secondary">
+                    <ul class="mb-0">
+                        <li>Giá tiêm bao gồm vắc xin, phí tiêm và theo dõi sau tiêm 30 phút</li>
+                        <li>Trẻ sẽ được khám sàng lọc trước khi tiêm</li>
+                        <li>Giá có thể thay đổi tùy theo tình trạng cung ứng vắc xin</li>
+                        <li>Vui lòng liên hệ trực tiếp để biết thêm chi tiết</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
     <div th:replace="master/_footer :: footer"></div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script th:src="@{/js/vaccine-list.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/auth/profile.js}"></script>
 </body>
 </html>

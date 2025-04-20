@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 import edu.uth.childvaccinesystem.entities.User;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Collections;
 
 @RestController

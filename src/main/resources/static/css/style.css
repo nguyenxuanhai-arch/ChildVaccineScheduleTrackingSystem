@@ -5,21 +5,34 @@
   --card-bg: #f9f9f9;
   --link-hover-bg: rgba(52, 152, 219, 0.1);
   --border-color: #e9ecef;
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --accent-color: #e74c3c;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hero-overlay: rgba(0, 0, 0, 0.6);
+  --footer-bg: #f8f9fa;
 }
 
 body.dark-mode {
-  --bg-color: #3e4042;
+  --bg-color: #1a1a1a;
   --text-color: #e0e0e0;
-  --navbar-bg: #3e4042;
-  --card-bg: #3e4042;
+  --navbar-bg: #222222;
+  --card-bg: #2c2c2c;
   --link-hover-bg: rgba(52, 152, 219, 0.2);
-  --border-color: #333;
+  --border-color: #444444;
+  --primary-color: #4dabf7;
+  --secondary-color: #40c980;
+  --accent-color: #e74c3c;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --hero-overlay: rgba(0, 0, 0, 0.8);
+  --footer-bg: #222222;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Layout Styles */
@@ -32,7 +45,7 @@ body {
   flex: 1;
   padding: 2rem;
   background-color: var(--card-bg);
-  box-shadow: 0 0 10px rgba(49, 48, 48, 0.03);
+  box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
   margin-left: 0px;
   width: calc(100% - 220px);
@@ -46,21 +59,23 @@ body {
 /* Header Styles */
 .custom-navbar {
   border-bottom: 1px solid var(--border-color);
-  padding: 0.5rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 0.7rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   background-color: var(--navbar-bg) !important;
   position: relative;
   z-index: 102;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-brand {
   font-weight: 700;
-  color: #3498db !important;
+  color: var(--primary-color) !important;
   font-size: 1.5rem;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .navbar-nav {
@@ -74,14 +89,15 @@ body {
   font-weight: 500;
   margin: 0 0.5rem;
   padding: 0.5rem 0.8rem !important;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   text-decoration: none;
 }
 
 .nav-link:hover {
   background-color: var(--link-hover-bg);
-  color: #3498db !important;
+  color: var(--primary-color) !important;
+  transform: translateY(-2px);
 }
 
 .btn-link.nav-link {
@@ -94,135 +110,128 @@ body {
 }
 
 .btn-link.nav-link:hover {
-  color: #3498db !important;
+  color: var(--primary-color) !important;
 }
 
-/* About Page Specific Styles */
-[th\:fragment="about"] {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-[th\:fragment="about"] > p:first-of-type {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--text-color);
-  margin-bottom: 2rem;
-  border-left: 4px solid #3498db;
-  padding: 1.2rem;
-  background-color: rgba(52, 152, 219, 0.05);
-  border-radius: 0 8px 8px 0;
-}
-
-[th\:fragment="about"] h2 {
-  color: var(--text-color);
-  font-size: 1.8rem;
-  margin: 2.5rem 0 1.2rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #3498db;
-}
-
-[th\:fragment="about"] h2:first-of-type {
-  margin-top: 1.5rem;
-}
-
-[th\:fragment="about"] p {
-  margin-bottom: 1.5rem;
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: var(--text-color);
-}
-
-[th\:fragment="about"] strong {
-  color: var(--text-color);
-  font-weight: 600;
-}
-
-[th\:fragment="about"] ul {
-  background-color: rgba(52, 152, 219, 0.05);
-  padding: 1.5rem 1.5rem 1.5rem 3rem;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-}
-
-[th\:fragment="about"] li {
-  margin-bottom: 0.8rem;
-  color: var(--text-color);
+/* Hero Sections */
+.hero-section, .about-hero {
+  background-size: cover !important;
+  background-position: center !important;
+  color: white;
+  padding: 120px 0;
+  margin-bottom: 60px;
   position: relative;
-  padding-left: 0.5rem;
+  z-index: 1;
 }
 
-[th\:fragment="about"] li::marker {
-  color: #3498db;
-  font-weight: bold;
+.hero-section::before, .about-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--hero-overlay);
+  z-index: -1;
 }
 
-[th\:fragment="about"] h2:nth-of-type(3) + p {
-  padding: 1.2rem;
-  background-color: rgba(46, 204, 113, 0.1);
-  border-radius: 8px;
-  border-left: 4px solid #2ecc71;
-}
-
-[th\:fragment="about"] h2:last-of-type {
-  margin-top: 3rem;
-  color: #3498db;
-}
-
-[th\:fragment="about"] h2:last-of-type + p {
-  background-color: #f8f9fa;
-  padding: 1.2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* Cards and UI Elements */
+.feature-card, .service-card, .value-card, .mission-card, .testimonial-card, .stat-card {
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  background-color: var(--card-bg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 25px;
+  margin-bottom: 25px;
   border: 1px solid var(--border-color);
 }
 
-[th\:fragment="about"] h2:last-of-type + p strong {
-  color: #3498db;
+.feature-card:hover, .service-card:hover, .value-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon, .service-icon, .value-icon {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 6px;
+  padding: 8px 16px;
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-[th\:fragment="content"] h1 {
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-success {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+.btn-primary:hover, .btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: var(--footer-bg) !important;
   color: var(--text-color);
-  margin-bottom: 1.5rem;
-  font-size: 2.2rem;
+  border-top: 1px solid var(--border-color);
+  transition: background-color 0.3s ease;
 }
 
-[th\:fragment="content"] p {
-  font-size: 1.1rem;
+.footer a {
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+/* Dark Mode Toggle */
+#darkModeToggle {
+  font-size: 1.4rem;
+  padding: 5px 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
   color: var(--text-color);
-  line-height: 1.7;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-  .content {
-    padding: 1.5rem;
-    width: calc(100% - 180px);
-  }
+#darkModeToggle:hover {
+  background-color: var(--link-hover-bg);
+  transform: rotate(30deg);
 }
 
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-  }
-  .content {
-    padding: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  [th\:fragment="about"] h2 {
-    font-size: 1.5rem;
-  }
-
-  [th\:fragment="about"] > p:first-of-type {
-    font-size: 1rem;
-  }
-}
-
-/* Hiệu ứng mở trang */
+/* Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -238,29 +247,44 @@ body {
   animation: fadeIn 1s ease-in-out;
 }
 
-#navbarAvatar {
+/* Profile Images */
+#navbarAvatar, #avatarHeader {
   object-fit: cover;
-  border: 2px solid #ddd;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  border: 2px solid var(--border-color);
   transition: all 0.2s ease;
 }
 
 #navbarAvatar:hover {
-  border-color: var(--primary);
-  transform: scale(1.05);
+  transform: scale(1.1);
+  border-color: var(--primary-color);
 }
 
-/* === DARK MODE FIXES FOR HOMEPAGE === */
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+p {
+  color: var(--text-color);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+/* Jumbotron and Container Elements */
 .jumbotron {
   background-color: var(--card-bg);
-  color: var(--text-color);
+  box-shadow: var(--card-shadow);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  transition: background-color 0.3s ease;
 }
 
+/* Lists and other UI elements */
 .list-group-item {
   background-color: var(--card-bg);
   color: var(--text-color);
@@ -268,119 +292,75 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.bg-light,
-.bg-white {
-  background-color: var(--card-bg) !important;
-}
-
-.text-dark {
-  color: var(--text-color) !important;
-}
-
-/* === DARK MODE CHO DROPDOWN MENU === */
-.dropdown-menu {
-  background-color: var(--card-bg);
+/* Table Elements */
+table.table {
   color: var(--text-color);
-  border: 1px solid var(--border-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dropdown-menu .dropdown-item,
-.dropdown-menu .nav-link {
-  color: var(--text-color);
-  transition: background-color 0.2s ease;
-}
-
-.dropdown-menu .dropdown-item:hover,
-.dropdown-menu .nav-link:hover {
-  background-color: var(--link-hover-bg);
-  color: #3498db;
-}
-
-.dropdown-divider {
+table.table thead th {
   border-color: var(--border-color);
 }
 
-#darkModeToggle {
-  background: none;
-  border: none;
-  padding: 0.5rem 1rem;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#darkModeToggle:hover {
+table.table-hover tbody tr:hover {
   background-color: var(--link-hover-bg);
-  color: #3498db;
 }
 
-.footer .row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .content {
+    padding: 1.5rem;
+    width: calc(100% - 180px);
+  }
+  
+  .hero-section, .about-hero {
+    padding: 80px 0;
+  }
 }
 
-.footer .col-md-4 {
-  flex: 1;
-  margin: 0 10px;
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .content {
+    padding: 1rem;
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .hero-section, .about-hero {
+    padding: 60px 0;
+  }
+  
+  .feature-card, .service-card, .value-card {
+    padding: 20px;
+  }
 }
 
-.footer h5 {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+/* Special Elements for Dark Mode */
+body.dark-mode .dropdown-menu {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
 }
 
-.footer p {
-  font-size: 14px;
-  line-height: 1.6;
+body.dark-mode .dropdown-item {
+  color: var(--text-color);
 }
 
-h1, h2 {
-    color: #2c3e50;
-    font-weight: bold;
+body.dark-mode .dropdown-item:hover {
+  background-color: var(--link-hover-bg);
+  color: var(--primary-color);
 }
 
-p {
-    font-size: 16px;
-    line-height: 1.8;
-    color: #34495e;
+body.dark-mode .dropdown-divider {
+  border-color: var(--border-color);
 }
 
-.img-fluid {
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+body.dark-mode .card {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
 }
 
-.text-center h5 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.text-center p {
-    font-size: 14px;
-    color: #7f8c8d;
-}
-
-/* Dark mode styles for the about page */
-body.dark-mode .content {
-    background-color: #3e4042; /* Màu nền tối */
-    color: #e0e0e0; /* Màu chữ sáng */
-}
-
-body.dark-mode h1, 
-body.dark-mode h2, 
-body.dark-mode h5 {
-    color: #ffffff; /* Màu chữ trắng cho tiêu đề */
-}
-
-body.dark-mode p, 
-body.dark-mode li {
-    color: #dcdcdc; /* Màu chữ sáng cho đoạn văn và danh sách */
-}
-
-body.dark-mode .img-fluid {
-    border: 2px solid #ffffff; /* Viền trắng cho hình ảnh */
+body.dark-mode .bg-light {
+  background-color: var(--card-bg) !important;
 }

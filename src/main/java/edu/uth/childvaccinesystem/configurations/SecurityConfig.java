@@ -58,8 +58,18 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/vaccine/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/vaccine/**").hasRole("ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                // Explicitly define access to profile and children-related endpoints
+                .requestMatchers("/auth/profile").authenticated()
+                .requestMatchers("/auth/profile/children").hasAnyRole("USER", "STAFF", "ADMIN")
+                .requestMatchers("/auth/profile/children/list").hasAnyRole("USER", "STAFF", "ADMIN")
+                .requestMatchers("/auth/profile/children/*/edit").hasAnyRole("USER", "STAFF", "ADMIN") 
+                .requestMatchers("/auth/profile/children/*/update").hasAnyRole("USER", "STAFF", "ADMIN")
+                .requestMatchers("/auth/profile/children/*").hasAnyRole("USER", "STAFF", "ADMIN")
+                
+                .requestMatchers("/dashboard/**").authenticated()
                 .requestMatchers("/appointments/**").hasAnyRole("USER", "ADMIN", "STAFF")
-                .anyRequest().authenticated() // moved here
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/admin/login")

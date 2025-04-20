@@ -23,10 +23,4 @@ public class HomeController {
     {
         return "services"; // Trả về trang Service
     }
-
-    @GetMapping("/vaccine-list")
-    public String vaccine()
-    {
-        return "vaccine/vaccine-list";
-    }
 }

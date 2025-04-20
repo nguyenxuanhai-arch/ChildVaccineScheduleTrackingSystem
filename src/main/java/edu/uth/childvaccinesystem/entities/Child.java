@@ -24,12 +24,15 @@ public class Child {
 
     @Column(name = "gender")
     private String gender; // VD: "MALE" hoặc "FEMALE"
+    
+    @Column(name = "parent_username")
+    private String parentUsername;
 
     @ManyToOne
     @JoinColumn(name = "parent_id") // Thêm trường khóa ngoại để liên kết với User
     private User parent;
 
-    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Appointment> appointments = new HashSet<>();
 
     // Getter/Setter đã có từ @Getter @Setter, nhưng nếu bạn cần override hoặc bổ sung logic, có thể ghi rõ như dưới:
@@ -47,4 +50,7 @@ public class Child {
 
     public User getParent() { return parent; }
     public void setParent(User parent) { this.parent = parent; }
+    
+    public String getParentUsername() { return parentUsername; }
+    public void setParentUsername(String parentUsername) { this.parentUsername = parentUsername; }
 }

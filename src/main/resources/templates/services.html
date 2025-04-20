@@ -1,130 +1,742 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
-    <title th:text="'Services - Vaccine System'">About</title>
-    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{css/style.css}">
+    <title>Dịch vụ - Vaccine System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        .services-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
         .service-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 15px;
+            overflow: hidden;
             margin-bottom: 30px;
-            transition: transform 0.3s ease;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            height: 100%;
         }
+        
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
+        
+        .service-img {
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .service-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+        
+        .service-card:hover .service-img img {
+            transform: scale(1.1);
+        }
+        
+        .service-content {
+            padding: 25px;
+        }
+        
         .service-icon {
-            font-size: 2.5rem;
-            color: #007bff;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.2);
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 15px;
+            color: var(--text-color);
         }
-        .feature-list {
-            list-style: none;
+        
+        .process-step {
+            text-align: center;
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .process-number {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 25px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .process-steps .row:not(:last-child) .process-step::after {
+            content: "";
+            position: absolute;
+            top: 30px;
+            right: -50%;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            z-index: 1;
+        }
+        
+        .process-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .process-desc {
+            color: var(--text-muted);
+        }
+        
+        .pricing-card {
+            border-radius: 15px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--primary-color);
+        }
+        
+        .pricing-card.popular::before {
+            content: "Phổ biến";
+            position: absolute;
+            top: 30px;
+            right: -35px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pricing-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .pricing-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        
+        .pricing-features {
+            margin-bottom: 25px;
             padding-left: 0;
+            list-style-type: none;
         }
-        .feature-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
+        
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
         }
-        .feature-list li:last-child {
+        
+        .pricing-features li:last-child {
             border-bottom: none;
         }
-        .feature-list li i {
+        
+        .pricing-btn {
+            display: inline-block;
+            padding: 10px 30px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .pricing-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-weight: 600;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background-color: var(--card-bg);
+            border-top: 0px solid var(--border-color);
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 300px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .faq-toggle {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+        
+        @media (max-width: 767px) {
+            .process-steps .row:not(:last-child) .process-step::after {
+                display: none;
+            }
+        }
+        
+        /* Comparison Table Styles */
+        .comparison-section {
+            padding: 80px 0;
+            background-color: var(--bg-light);
+            margin-bottom: 60px;
+            border-radius: 15px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+            background-color: var(--card-bg);
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: rgba(var(--primary-color-rgb), 0.05);
+        }
+        
+        .comparison-feature {
+            font-weight: 500;
+        }
+        
+        .comparison-check {
             color: #28a745;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-times {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+        
+        .vaccine-info {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .vaccine-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .vaccine-info-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .vaccine-info-title i {
+            color: var(--primary-color);
             margin-right: 10px;
+        }
+        
+        .vaccine-detail {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .vaccine-detail:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .vaccine-detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        
+        .vaccine-detail-value {
+            color: var(--text-muted);
+        }
+        
+        /* Dark mode enhancements */
+        html[data-theme='dark'] .comparison-table th {
+            background-color: var(--primary-dark);
+        }
+        
+        html[data-theme='dark'] .comparison-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        html[data-theme='dark'] .comparison-check {
+            color: #5dd879;
+        }
+        
+        html[data-theme='dark'] .comparison-times {
+            color: #f77;
+        }
+        
+        @media (max-width: 767px) {
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .process-steps .row:not(:last-child) .process-step::after {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>
-    <div class="main-container">
-        <div class="content">
-            <div class="container py-5">
-                <h1 class="text-center mb-5">Dịch Vụ Của Chúng Tôi</h1>
+    
+    <!-- Hero Section -->
+    <div class="services-hero">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Dịch Vụ Của Chúng Tôi</h1>
+            <p class="lead">Chăm sóc sức khỏe và bảo vệ trẻ em với dịch vụ tiêm chủng chất lượng cao</p>
+        </div>
+    </div>
+    
+    <!-- Main Services Section -->
+    <div class="container mb-5">
+        <h2 class="section-title">Các Dịch Vụ Chính</h2>
+        <div class="row">
+            <div class="col-md-4">
+                        <div class="service-card">
+                    <div class="service-img">
+                        <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=1920&auto=format&fit=crop" alt="Dịch vụ tiêm chủng">
+                        </div>
+                    <div class="service-content">
+                        <i class="fas fa-syringe service-icon"></i>
+                        <h3 class="service-title">Dịch Vụ Tiêm Chủng</h3>
+                        <p>Cung cấp gói tiêm chủng đầy đủ và an toàn cho trẻ em các độ tuổi, với đầy đủ các loại vaccine cần thiết để bảo vệ sức khỏe của trẻ trước các bệnh truyền nhiễm nguy hiểm.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                        <div class="service-card">
+                    <div class="service-img">
+                        <img src="https://images.unsplash.com/photo-1579154341098-e4e158cc7f53?q=80&w=1920&auto=format&fit=crop" alt="Tư vấn sức khỏe">
+                        </div>
+                    <div class="service-content">
+                        <i class="fas fa-stethoscope service-icon"></i>
+                        <h3 class="service-title">Tư Vấn Sức Khỏe</h3>
+                        <p>Đội ngũ chuyên gia y tế của chúng tôi luôn sẵn sàng tư vấn về lịch tiêm chủng, các biện pháp phòng ngừa bệnh tật và chăm sóc sức khỏe tổng thể cho trẻ.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                        <div class="service-card">
+                    <div class="service-img">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1920&auto=format&fit=crop" alt="Theo dõi tiêm chủng">
+                    </div>
+                    <div class="service-content">
+                        <i class="fas fa-clipboard-check service-icon"></i>
+                        <h3 class="service-title">Theo Dõi Tiêm Chủng</h3>
+                        <p>Hệ thống theo dõi tiêm chủng hiện đại giúp phụ huynh dễ dàng quản lý lịch tiêm chủng của con, nhận thông báo khi đến hạn tiêm và theo dõi tình trạng miễn dịch.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Process Section -->
+    <div class="container mb-5 process-steps">
+        <h2 class="section-title">Quy Trình Tiêm Chủng</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">1</div>
+                    <h3 class="process-title">Đặt Lịch Hẹn</h3>
+                    <p class="process-desc">Đặt lịch hẹn trực tuyến hoặc qua điện thoại với trung tâm tiêm chủng của chúng tôi.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">2</div>
+                    <h3 class="process-title">Khám Sàng Lọc</h3>
+                    <p class="process-desc">Bác sĩ sẽ khám sàng lọc để đảm bảo trẻ đủ điều kiện tiêm chủng an toàn.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">3</div>
+                    <h3 class="process-title">Tiêm Chủng</h3>
+                    <p class="process-desc">Thực hiện tiêm chủng với quy trình vô trùng và an toàn theo tiêu chuẩn quốc tế.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">4</div>
+                    <h3 class="process-title">Theo Dõi Sau Tiêm</h3>
+                    <p class="process-desc">Theo dõi trẻ tại trung tâm ít nhất 30 phút sau tiêm để đảm bảo không có phản ứng bất thường.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">5</div>
+                    <h3 class="process-title">Cập Nhật Sổ Tiêm Chủng</h3>
+                    <p class="process-desc">Cập nhật thông tin tiêm chủng vào hệ thống và sổ tiêm chủng điện tử.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="process-step">
+                    <div class="process-number">6</div>
+                    <h3 class="process-title">Nhắc Lịch Tiêm Kế Tiếp</h3>
+                    <p class="process-desc">Hệ thống tự động nhắc lịch tiêm kế tiếp qua tin nhắn hoặc email.</p>
+                </div>
+            </div>
+                    </div>
+                </div>
+
+    <!-- Pricing Section -->
+    <div class="container mb-5">
+        <h2 class="section-title">Gói Dịch Vụ</h2>
+        <div class="row">
+                        <div class="col-md-4">
+                <div class="pricing-card">
+                    <i class="fas fa-baby pricing-icon"></i>
+                    <h3 class="pricing-title">Gói Cơ Bản</h3>
+                    <div class="pricing-price">2.500.000<span>₫</span></div>
+                    <ul class="pricing-features">
+                        <li>5 loại vaccine cơ bản</li>
+                        <li>Tư vấn sức khỏe trước tiêm</li>
+                        <li>Theo dõi sau tiêm 30 phút</li>
+                        <li>Sổ tiêm chủng điện tử</li>
+                        <li>Nhắc lịch tiêm tự động</li>
+                    </ul>
+                    <a href="#" class="pricing-btn">Đăng Ký Ngay</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                <div class="pricing-card popular">
+                    <i class="fas fa-child pricing-icon"></i>
+                    <h3 class="pricing-title">Gói Tiêu Chuẩn</h3>
+                    <div class="pricing-price">4.800.000<span>₫</span></div>
+                    <ul class="pricing-features">
+                        <li>10 loại vaccine thiết yếu</li>
+                        <li>Khám sàng lọc kỹ lưỡng</li>
+                        <li>Tư vấn dinh dưỡng</li>
+                        <li>Theo dõi sau tiêm 60 phút</li>
+                        <li>Giảm 10% cho tiêm mũi nhắc lại</li>
+                    </ul>
+                    <a href="#" class="pricing-btn">Đăng Ký Ngay</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                <div class="pricing-card">
+                    <i class="fas fa-shield-alt pricing-icon"></i>
+                    <h3 class="pricing-title">Gói Cao Cấp</h3>
+                    <div class="pricing-price">8.500.000<span>₫</span></div>
+                    <ul class="pricing-features">
+                        <li>Đầy đủ tất cả loại vaccine</li>
+                        <li>Khám tổng quát toàn diện</li>
+                        <li>Tư vấn dinh dưỡng chuyên sâu</li>
+                        <li>Dịch vụ tiêm tại nhà</li>
+                        <li>Bác sĩ theo dõi riêng 24/7</li>
+                    </ul>
+                    <a href="#" class="pricing-btn">Đăng Ký Ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="container mb-5">
+        <h2 class="section-title">Câu Hỏi Thường Gặp</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    Tiêm chủng có an toàn cho trẻ không?
+                    <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Tiêm chủng là một biện pháp an toàn và hiệu quả để bảo vệ trẻ khỏi các bệnh truyền nhiễm nguy hiểm. Tất cả các loại vaccine được sử dụng tại trung tâm chúng tôi đều đã được kiểm định nghiêm ngặt và được cơ quan y tế chức năng phê duyệt.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    Trẻ cần được tiêm chủng những loại vaccine nào?
+                    <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Các loại vaccine cơ bản theo lịch tiêm chủng bao gồm: BCG (phòng lao), viêm gan B, bại liệt, DPT (bạch hầu, ho gà, uốn ván), Hib (viêm màng não, viêm phổi), sởi, quai bị, rubella. Ngoài ra, còn có các loại vaccine khác như: viêm não Nhật Bản, thủy đậu, rotavirus, HPV, cúm, viêm phổi do phế cầu.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    Trẻ có thể tiêm nhiều loại vaccine cùng một lúc không?
+                    <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Có, trẻ có thể tiêm nhiều loại vaccine cùng một lúc và điều này đã được chứng minh là an toàn. Hệ miễn dịch của trẻ có khả năng đáp ứng với nhiều loại vaccine cùng lúc. Tuy nhiên, tùy vào tình trạng sức khỏe của từng trẻ, bác sĩ sẽ tư vấn lịch tiêm chủng phù hợp nhất.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    Làm thế nào để đăng ký lịch tiêm chủng?
+                    <span class="faq-toggle"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <div class="faq-answer">
+                    <p>Bạn có thể đăng ký lịch tiêm chủng qua website, ứng dụng di động hoặc gọi điện trực tiếp đến số hotline của chúng tôi. Sau khi đăng ký, bạn sẽ nhận được xác nhận và hướng dẫn chi tiết về thời gian, địa điểm và chuẩn bị trước khi tiêm.</p>
+                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+    <!-- CTA Section -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <h2 class="mb-4">Bảo Vệ Sức Khỏe Cho Con Bạn Ngay Hôm Nay</h2>
+                <p class="mb-4">Đăng ký lịch tiêm chủng hoặc tư vấn miễn phí với bác sĩ chuyên khoa của chúng tôi</p>
+                <div class="d-flex justify-content-center">
+                    <a href="#" class="btn btn-primary mr-3">Đặt Lịch Ngay</a>
+                    <a href="tel:19001234" class="btn btn-outline-primary">Gọi Ngay: 1900 1234</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Comparison Section -->
+    <div class="comparison-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>So Sánh Các Loại Vaccine</h2>
+                <p>Thông tin chi tiết về các loại vaccine phổ biến được sử dụng cho trẻ em</p>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loại Vaccine</th>
+                            <th>Bệnh Phòng Ngừa</th>
+                            <th>Độ Tuổi Tiêm</th>
+                            <th>Số Mũi</th>
+                            <th>Bắt Buộc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="comparison-feature">BCG</td>
+                            <td>Lao</td>
+                            <td>Sơ sinh</td>
+                            <td>1</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Viêm gan B</td>
+                            <td>Viêm gan B</td>
+                            <td>Sơ sinh, 2, 4 tháng</td>
+                            <td>3</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">5 trong 1</td>
+                            <td>Bạch hầu, Ho gà, Uốn ván, Viêm phổi, Viêm màng não</td>
+                            <td>2, 3, 4 tháng</td>
+                            <td>3</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Bại liệt (OPV/IPV)</td>
+                            <td>Bại liệt</td>
+                            <td>2, 3, 4 tháng</td>
+                            <td>3</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Sởi</td>
+                            <td>Sởi</td>
+                            <td>9 tháng</td>
+                            <td>1</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">MMR</td>
+                            <td>Sởi, Quai bị, Rubella</td>
+                            <td>18 tháng</td>
+                            <td>1</td>
+                            <td><i class="fas fa-check comparison-check"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Viêm não Nhật Bản</td>
+                            <td>Viêm não Nhật Bản</td>
+                            <td>12, 13, 24 tháng</td>
+                            <td>3</td>
+                            <td><i class="fas fa-times comparison-times"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="comparison-feature">Rotavirus</td>
+                            <td>Tiêu chảy do Rotavirus</td>
+                            <td>2, 4 tháng</td>
+                            <td>2</td>
+                            <td><i class="fas fa-times comparison-times"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <div class="vaccine-info">
+                        <h3 class="vaccine-info-title"><i class="fas fa-shield-alt"></i> Vaccine Bắt Buộc</h3>
+                        <div class="vaccine-detail">
+                            <div class="vaccine-detail-label">Lịch Tiêm</div>
+                            <div class="vaccine-detail-value">Vaccine trong Chương trình Tiêm chủng Mở rộng (TCMR) được tiêm miễn phí tại các trạm y tế xã, phường. Bao gồm các vaccine phòng các bệnh: Lao, Bạch hầu, Ho gà, Uốn ván, Bại liệt, Sởi, Viêm gan B.</div>
+                        </div>
+                        <div class="vaccine-detail">
+                            <div class="vaccine-detail-label">Lợi Ích</div>
+                            <div class="vaccine-detail-value">Các vaccine bắt buộc giúp phòng ngừa những bệnh truyền nhiễm nguy hiểm, có khả năng lây lan nhanh và gây biến chứng nghiêm trọng, thậm chí tử vong, đặc biệt ở trẻ nhỏ.</div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div class="row mb-5">
-                    <div class="col-md-6">
-                        <div class="service-card">
-                            <h2>Tiêm Chủng Định Kỳ</h2>
-                            <p class="text-muted">Chương trình tiêm chủng đầy đủ và an toàn cho trẻ em</p>
-                            <ul class="feature-list">
-                                <li><i class="fas fa-check"></i> Vắc-xin trong chương trình tiêm chủng mở rộng</li>
-                                <li><i class="fas fa-check"></i> Lịch tiêm phù hợp theo độ tuổi</li>
-                                <li><i class="fas fa-check"></i> Theo dõi và nhắc lịch tiêm tự động</li>
-                                <li><i class="fas fa-check"></i> Tư vấn trước và sau tiêm chủng</li>
-                            </ul>
+                <div class="col-md-6">
+                    <div class="vaccine-info">
+                        <h3 class="vaccine-info-title"><i class="fas fa-plus-circle"></i> Vaccine Tự Nguyện</h3>
+                        <div class="vaccine-detail">
+                            <div class="vaccine-detail-label">Lịch Tiêm</div>
+                            <div class="vaccine-detail-value">Vaccine dịch vụ được tiêm tại các cơ sở y tế tư nhân hoặc trung tâm tiêm chủng. Bao gồm các vaccine phòng: Viêm não Nhật Bản, Rotavirus, Thủy đậu, Cúm, Viêm phổi, Viêm màng não...</div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="service-card">
-                            <h2>Tư Vấn Sức Khỏe</h2>
-                            <p class="text-muted">Dịch vụ tư vấn chuyên nghiệp về chăm sóc sức khỏe trẻ em</p>
-                            <ul class="feature-list">
-                                <li><i class="fas fa-check"></i> Tư vấn dinh dưỡng theo độ tuổi</li>
-                                <li><i class="fas fa-check"></i> Hướng dẫn chăm sóc trẻ</li>
-                                <li><i class="fas fa-check"></i> Theo dõi sự phát triển của trẻ</li>
-                                <li><i class="fas fa-check"></i> Tư vấn phòng ngừa bệnh tật</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-5">
-                    <div class="col-md-6">
-                        <div class="service-card">
-                            <h2>Đặt Lịch Tiêm Chủng</h2>
-                            <p class="text-muted">Hệ thống đặt lịch tiêm chủng trực tuyến tiện lợi</p>
-                            <ul class="feature-list">
-                                <li><i class="fas fa-check"></i> Đặt lịch trực tuyến 24/7</li>
-                                <li><i class="fas fa-check"></i> Nhắc lịch qua email/SMS</li>
-                                <li><i class="fas fa-check"></i> Chọn thời gian tiêm linh hoạt</li>
-                                <li><i class="fas fa-check"></i> Hủy/đổi lịch dễ dàng</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="service-card">
-                            <h2>Theo Dõi Tiêm Chủng</h2>
-                            <p class="text-muted">Hệ thống theo dõi lịch sử tiêm chủng chi tiết</p>
-                            <ul class="feature-list">
-                                <li><i class="fas fa-check"></i> Hồ sơ tiêm chủng điện tử</li>
-                                <li><i class="fas fa-check"></i> Báo cáo tiêm chủng định kỳ</li>
-                                <li><i class="fas fa-check"></i> Thông báo mũi tiêm tiếp theo</li>
-                                <li><i class="fas fa-check"></i> Xuất báo cáo tiêm chủng</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center mt-5">
-                    <h3>Tại Sao Chọn Chúng Tôi?</h3>
-                    <div class="row mt-4">
-                        <div class="col-md-4">
-                            <div class="service-card">
-                                <i class="fas fa-user-md service-icon"></i>
-                                <h4>Đội Ngũ Chuyên Nghiệp</h4>
-                                <p>Đội ngũ y bác sĩ giàu kinh nghiệm, được đào tạo chuyên sâu về tiêm chủng</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="service-card">
-                                <i class="fas fa-shield-alt service-icon"></i>
-                                <h4>An Toàn Tối Đa</h4>
-                                <p>Tuân thủ nghiêm ngặt quy trình an toàn tiêm chủng của Bộ Y tế</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="service-card">
-                                <i class="fas fa-clock service-icon"></i>
-                                <h4>Tiện Lợi</h4>
-                                <p>Đặt lịch online, theo dõi tiêm chủng dễ dàng qua hệ thống</p>
-                            </div>
+                        <div class="vaccine-detail">
+                            <div class="vaccine-detail-label">Lợi Ích</div>
+                            <div class="vaccine-detail-value">Vaccine tự nguyện giúp bổ sung thêm sự bảo vệ cho trẻ trước các bệnh nguy hiểm khác. Mặc dù không bắt buộc nhưng vẫn có tầm quan trọng trong việc bảo vệ sức khỏe toàn diện cho trẻ.</div>
                         </div>
                     </div>
                 </div>
@@ -134,10 +746,19 @@
 
     <div th:replace="master/_footer :: footer"></div>
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script>
+        // FAQ toggle functionality
+        $(document).ready(function() {
+            $('.faq-question').click(function() {
+                $(this).parent().toggleClass('active');
+            });
+        });
+    </script>
+    <script th:src="@{/js/auth/profile.js}"></script>
 </body>
 </html>

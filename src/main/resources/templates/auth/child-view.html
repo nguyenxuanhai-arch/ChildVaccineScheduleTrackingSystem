@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thông tin hồ sơ trẻ | Hệ thống tiêm chủng</title>
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .info-card {
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            background-color: var(--card-bg);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .profile-header {
+            background-color: var(--card-bg);
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
+        .child-name {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0;
+            transition: color 0.3s ease;
+        }
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .badge-package {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .package-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+        .vaccine-list {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            margin-top: 5px;
+            transition: color 0.3s ease;
+        }
+        /* Styles for the vaccine packages section */
+        .accordion .card-header {
+            cursor: pointer;
+            padding: 10px 15px;
+            background-color: var(--card-bg);
+            transition: background-color 0.3s ease;
+        }
+        .accordion .btn-link {
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            width: 100%;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+        .accordion .btn-link:hover {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .accordion .card {
+            border: none;
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
+            transition: background-color 0.3s ease;
+        }
+        .package-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: var(--card-bg);
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .package-badge {
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+        
+        /* Additional dark mode compatibility */
+        .table {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .table thead th {
+            border-color: var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .table td, .table th {
+            border-top: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .card-header.bg-info, .card-header.bg-success, .card-header.bg-primary {
+            transition: background-color 0.3s ease;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="master/_header :: header"></div>
+    
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <!-- Success message alert -->
+                <div class="alert alert-success alert-dismissible fade show" th:if="${successMessage}" role="alert">
+                    <i class="fas fa-check-circle"></i> <span th:text="${successMessage}"></span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <div class="card info-card mb-4">
+                    <div class="profile-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-child fa-3x mr-3 text-primary"></i>
+                            <div>
+                                <h2 class="child-name" th:text="${child.name}">Tên trẻ</h2>
+                                <p class="text-muted mb-0">Hồ sơ trẻ em</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="row detail-row">
+                            <div class="col-md-4 detail-label">Họ và tên:</div>
+                            <div class="col-md-8" th:text="${child.name}">Nguyễn Văn A</div>
+                        </div>
+                        
+                        <div class="row detail-row">
+                            <div class="col-md-4 detail-label">Ngày sinh:</div>
+                            <div class="col-md-8" th:text="${#temporals.format(child.dob, 'dd/MM/yyyy')}">01/01/2020</div>
+                        </div>
+                        
+                        <div class="row detail-row">
+                            <div class="col-md-4 detail-label">Giới tính:</div>
+                            <div class="col-md-8" th:text="${child.gender == 'MALE' ? 'Nam' : 'Nữ'}">Nam</div>
+                        </div>
+                        
+                        <!-- Appointments section can be added here if needed -->
+                        
+                        <div class="action-buttons">
+                            <a th:href="@{/auth/profile/children/{id}/edit(id=${child.id})}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Chỉnh sửa
+                            </a>
+                            <a th:href="@{/appointments}" class="btn btn-success">
+                                <i class="fas fa-calendar-plus"></i> Đặt lịch tiêm
+                            </a>
+                            <a th:href="@{/auth/profile}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vaccine Schedule for the Child -->
+                <div class="card info-card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="fas fa-syringe"></i> Lịch tiêm chủng của trẻ</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Simplified appointments display -->
+                        <div th:if="${appointments != null && !appointments.empty}">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Loại</th>
+                                            <th>Thông tin</th>
+                                            <th>Ngày & Giờ tiêm</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="appointment : ${appointments}">
+                                            <!-- Type - simplified -->
+                                            <td>
+                                                <span th:if="${appointment.type != null && appointment.type.name() == 'VACCINE'}" 
+                                                      class="badge badge-primary">Tiêm lẻ</span>
+                                                <span th:if="${appointment.type != null && appointment.type.name() == 'PACKAGE'}" 
+                                                      class="badge badge-info">Gói</span>
+                                                <span th:if="${appointment.type == null}" 
+                                                      class="badge badge-secondary">Không xác định</span>
+                                            </td>
+                                            
+                                            <!-- Info - simplified -->
+                                            <td>
+                                                <!-- For individual vaccine -->
+                                                <div th:if="${appointment.type != null && appointment.type.name() == 'VACCINE'}">
+                                                    <span th:text="${appointment.vaccine != null ? appointment.vaccine.name : 'Không xác định'}">Tên vắc-xin</span>
+                                                </div>
+                                                
+                                                <!-- For package -->
+                                                <div th:if="${appointment.type != null && appointment.type.name() == 'PACKAGE'}">
+                                                    <div class="package-name" th:text="${appointment.vaccinePackage != null ? appointment.vaccinePackage.name : 'Không xác định'}">Tên gói</div>
+                                                </div>
+                                            </td>
+                                            
+                                            <!-- Date and Time -->
+                                            <td>
+                                                <div th:if="${appointment.appointmentDate != null}" th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}">01/01/2023</div>
+                                                <div th:if="${appointment.appointmentDate == null}">Chưa xác định</div>
+                                                <small class="text-muted" th:if="${appointment.appointmentTime != null}" 
+                                                       th:text="${#temporals.format(appointment.appointmentTime, 'HH:mm')}">09:00</small>
+                                            </td>
+                                            
+                                            <!-- Status - simplified -->
+                                            <td>
+                                                <span th:if="${appointment.status != null && appointment.status.name() == 'COMPLETED'}" 
+                                                    class="badge badge-success">Đã tiêm</span>
+                                                <span th:if="${appointment.status != null && appointment.status.name() == 'SCHEDULED'}" 
+                                                    class="badge badge-primary">Đã đặt lịch</span>
+                                                <span th:if="${appointment.status != null && appointment.status.name() == 'CANCELLED'}" 
+                                                    class="badge badge-danger">Đã hủy</span>
+                                                <span th:if="${appointment.status != null && appointment.status.name() == 'RESCHEDULED'}" 
+                                                    class="badge badge-warning">Đổi lịch</span>
+                                                <span th:if="${appointment.status == null}" 
+                                                    class="badge badge-secondary">Không xác định</span>
+                                            </td>
+                                            
+                                            <!-- Actions -->
+                                            <td>
+                                                <!-- Only show cancel button for scheduled appointments -->
+                                                <button th:if="${appointment.status != null && appointment.status.name() == 'SCHEDULED'}"
+                                                        class="btn btn-sm btn-danger cancel-appointment" 
+                                                        th:data-id="${appointment.id}">
+                                                    <i class="fas fa-times"></i> Hủy
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- If no appointments -->
+                        <div th:if="${appointments == null || appointments.empty}" class="text-center py-4">
+                            <div class="mb-3">
+                                <i class="fas fa-calendar-times fa-3x text-muted"></i>
+                            </div>
+                            <p>Trẻ chưa có lịch tiêm chủng nào.</p>
+                            <a href="/appointments" class="btn btn-primary">
+                                <i class="fas fa-calendar-plus"></i> Đặt lịch tiêm
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="master/_footer :: footer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    
+    <!-- Add cancel appointment functionality -->
+    <script>
+        $(document).ready(function() {
+            // Handle cancel appointment button clicks
+            $('.cancel-appointment').click(function() {
+                if (confirm('Bạn có chắc chắn muốn hủy lịch tiêm này không?')) {
+                    const appointmentId = $(this).data('id');
+                    
+                    // Get the JWT token from localStorage
+                    const token = localStorage.getItem('token');
+                    
+                    // Send request to cancel the appointment
+                    $.ajax({
+                        url: '/appointments/' + appointmentId + '/cancel',
+                        type: 'PUT',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        },
+                        success: function() {
+                            // Reload the page to reflect the changes
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            alert('Không thể hủy lịch tiêm: ' + (xhr.responseText || 'Lỗi không xác định'));
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script th:src="@{/js/auth/profile.js}"></script>
+</body>
+</html> 
