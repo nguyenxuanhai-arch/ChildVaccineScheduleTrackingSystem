@@ -40,7 +40,14 @@ public class ChildService {
         return List.of(); // Trả về danh sách trống nếu không tìm thấy User
     }
 
-    public void saveChild(Child child) {
+    public Child saveChild(Child child) {
+        // Log input data for debugging
+        System.out.println("Saving child in service:");
+        System.out.println("Name: " + child.getName());
+        System.out.println("DOB: " + child.getDob());
+        System.out.println("Gender: " + child.getGender());
+        System.out.println("ParentUsername: " + child.getParentUsername());
+
         // Nếu có parentUsername, tìm parent và set vào child
         if (child.getParentUsername() != null && !child.getParentUsername().isEmpty()) {
             Optional<User> parentOpt = userRepository.findByUsername(child.getParentUsername());
@@ -53,7 +60,19 @@ public class ChildService {
                 }
             }
         }
-        childRepository.save(child);  // Lưu trẻ em vào database
+
+        // Save child to database
+        Child savedChild = childRepository.save(child);
+        
+        // Log saved data for debugging
+        System.out.println("Saved child in service:");
+        System.out.println("ID: " + savedChild.getId());
+        System.out.println("Name: " + savedChild.getName());
+        System.out.println("DOB: " + savedChild.getDob());
+        System.out.println("Gender: " + savedChild.getGender());
+        System.out.println("ParentUsername: " + savedChild.getParentUsername());
+
+        return savedChild;
     }
 
     public String updateChild(Long id, Child childDetails) {

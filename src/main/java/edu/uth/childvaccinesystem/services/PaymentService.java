@@ -1,10 +1,12 @@
 package edu.uth.childvaccinesystem.services;
 
-import edu.uth.childvaccinesystem.dtos.request.PaymentRequest;
 import edu.uth.childvaccinesystem.entities.Payment;
+import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.repositories.PaymentRepository;
+import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,54 +14,70 @@ import java.util.Optional;
 
 @Service
 public class PaymentService {
-
     @Autowired
     private PaymentRepository paymentRepository;
 
-    // Lấy danh sách thanh toán
-    public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    public List<Payment> getPaymentsByUsername(String username) {
+        return paymentRepository.findByUsername(username);
     }
 
-    // Lưu thanh toán từ request
-    public String savePayment(PaymentRequest request) {
-        // Kiểm tra xem thanh toán đã tồn tại chưa
-        if (paymentRepository.existsById(request.getId())) {
-            return "Payment already exists with this ID";
+    public Payment getPaymentById(Long paymentId) {
+        return paymentRepository.findById(paymentId).orElse(null);
+    }
+
+    public boolean isPaymentBelongsToUser(Long paymentId, String username) {
+        return paymentRepository.isPaymentBelongsToUser(paymentId, username);
+    }
+
+    @Transactional
+    public Payment updatePayment(Long paymentId, String username, String paymentMethod, String notes) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thanh toán"));
+
+        if (!isPaymentBelongsToUser(paymentId, username)) {
+            throw new RuntimeException("Bạn không có quyền cập nhật thanh toán này");
         }
-        Payment payment = new Payment();
-        payment.setAmount(request.getAmount());
-        payment.setStatus(request.getStatus());
-        payment.setCreatedAt(request.getPaymentDate() != null ? request.getPaymentDate() : LocalDateTime.now());
-        paymentRepository.save(payment);
-        return "Payment saved successfully";
-    }
 
-    // Cập nhật trạng thái thanh toán
-    public String updatePaymentStatus(Long id, String status) {
-        Optional<Payment> payment = paymentRepository.findById(id);
-        if (payment.isPresent()) {
-            Payment existingPayment = payment.get();
-            existingPayment.setStatus(status);
-            paymentRepository.save(existingPayment);
-            return "Payment status updated successfully";
+        if (!payment.getStatus().equals("PENDING")) {
+            throw new RuntimeException("Chỉ có thể cập nhật thanh toán đang chờ xử lý");
         }
-        return "Payment not found";
+
+        payment.setPaymentMethod(paymentMethod);
+        payment.setNotes(notes);
+        payment.setStatus("COMPLETED");
+        payment.setPaymentDate(LocalDateTime.now());
+
+        return paymentRepository.save(payment);
     }
 
-    // Xóa thanh toán
-    public String deletePayment(Long id) {
-        if (!paymentRepository.existsById(id)) {
-            return "Payment not found";
+    @Transactional
+    public Payment createPayment(Long appointmentId, double amount, String paymentMethod, String notes) {
+        var appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+
+        Payment payment = new Payment(
+            appointment,
+            amount,
+            paymentMethod,
+            "PENDING",
+            LocalDateTime.now(),
+            notes
+        );
+
+        return paymentRepository.save(payment);
+    }
+
+    public Payment updatePaymentStatus(Long paymentId, String status, String transactionId) {
+        Payment payment = getPaymentById(paymentId);
+        if (payment == null) {
+            throw new RuntimeException("Payment not found");
         }
-        paymentRepository.deleteById(id);
-        return "Payment deleted successfully";
-    }
 
-//     // Tính tổng doanh thu
-//     public double getTotalRevenue() {
-//         // Logic để tính tổng doanh thu
-//         Double revenue = paymentRepository.getTotalRevenue();// logic của bạn để lấy dữ liệu doanh thu
-//         return (revenue != null) ? revenue : 0.0;
-//     }
+        payment.setStatus(status);
+        payment.setTransactionId(transactionId);
+        return paymentRepository.save(payment);
+    }
 }

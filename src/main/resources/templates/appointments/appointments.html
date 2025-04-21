@@ -1,622 +1,827 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Đặt lịch tiêm</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, var(--primary-color) 0%, #2979ff 100%);
-            --secondary-gradient: linear-gradient(135deg, var(--secondary-color) 0%, #45cea2 100%);
-            --card-border-radius: 12px;
-            --button-border-radius: 8px;
-            --input-border-radius: 6px;
-        }
-        
-        body.bg-light {
-            background-color: var(--bg-color) !important;
-            transition: background-color 0.3s ease;
-            padding-bottom: 3rem;
-        }
-        
-        .page-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-            position: relative;
-        }
-        
-        .back-button {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            margin: 1rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
+      :root {
+        --primary-gradient: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          #2979ff 100%
+        );
+        --secondary-gradient: linear-gradient(
+          135deg,
+          var(--secondary-color) 0%,
+          #45cea2 100%
+        );
+        --card-border-radius: 12px;
+        --button-border-radius: 8px;
+        --input-border-radius: 6px;
+      }
+
+      body.bg-light {
+        background-color: var(--bg-color) !important;
+        transition: background-color 0.3s ease;
+        padding-bottom: 3rem;
+      }
+
+      .page-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        position: relative;
+      }
+
+      .back-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        margin: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .back-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 30px;
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--card-shadow);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        border: 1px solid var(--border-color);
+      }
+
+      h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 25px;
+        transition: color 0.3s ease;
+        font-weight: 700;
+        font-size: 2.2rem;
+      }
+
+      h2 {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        transition: color 0.3s ease;
+        font-weight: 600;
+      }
+
+      /* Nav Tabs */
+      .nav-tabs {
+        border-color: var(--border-color);
+        transition: border-color 0.3s ease;
+        margin-bottom: 0;
+        border-bottom-width: 2px;
+      }
+
+      .nav-tabs .nav-link {
+        color: var(--text-color);
+        transition: color 0.3s ease, background-color 0.3s ease,
+          border-color 0.3s ease;
+        border: none;
+        padding: 12px 20px;
+        font-weight: 500;
+        border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
+        font-size: 1.05rem;
+      }
+
+      .nav-tabs .nav-link:hover {
+        border-color: transparent;
+        background-color: rgba(var(--primary-color-rgb), 0.05);
+      }
+
+      .nav-tabs .nav-link.active {
+        background-color: var(--card-bg);
+        color: var(--primary-color);
+        border: none;
+        border-top: 3px solid var(--primary-color);
+        transition: color 0.3s ease, border-color 0.3s ease;
+        font-weight: 600;
+      }
+
+      .tab-content {
+        padding: 30px;
+        border: 1px solid var(--border-color);
+        border-top: none;
+        border-radius: 0 0 var(--card-border-radius) var(--card-border-radius);
+        background-color: var(--card-bg);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+
+      /* Form Elements */
+      .form-control,
+      .form-select {
+        padding: 10px 15px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        border-color: var(--border-color);
+        border-radius: var(--input-border-radius);
+        transition: background-color 0.3s ease, color 0.3s ease,
+          border-color 0.3s ease, box-shadow 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .form-control:focus,
+      .form-select:focus {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 9px 18px;
+        font-weight: 600;
+        border-radius: var(--button-border-radius);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 10px rgba(var(--primary-color-rgb), 0.2);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(var(--primary-color-rgb), 0.3);
+      }
+
+      .btn-primary:active {
+        transform: translateY(1px);
+      }
+
+      .btn-success {
+        background: var(--secondary-gradient);
+        border: none;
+        box-shadow: 0 4px 10px rgba(var(--secondary-color-rgb), 0.2);
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(var(--secondary-color-rgb), 0.3);
+      }
+
+      .btn-outline-primary {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-group .btn {
+        box-shadow: none;
+      }
+
+      /* Cards and Sections */
+      .bg-white {
+        background-color: var(--card-bg) !important;
+        transition: background-color 0.3s ease;
+      }
+
+      #addChildSection {
+        border-radius: var(--card-border-radius);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      /* Package Cards */
+      .package-card {
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--card-border-radius);
+        transition: all 0.3s ease;
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+      }
+
+      .package-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+        transform: translateY(-5px);
+      }
+
+      .package-card.selected {
+        border-color: var(--primary-color);
+        background-color: rgba(var(--primary-color-rgb), 0.05);
+        box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.15);
+      }
+
+      .package-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--text-color);
+        transition: color 0.3s ease;
+      }
+
+      .package-desc {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+      }
+
+      .package-price {
+        font-weight: 700;
+        color: var(--primary-color);
+        transition: color 0.3s ease;
+        font-size: 1.1rem;
+      }
+
+      .package-age {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+      }
+
+      /* Alerts */
+      .alert {
+        border-radius: var(--card-border-radius);
+        padding: 15px 20px;
+        margin-top: 1rem;
+        border: none;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .alert-success {
+        background-color: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+      }
+
+      .alert-danger {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+      }
+
+      .alert-warning {
+        background-color: rgba(255, 193, 7, 0.15);
+        color: #ffc107;
+      }
+
+      .alert-info {
+        background-color: rgba(23, 162, 184, 0.15);
+        color: #17a2b8;
+      }
+
+      /* Loading Spinner */
+      .spinner-border {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
         .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            border-radius: var(--card-border-radius);
-            box-shadow: var(--card-shadow);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            border: 1px solid var(--border-color);
+          padding: 20px;
         }
-        
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 25px;
-            transition: color 0.3s ease;
-            font-weight: 700;
-            font-size: 2.2rem;
-        }
-        
-        h2 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            transition: color 0.3s ease;
-            font-weight: 600;
-        }
-        
-        /* Nav Tabs */
-        .nav-tabs {
-            border-color: var(--border-color);
-            transition: border-color 0.3s ease;
-            margin-bottom: 0;
-            border-bottom-width: 2px;
-        }
-        
-        .nav-tabs .nav-link {
-            color: var(--text-color);
-            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-            border: none;
-            padding: 12px 20px;
-            font-weight: 500;
-            border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
-            font-size: 1.05rem;
-        }
-        
-        .nav-tabs .nav-link:hover {
-            border-color: transparent;
-            background-color: rgba(var(--primary-color-rgb), 0.05);
-        }
-        
-        .nav-tabs .nav-link.active {
-            background-color: var(--card-bg);
-            color: var(--primary-color);
-            border: none;
-            border-top: 3px solid var(--primary-color);
-            transition: color 0.3s ease, border-color 0.3s ease;
-            font-weight: 600;
-        }
-        
+
         .tab-content {
-            padding: 30px;
-            border: 1px solid var(--border-color);
-            border-top: none;
-            border-radius: 0 0 var(--card-border-radius) var(--card-border-radius);
-            background-color: var(--card-bg);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+          padding: 20px 15px;
         }
-        
-        /* Form Elements */
-        .form-control, .form-select {
-            padding: 10px 15px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-color: var(--border-color);
-            border-radius: var(--input-border-radius);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-            font-size: 1rem;
+
+        .nav-tabs .nav-link {
+          padding: 10px 15px;
+          font-size: 0.95rem;
         }
-        
-        .form-control:focus, .form-select:focus {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.15);
+
+        h1 {
+          font-size: 1.8rem;
         }
-        
-        .form-label {
-            font-weight: 500;
-            color: var(--text-color);
-            transition: color 0.3s ease;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-        
-        /* Buttons */
-        .btn {
-            padding: 9px 18px;
-            font-weight: 600;
-            border-radius: var(--button-border-radius);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary {
-            background: var(--primary-gradient);
-            border: none;
-            color: white;
-            box-shadow: 0 4px 10px rgba(var(--primary-color-rgb), 0.2);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(var(--primary-color-rgb), 0.3);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(1px);
-        }
-        
-        .btn-success {
-            background: var(--secondary-gradient);
-            border: none;
-            box-shadow: 0 4px 10px rgba(var(--secondary-color-rgb), 0.2);
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(var(--secondary-color-rgb), 0.3);
-        }
-        
-        .btn-outline-primary {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-group .btn {
-            box-shadow: none;
-        }
-        
-        /* Cards and Sections */
-        .bg-white {
-            background-color: var(--card-bg) !important;
-            transition: background-color 0.3s ease;
-        }
-        
-        #addChildSection {
-            border-radius: var(--card-border-radius);
-            border: 1px solid var(--border-color);
-            margin-bottom: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        
-        /* Package Cards */
-        .package-card {
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--card-border-radius);
-            transition: all 0.3s ease;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-            cursor: pointer;
-        }
-        
-        .package-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
-            transform: translateY(-5px);
-        }
-        
-        .package-card.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(var(--primary-color-rgb), 0.05);
-            box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.15);
-        }
-        
-        .package-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            transition: color 0.3s ease;
-        }
-        
-        .package-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            transition: color 0.3s ease;
-        }
-        
-        .package-price {
-            font-weight: 700;
-            color: var(--primary-color);
-            transition: color 0.3s ease;
-            font-size: 1.1rem;
-        }
-        
-        .package-age {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            transition: color 0.3s ease;
-        }
-        
-        /* Alerts */
-        .alert {
-            border-radius: var(--card-border-radius);
-            padding: 15px 20px;
-            margin-top: 1rem;
-            border: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-        }
-        
-        .alert-success {
-            background-color: rgba(40, 167, 69, 0.15);
-            color: #28a745;
-        }
-        
-        .alert-danger {
-            background-color: rgba(220, 53, 69, 0.15);
-            color: #dc3545;
-        }
-        
-        .alert-warning {
-            background-color: rgba(255, 193, 7, 0.15);
-            color: #ffc107;
-        }
-        
-        .alert-info {
-            background-color: rgba(23, 162, 184, 0.15);
-            color: #17a2b8;
-        }
-        
-        /* Loading Spinner */
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .tab-content {
-                padding: 20px 15px;
-            }
-            
-            .nav-tabs .nav-link {
-                padding: 10px 15px;
-                font-size: 0.95rem;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
-        
-        /* Radio buttons */
-        .form-check-input {
-            width: 1.2em;
-            height: 1.2em;
-            margin-top: 0.15em;
-            background-color: var(--bg-color);
-            border-color: var(--border-color);
-        }
-        
-        .form-check-input:checked {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
+      }
+
+      /* Radio buttons */
+      .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        margin-top: 0.15em;
+        background-color: var(--bg-color);
+        border-color: var(--border-color);
+      }
+
+      .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
     </style>
-</head>
-<body class="bg-light">
+  </head>
+  <body class="bg-light">
     <div class="page-container">
-        <!-- Back to Home Button -->
-        <a href="/" class="btn btn-outline-primary back-button">
-            <i class="bi bi-arrow-left"></i> Trang chủ
-        </a>
-        
-        <div class="container">
-            <h1><i class="bi bi-calendar-check"></i> Đặt lịch tiêm chủng cho trẻ</h1>
+      <!-- Back to Home Button -->
+      <a href="/" class="btn btn-outline-primary back-button">
+        <i class="bi bi-arrow-left"></i> Trang chủ
+      </a>
 
-            <!-- Form thêm bé mới -->
-            <div id="addChildSection" class="mb-4 p-4 bg-white rounded shadow-sm">
-                <h2><i class="bi bi-person-plus"></i> Thêm hồ sơ trẻ</h2>
-                <form id="addChildForm" class="row g-3">
-                    <div class="col-md-6">
-                        <label for="childName" class="form-label">Tên bé:</label>
-                        <input type="text" class="form-control" id="childName" name="childName" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="childDob" class="form-label">Ngày sinh:</label>
-                        <input type="date" class="form-control" id="childDob" name="childDob" required>
-                    </div>
-                    
-                    <div class="col-md-3">
-                        <label for="childGender" class="form-label">Giới tính:</label>
-                        <select class="form-select" id="childGender" name="childGender" required>
-                            <option value="male">Nam</option>
-                            <option value="female">Nữ</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12 mt-3">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i> Thêm hồ sơ
-                        </button>
-                    </div>
-                </form>
-                <div id="addChildMessage" class="mt-2"></div>
+      <div class="container">
+        <h1>
+          <i class="bi bi-calendar-check"></i> Đặt lịch tiêm chủng cho trẻ
+        </h1>
+
+        <!-- Form thêm bé mới -->
+        <div id="addChildSection" class="mb-4 p-4 bg-white rounded shadow-sm">
+          <h2><i class="bi bi-person-plus"></i> Thêm hồ sơ trẻ</h2>
+          <form id="addChildForm" class="row g-3">
+            <div class="col-md-6">
+              <label for="childName" class="form-label"
+                >Họ và tên trẻ <span class="text-danger">*</span></label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="childName"
+                name="name"
+                required
+                placeholder="Nhập họ và tên trẻ"
+              />
             </div>
 
-            <!-- Tabs for individual vaccines vs packages -->
-            <ul class="nav nav-tabs" id="appointmentTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="vaccine-tab" data-bs-toggle="tab" data-bs-target="#vaccine-content" type="button" role="tab" aria-controls="vaccine-content" aria-selected="true">
-                        <i class="bi bi-syringe"></i> Tiêm vắc xin đơn lẻ
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="package-tab" data-bs-toggle="tab" data-bs-target="#package-content" type="button" role="tab" aria-controls="package-content" aria-selected="false">
-                        <i class="bi bi-box"></i> Tiêm theo gói vắc xin
-                    </button>
-                </li>
-            </ul>
-
-            <div class="tab-content" id="appointmentTabsContent">
-                <!-- Individual Vaccine Appointment Tab -->
-                <div class="tab-pane fade show active" id="vaccine-content" role="tabpanel" aria-labelledby="vaccine-tab">
-                    <h2><i class="bi bi-syringe"></i> Đặt lịch tiêm vắc xin đơn lẻ</h2>
-                    <form id="vaccineAppointmentForm" class="row g-3">
-                        <div class="col-md-6">
-                            <label for="vaccineChildId" class="form-label"><i class="bi bi-person-check"></i> Chọn bé:</label>
-                            <select class="form-select" id="vaccineChildId" name="childId" required>
-                                <option value="">-- Vui lòng chọn --</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="vaccineId" class="form-label"><i class="bi bi-shield-check"></i> Chọn vắc xin:</label>
-                            <select class="form-select" id="vaccineId" name="vaccineId" required>
-                                <option value="">-- Vui lòng chọn --</option>
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="vaccineAppointmentDate" class="form-label"><i class="bi bi-calendar2-date"></i> Ngày tiêm:</label>
-                            <input type="date" class="form-control" id="vaccineAppointmentDate" name="appointmentDate" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="vaccineAppointmentTime" class="form-label"><i class="bi bi-clock"></i> Giờ tiêm:</label>
-                            <input type="time" class="form-control" id="vaccineAppointmentTime" name="appointmentTime" required>
-                        </div>
-
-                        <div class="col-12">
-                            <label for="vaccineNotes" class="form-label"><i class="bi bi-chat-left-text"></i> Ghi chú:</label>
-                            <textarea class="form-control" id="vaccineNotes" name="notes" rows="2" placeholder="Thông tin bổ sung về tình trạng sức khỏe của bé"></textarea>
-                        </div>
-
-                        <div class="col-12 mt-4 text-center">
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-calendar-plus"></i> Đặt lịch tiêm
-                            </button>
-                        </div>
-                    </form>
-                    <div id="vaccineMessage" class="mt-3"></div>
-                </div>
-
-                <!-- Package Appointment Tab -->
-                <div class="tab-pane fade" id="package-content" role="tabpanel" aria-labelledby="package-tab">
-                    <h2>Đặt lịch tiêm theo gói vắc xin</h2>
-                    
-                    <!-- Package selection section -->
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0">Chọn gói vắc xin</h5>
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="btnAllPackages" onclick="filterPackages('all')">Tất cả</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="btnStandardPackages" onclick="filterPackages('PACKAGE')">Trọn gói</button>
-                                <button type="button" class="btn btn-outline-primary btn-sm" id="btnCustomPackages" onclick="filterPackages('CUSTOM')">Cá thể hóa</button>
-                            </div>
-                        </div>
-                        
-                        <div id="packagesContainer" class="row">
-                            <!-- Packages will be loaded here -->
-                            <div class="col-12 text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Đang tải dữ liệu gói vắc xin...</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Package appointment form -->
-                    <form id="packageAppointmentForm" class="row g-3">
-                        <input type="hidden" id="selectedPackageId" name="packageId">
-                        
-                        <div class="col-md-6">
-                            <label for="packageChildId" class="form-label">Chọn bé:</label>
-                            <select class="form-select" id="packageChildId" name="childId" required></select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="packageAppointmentDate" class="form-label">Ngày tiêm:</label>
-                            <input type="date" class="form-control" id="packageAppointmentDate" name="appointmentDate" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="packageAppointmentTime" class="form-label">Giờ tiêm:</label>
-                            <input type="time" class="form-control" id="packageAppointmentTime" name="appointmentTime" required>
-                        </div>
-
-                        <div class="col-12">
-                            <label for="packageNotes" class="form-label">Ghi chú:</label>
-                            <textarea class="form-control" id="packageNotes" name="notes" rows="2"></textarea>
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <button type="submit" class="btn btn-primary" id="btnBookPackage" disabled>Đặt lịch</button>
-                            <span id="packageSelectionWarning" class="text-danger ms-2">Vui lòng chọn gói vắc xin</span>
-                        </div>
-                    </form>
-                    <div id="packageMessage" class="mt-2"></div>
-                </div>
+            <div class="col-md-3">
+              <label for="childDob" class="form-label"
+                >Ngày sinh <span class="text-danger">*</span></label
+              >
+              <input
+                type="date"
+                class="form-control"
+                id="childDob"
+                name="dob"
+                required
+              />
             </div>
+
+            <div class="col-md-3">
+              <label class="form-label"
+                >Giới tính <span class="text-danger">*</span></label
+              >
+              <select
+                class="form-select"
+                id="childGender"
+                name="gender"
+                required
+              >
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            </div>
+
+            <div class="col-12 mt-3">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Thêm hồ sơ
+              </button>
+            </div>
+          </form>
+          <div id="addChildMessage" class="mt-2"></div>
         </div>
+
+        <!-- Tabs for individual vaccines vs packages -->
+        <ul class="nav nav-tabs" id="appointmentTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="vaccine-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#vaccine-content"
+              type="button"
+              role="tab"
+              aria-controls="vaccine-content"
+              aria-selected="true"
+            >
+              <i class="bi bi-syringe"></i> Tiêm vắc xin đơn lẻ
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="package-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#package-content"
+              type="button"
+              role="tab"
+              aria-controls="package-content"
+              aria-selected="false"
+            >
+              <i class="bi bi-box"></i> Tiêm theo gói vắc xin
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="appointmentTabsContent">
+          <!-- Individual Vaccine Appointment Tab -->
+          <div
+            class="tab-pane fade show active"
+            id="vaccine-content"
+            role="tabpanel"
+            aria-labelledby="vaccine-tab"
+          >
+            <h2><i class="bi bi-syringe"></i> Đặt lịch tiêm vắc xin đơn lẻ</h2>
+            <form id="vaccineAppointmentForm" class="row g-3">
+              <div class="col-md-6">
+                <label for="vaccineChildId" class="form-label"
+                  ><i class="bi bi-person-check"></i> Chọn bé:</label
+                >
+                <select
+                  class="form-select"
+                  id="vaccineChildId"
+                  name="childId"
+                  required
+                >
+                  <option value="">-- Vui lòng chọn --</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="vaccineId" class="form-label"
+                  ><i class="bi bi-shield-check"></i> Chọn vắc xin:</label
+                >
+                <select
+                  class="form-select"
+                  id="vaccineId"
+                  name="vaccineId"
+                  required
+                >
+                  <option value="">-- Vui lòng chọn --</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="vaccineAppointmentDate" class="form-label"
+                  ><i class="bi bi-calendar2-date"></i> Ngày tiêm:</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="vaccineAppointmentDate"
+                  name="appointmentDate"
+                  required
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label for="vaccineAppointmentTime" class="form-label"
+                  ><i class="bi bi-clock"></i> Giờ tiêm:</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="vaccineAppointmentTime"
+                  name="appointmentTime"
+                  required
+                />
+              </div>
+
+              <div class="col-12">
+                <label for="vaccineNotes" class="form-label"
+                  ><i class="bi bi-chat-left-text"></i> Ghi chú:</label
+                >
+                <textarea
+                  class="form-control"
+                  id="vaccineNotes"
+                  name="notes"
+                  rows="2"
+                  placeholder="Thông tin bổ sung về tình trạng sức khỏe của bé"
+                ></textarea>
+              </div>
+
+              <div class="col-12 mt-4 text-center">
+                <button type="submit" class="btn btn-primary px-4">
+                  <i class="bi bi-calendar-plus"></i> Đặt lịch tiêm
+                </button>
+              </div>
+            </form>
+            <div id="vaccineMessage" class="mt-3"></div>
+          </div>
+
+          <!-- Package Appointment Tab -->
+          <div
+            class="tab-pane fade"
+            id="package-content"
+            role="tabpanel"
+            aria-labelledby="package-tab"
+          >
+            <h2>Đặt lịch tiêm theo gói vắc xin</h2>
+
+            <!-- Package selection section -->
+            <div class="mb-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5 class="mb-0">Chọn gói vắc xin</h5>
+                <div class="btn-group" role="group">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    id="btnAllPackages"
+                    onclick="filterPackages('all')"
+                  >
+                    Tất cả
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    id="btnStandardPackages"
+                    onclick="filterPackages('PACKAGE')"
+                  >
+                    Trọn gói
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    id="btnCustomPackages"
+                    onclick="filterPackages('CUSTOM')"
+                  >
+                    Cá thể hóa
+                  </button>
+                </div>
+              </div>
+
+              <div id="packagesContainer" class="row">
+                <!-- Packages will be loaded here -->
+                <div class="col-12 text-center py-4">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <p class="mt-2">Đang tải dữ liệu gói vắc xin...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Package appointment form -->
+            <form id="packageAppointmentForm" class="row g-3">
+              <input type="hidden" id="selectedPackageId" name="packageId" />
+
+              <div class="col-md-6">
+                <label for="packageChildId" class="form-label">Chọn bé:</label>
+                <select
+                  class="form-select"
+                  id="packageChildId"
+                  name="childId"
+                  required
+                ></select>
+              </div>
+
+              <div class="col-md-6">
+                <label for="packageAppointmentDate" class="form-label"
+                  >Ngày tiêm:</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="packageAppointmentDate"
+                  name="appointmentDate"
+                  required
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label for="packageAppointmentTime" class="form-label"
+                  >Giờ tiêm:</label
+                >
+                <input
+                  type="time"
+                  class="form-control"
+                  id="packageAppointmentTime"
+                  name="appointmentTime"
+                  required
+                />
+              </div>
+
+              <div class="col-12">
+                <label for="packageNotes" class="form-label">Ghi chú:</label>
+                <textarea
+                  class="form-control"
+                  id="packageNotes"
+                  name="notes"
+                  rows="2"
+                ></textarea>
+              </div>
+
+              <div class="col-12 mt-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  id="btnBookPackage"
+                  disabled
+                >
+                  Đặt lịch
+                </button>
+                <span id="packageSelectionWarning" class="text-danger ms-2"
+                  >Vui lòng chọn gói vắc xin</span
+                >
+              </div>
+            </form>
+            <div id="packageMessage" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            loadChildren();
-            loadVaccines();
-            setupPackageTab();
-            
-            // Set min date for appointment to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('vaccineAppointmentDate').min = today;
-            document.getElementById('packageAppointmentDate').min = today;
+      document.addEventListener("DOMContentLoaded", () => {
+        loadChildren();
+        loadVaccines();
+        setupPackageTab();
+
+        // Set min date for appointment to today
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("vaccineAppointmentDate").min = today;
+        document.getElementById("packageAppointmentDate").min = today;
+      });
+
+      // Hàm format giới tính
+      function formatGender(gender) {
+        if (!gender) return "Không rõ";
+        const normalized = gender.toLowerCase();
+        if (normalized === "male") return "Nam";
+        if (normalized === "female") return "Nữ";
+        return gender;
+      }
+
+      // Format currency
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(amount);
+      }
+
+      // Tải danh sách bé của phụ huynh
+      function loadChildren() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/auth/login";
+          return;
+        }
+
+        const vaccineChildSelect = document.getElementById("vaccineChildId");
+        const packageChildSelect = document.getElementById("packageChildId");
+
+        // Hiển thị trạng thái đang tải
+        vaccineChildSelect.innerHTML = '<option value="">Đang tải...</option>';
+        packageChildSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+        // Gọi API để lấy danh sách bé
+        axios
+          .get("/child/by-parent", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            console.log("Children data:", response.data); // Debug log
+
+            // Xóa trạng thái đang tải
+            vaccineChildSelect.innerHTML = '<option value="">Chọn bé</option>';
+            packageChildSelect.innerHTML = '<option value="">Chọn bé</option>';
+
+            if (response.data && response.data.length > 0) {
+              response.data.forEach((child) => {
+                try {
+                  // Format ngày sinh
+                  const dob = new Date(child.dob);
+                  const formattedDob = dob.toLocaleDateString("vi-VN");
+
+                  // Format giới tính
+                  const genderText = child.gender === "MALE" ? "Nam" : "Nữ";
+
+                  // Tính tuổi theo tháng
+                  const ageInMonths = calculateAgeInMonths(child.dob);
+
+                  // Tạo option cho mỗi bé
+                  const option = `
+                    <option value="${child.id}" data-age-in-months="${ageInMonths}">
+                      ${child.name} (${formattedDob}, ${genderText})
+                    </option>`;
+
+                  vaccineChildSelect.insertAdjacentHTML("beforeend", option);
+                  packageChildSelect.insertAdjacentHTML("beforeend", option);
+                } catch (error) {
+                  console.error("Error processing child data:", error, child);
+                }
+              });
+
+              // Thêm event listener để cập nhật danh sách vaccine khi chọn bé
+              vaccineChildSelect.addEventListener("change", updateVaccineList);
+            } else {
+              // Nếu không có bé nào
+              vaccineChildSelect.innerHTML =
+                '<option value="">Không có bé nào</option>';
+              packageChildSelect.innerHTML =
+                '<option value="">Không có bé nào</option>';
+            }
+          })
+          .catch((error) => {
+            console.error("Error loading children:", error);
+            vaccineChildSelect.innerHTML =
+              '<option value="">Lỗi tải danh sách</option>';
+            packageChildSelect.innerHTML =
+              '<option value="">Lỗi tải danh sách</option>';
+          });
+      }
+
+      // Helper function to calculate age in months
+      function calculateAgeInMonths(dob) {
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
+        months -= birthDate.getMonth();
+        months += today.getMonth();
+        if (today.getDate() < birthDate.getDate()) {
+          months--;
+        }
+        return months;
+      }
+
+      // Tải danh sách vắc xin
+      function loadVaccines() {
+        axios
+          .get("/vaccine/vaccine-list")
+          .then((response) => {
+            const vaccineSelect = document.getElementById("vaccineId");
+            vaccineSelect.innerHTML = "";
+
+            // Add a default option
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.text = "-- Chọn vắc xin --";
+            vaccineSelect.appendChild(defaultOption);
+
+            if (
+              response.data &&
+              response.data.vaccines &&
+              response.data.vaccines.length > 0
+            ) {
+              response.data.vaccines.forEach((vaccine) => {
+                const option = document.createElement("option");
+                option.value = vaccine.id;
+                option.text = `${vaccine.name} - ${formatCurrency(
+                  vaccine.price
+                )}`;
+                vaccineSelect.appendChild(option);
+              });
+            } else {
+              document.getElementById("vaccineMessage").innerHTML +=
+                '<div class="alert alert-warning">Không có vắc xin nào trong hệ thống.</div>';
+            }
+          })
+          .catch((error) => {
+            console.error("Lỗi khi load danh sách vắc xin:", error);
+            document.getElementById("vaccineMessage").innerHTML +=
+              '<div class="alert alert-danger">Không thể tải danh sách vắc xin.</div>';
+          });
+      }
+
+      // Setup package tab
+      function setupPackageTab() {
+        document.getElementById("package-tab").addEventListener("click", () => {
+          loadPackages();
         });
+      }
 
-        // Hàm format giới tính
-        function formatGender(gender) {
-            if (!gender) return "Không rõ";
-            const normalized = gender.toLowerCase();
-            if (normalized === 'male') return 'Nam';
-            if (normalized === 'female') return 'Nữ';
-            return gender;
-        }
-
-        // Format currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-        }
-
-        // Tải danh sách bé của phụ huynh
-        function loadChildren() {
-            const token = localStorage.getItem('token');
-
-            axios.get('/auth/profile/children/list', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                console.log('Dữ liệu trẻ em:', response.data);
-                const vaccineChildSelect = document.getElementById('vaccineChildId');
-                const packageChildSelect = document.getElementById('packageChildId');
-                
-                vaccineChildSelect.innerHTML = '<option value="">Chọn bé</option>';
-                packageChildSelect.innerHTML = '<option value="">Chọn bé</option>';
-                
-                if (response.data && response.data.length > 0) {
-                    response.data.forEach(child => {
-                        // Format DOB to match profile page display
-                        const dob = new Date(child.dob);
-                        const formattedDob = dob.toLocaleDateString('vi-VN');
-                        
-                        // Format gender consistently
-                        const genderText = child.gender === 'MALE' ? 'Nam' : (child.gender === 'FEMALE' ? 'Nữ' : 'Không rõ');
-                        
-                        // Calculate child's age in months for filtering
-                        const birthDate = new Date(child.dob);
-                        const today = new Date();
-                        const ageInMonths = (today.getFullYear() - birthDate.getFullYear()) * 12 + 
-                                            today.getMonth() - birthDate.getMonth();
-                        
-                        const vaccineOption = document.createElement('option');
-                        vaccineOption.value = child.id;
-                        vaccineOption.textContent = `${child.name} (${formattedDob}, ${genderText})`;
-                        vaccineOption.dataset.ageInMonths = ageInMonths;
-                        vaccineChildSelect.appendChild(vaccineOption);
-                        
-                        const packageOption = document.createElement('option');
-                        packageOption.value = child.id;
-                        packageOption.textContent = `${child.name} (${formattedDob}, ${genderText})`;
-                        packageOption.dataset.ageInMonths = ageInMonths;
-                        packageChildSelect.appendChild(packageOption);
-                    });
-                } else {
-                    document.getElementById('vaccineMessage').innerHTML = 
-                        '<div class="alert alert-warning">Bạn chưa có hồ sơ trẻ em. Vui lòng thêm hồ sơ trẻ trước.</div>';
-                    document.getElementById('packageMessage').innerHTML = 
-                        '<div class="alert alert-warning">Bạn chưa có hồ sơ trẻ em. Vui lòng thêm hồ sơ trẻ trước.</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Lỗi khi tải danh sách bé:', error);
-                document.getElementById('vaccineMessage').innerHTML = 
-                    '<div class="alert alert-danger">Không thể tải danh sách bé. Vui lòng đăng nhập lại.</div>';
-                document.getElementById('packageMessage').innerHTML = 
-                    '<div class="alert alert-danger">Không thể tải danh sách bé. Vui lòng đăng nhập lại.</div>';
-            });
-        }
-
-        // Tải danh sách vắc xin
-        function loadVaccines() {
-            axios.get('/vaccine/vaccine-list')
-                .then(response => {
-                    const vaccineSelect = document.getElementById('vaccineId');
-                    vaccineSelect.innerHTML = '';
-
-                    // Add a default option
-                    const defaultOption = document.createElement('option');
-                    defaultOption.value = '';
-                    defaultOption.text = '-- Chọn vắc xin --';
-                    vaccineSelect.appendChild(defaultOption);
-
-                    if (response.data && response.data.vaccines && response.data.vaccines.length > 0) {
-                    response.data.vaccines.forEach(vaccine => {
-                        const option = document.createElement('option');
-                        option.value = vaccine.id;
-                            option.text = `${vaccine.name} - ${formatCurrency(vaccine.price)}`;
-                        vaccineSelect.appendChild(option);
-                    });
-                    } else {
-                        document.getElementById('vaccineMessage').innerHTML += 
-                            '<div class="alert alert-warning">Không có vắc xin nào trong hệ thống.</div>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi khi load danh sách vắc xin:', error);
-                    document.getElementById('vaccineMessage').innerHTML += 
-                        '<div class="alert alert-danger">Không thể tải danh sách vắc xin.</div>';
-                });
-        }
-
-        // Setup package tab
-        function setupPackageTab() {
-            document.getElementById('package-tab').addEventListener('click', () => {
-                loadPackages();
-            });
-        }
-
-        // Load packages
-        function loadPackages(type = 'all') {
-            const packagesContainer = document.getElementById('packagesContainer');
-            packagesContainer.innerHTML = `
+      // Load packages
+      function loadPackages(type = "all") {
+        const packagesContainer = document.getElementById("packagesContainer");
+        packagesContainer.innerHTML = `
                 <div class="col-12 text-center py-4">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -625,325 +830,724 @@
                 </div>
             `;
 
-            let url = '/api/packages';
-            if (type !== 'all') {
-                url = `/api/packages/type/${type}`;
-            }
+        let url = "/api/packages";
+        if (type !== "all") {
+          url = `/api/packages/type/${type}`;
+        }
 
-            axios.get(url)
-                .then(response => {
-                    const packages = response.data;
-                    
-                    if (packages && packages.length > 0) {
-                        displayPackages(packages);
-                    } else {
-                        packagesContainer.innerHTML = `
+        axios
+          .get(url)
+          .then((response) => {
+            const packages = response.data;
+
+            if (packages && packages.length > 0) {
+              displayPackages(packages);
+            } else {
+              packagesContainer.innerHTML = `
                             <div class="col-12 text-center py-4">
                                 <i class="bi bi-info-circle text-info fs-1"></i>
                                 <p class="mt-2">Không có gói vắc xin nào phù hợp.</p>
                             </div>
                         `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi khi tải gói vắc xin:', error);
-                    packagesContainer.innerHTML = `
+            }
+          })
+          .catch((error) => {
+            console.error("Lỗi khi tải gói vắc xin:", error);
+            packagesContainer.innerHTML = `
                         <div class="col-12 text-center py-4">
                             <i class="bi bi-exclamation-triangle text-danger fs-1"></i>
                             <p class="mt-2">Không thể tải dữ liệu gói vắc xin. Vui lòng thử lại sau.</p>
                         </div>
                     `;
-                });
+          });
+      }
+
+      // Display packages
+      function displayPackages(packages) {
+        const packagesContainer = document.getElementById("packagesContainer");
+        packagesContainer.innerHTML = "";
+
+        // Get child age in months if a child is selected
+        let childAgeInMonths = null;
+        const packageChildSelect = document.getElementById("packageChildId");
+        if (packageChildSelect.selectedIndex > 0) {
+          const selectedOption =
+            packageChildSelect.options[packageChildSelect.selectedIndex];
+          childAgeInMonths = parseInt(selectedOption.dataset.ageInMonths);
         }
 
-        // Display packages
-        function displayPackages(packages) {
-            const packagesContainer = document.getElementById('packagesContainer');
-            packagesContainer.innerHTML = '';
-            
-            // Get child age in months if a child is selected
-            let childAgeInMonths = null;
-            const packageChildSelect = document.getElementById('packageChildId');
-            if (packageChildSelect.selectedIndex > 0) {
-                const selectedOption = packageChildSelect.options[packageChildSelect.selectedIndex];
-                childAgeInMonths = parseInt(selectedOption.dataset.ageInMonths);
+        packages.forEach((pkg) => {
+          // Determine if package is suitable for the selected child's age
+          let isSuitableForAge = true;
+          let ageWarning = "";
+
+          if (childAgeInMonths !== null) {
+            isSuitableForAge =
+              childAgeInMonths >= pkg.ageRangeStart &&
+              childAgeInMonths <= pkg.ageRangeEnd;
+            if (!isSuitableForAge) {
+              ageWarning = `<div class="text-danger small mt-1"><i class="bi bi-exclamation-triangle"></i> Không phù hợp với độ tuổi của bé</div>`;
             }
+          }
 
-            packages.forEach(pkg => {
-                // Determine if package is suitable for the selected child's age
-                let isSuitableForAge = true;
-                let ageWarning = '';
-                
-                if (childAgeInMonths !== null) {
-                    isSuitableForAge = childAgeInMonths >= pkg.ageRangeStart && childAgeInMonths <= pkg.ageRangeEnd;
-                    if (!isSuitableForAge) {
-                        ageWarning = `<div class="text-danger small mt-1"><i class="bi bi-exclamation-triangle"></i> Không phù hợp với độ tuổi của bé</div>`;
-                    }
-                }
+          // Create a badge for package type
+          let typeBadge = "";
+          if (pkg.type === "INDIVIDUAL") {
+            typeBadge = '<span class="badge bg-primary me-2">Tiêm lẻ</span>';
+          } else if (pkg.type === "PACKAGE") {
+            typeBadge = '<span class="badge bg-success me-2">Trọn gói</span>';
+          } else if (pkg.type === "CUSTOM") {
+            typeBadge = '<span class="badge bg-info me-2">Cá thể hóa</span>';
+          }
 
-                // Create a badge for package type
-                let typeBadge = '';
-                if (pkg.type === 'INDIVIDUAL') {
-                    typeBadge = '<span class="badge bg-primary me-2">Tiêm lẻ</span>';
-                } else if (pkg.type === 'PACKAGE') {
-                    typeBadge = '<span class="badge bg-success me-2">Trọn gói</span>';
-                } else if (pkg.type === 'CUSTOM') {
-                    typeBadge = '<span class="badge bg-info me-2">Cá thể hóa</span>';
-                }
-
-                const packageCard = document.createElement('div');
-                packageCard.className = 'col-md-6 mb-3';
-                packageCard.innerHTML = `
-                    <div class="card package-card h-100" data-package-id="${pkg.id}" data-age-start="${pkg.ageRangeStart}" data-age-end="${pkg.ageRangeEnd}">
+          const packageCard = document.createElement("div");
+          packageCard.className = "col-md-6 mb-3";
+          packageCard.innerHTML = `
+                    <div class="card package-card h-100" data-package-id="${
+                      pkg.id
+                    }" data-age-start="${pkg.ageRangeStart}" data-age-end="${
+            pkg.ageRangeEnd
+          }">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
                                     ${typeBadge}
-                                    <h5 class="package-title mb-0">${pkg.name}</h5>
+                                    <h5 class="package-title mb-0">${
+                                      pkg.name
+                                    }</h5>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="packageSelection" id="package${pkg.id}" value="${pkg.id}" ${!isSuitableForAge ? 'disabled' : ''}>
+                                    <input class="form-check-input" type="radio" name="packageSelection" id="package${
+                                      pkg.id
+                                    }" value="${pkg.id}" ${
+            !isSuitableForAge ? "disabled" : ""
+          }>
                                 </div>
                             </div>
-                            <p class="package-desc mb-2">${pkg.description || 'Không có mô tả'}</p>
+                            <p class="package-desc mb-2">${
+                              pkg.description || "Không có mô tả"
+                            }</p>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="package-age">Độ tuổi: ${pkg.ageRangeStart}-${pkg.ageRangeEnd} tháng</span>
-                                <span class="package-price">${formatCurrency(pkg.price)}</span>
+                                <span class="package-age">Độ tuổi: ${
+                                  pkg.ageRangeStart
+                                }-${pkg.ageRangeEnd} tháng</span>
+                                <span class="package-price">${formatCurrency(
+                                  pkg.price
+                                )}</span>
                             </div>
                             <div class="package-vaccines small text-muted mt-1">
-                                <strong>Vắc xin (${pkg.vaccines ? pkg.vaccines.length : 0}):</strong> 
-                                ${pkg.vaccines ? pkg.vaccines.map(v => v.name).join(', ') : 'Không có'}
+                                <strong>Vắc xin (${
+                                  pkg.vaccines ? pkg.vaccines.length : 0
+                                }):</strong> 
+                                ${
+                                  pkg.vaccines
+                                    ? pkg.vaccines.map((v) => v.name).join(", ")
+                                    : "Không có"
+                                }
                             </div>
                             ${ageWarning}
                         </div>
                     </div>
                 `;
-                
-                packagesContainer.appendChild(packageCard);
-            });
 
-            // Add event listeners to package selection
-            document.querySelectorAll('input[name="packageSelection"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    // Update hidden input with selected package id
-                    document.getElementById('selectedPackageId').value = this.value;
-                    
-                    // Enable the book button
-                    document.getElementById('btnBookPackage').disabled = false;
-                    document.getElementById('packageSelectionWarning').style.display = 'none';
-                    
-                    // Add 'selected' class to the selected package card
-                    document.querySelectorAll('.package-card').forEach(card => {
-                        card.classList.remove('selected');
-                    });
-                    this.closest('.package-card').classList.add('selected');
-                });
-            });
-
-            // Filter packages based on child's age when child selection changes
-            document.getElementById('packageChildId').addEventListener('change', function() {
-                if (this.selectedIndex > 0) {
-                    const selectedOption = this.options[this.selectedIndex];
-                    const childAgeInMonths = parseInt(selectedOption.dataset.ageInMonths);
-                    
-                    document.querySelectorAll('.package-card').forEach(card => {
-                        const ageStart = parseInt(card.dataset.ageStart);
-                        const ageEnd = parseInt(card.dataset.ageEnd);
-                        const isSuitable = childAgeInMonths >= ageStart && childAgeInMonths <= ageEnd;
-                        
-                        const radio = card.querySelector('input[type="radio"]');
-                        radio.disabled = !isSuitable;
-                        
-                        if (!isSuitable) {
-                            radio.checked = false;
-                            card.classList.remove('selected');
-                            
-                            // Add age warning if not already present
-                            const warningDiv = card.querySelector('.text-danger.small');
-                            if (!warningDiv) {
-                                const vaccinesDiv = card.querySelector('.package-vaccines');
-                                const warning = document.createElement('div');
-                                warning.className = 'text-danger small mt-1';
-                                warning.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Không phù hợp với độ tuổi của bé';
-                                vaccinesDiv.after(warning);
-                            }
-                        } else {
-                            // Remove age warning if present
-                            const warningDiv = card.querySelector('.text-danger.small');
-                            if (warningDiv) {
-                                warningDiv.remove();
-                            }
-                        }
-                    });
-                    
-                    // Update book button status
-                    const anyChecked = document.querySelector('input[name="packageSelection"]:checked');
-                    document.getElementById('btnBookPackage').disabled = !anyChecked;
-                    document.getElementById('packageSelectionWarning').style.display = anyChecked ? 'none' : 'inline';
-                }
-            });
-        }
-
-        // Filter packages by type
-        function filterPackages(type) {
-            // Update active button
-            document.querySelectorAll('#btnAllPackages, #btnStandardPackages, #btnCustomPackages').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (type === 'all') {
-                document.getElementById('btnAllPackages').classList.add('active');
-            } else if (type === 'PACKAGE') {
-                document.getElementById('btnStandardPackages').classList.add('active');
-            } else if (type === 'CUSTOM') {
-                document.getElementById('btnCustomPackages').classList.add('active');
-            }
-            
-            loadPackages(type);
-        }
-
-        // Thêm bé mới
-        document.getElementById('addChildForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const data = {
-                name: document.getElementById('childName').value,
-                dob: document.getElementById('childDob').value,
-                gender: document.getElementById('childGender').value === 'male' ? 'MALE' : 'FEMALE' // Convert to match backend format
-            };
-
-            const token = localStorage.getItem('token');
-
-            axios.post('/auth/profile/children/add', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                document.getElementById('addChildMessage').innerHTML = 
-                    `<div class="alert alert-success">✅ Thêm bé thành công!</div>`;
-                document.getElementById('addChildForm').reset();
-                // Load lại danh sách bé sau khi thêm thành công
-                loadChildren();
-            })
-            .catch(error => {
-                document.getElementById('addChildMessage').innerHTML = 
-                    `<div class="alert alert-danger">❌ Thêm bé thất bại! ${error.response?.data?.message || error.response?.data || 'Vui lòng thử lại'}</div>`;
-                console.error(error);
-            });
+          packagesContainer.appendChild(packageCard);
         });
 
-        // Đặt lịch tiêm vaccine đơn lẻ
-        document.getElementById('vaccineAppointmentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Add event listeners to package selection
+        document
+          .querySelectorAll('input[name="packageSelection"]')
+          .forEach((radio) => {
+            radio.addEventListener("change", function () {
+              // Update hidden input with selected package id
+              document.getElementById("selectedPackageId").value = this.value;
 
-            const data = {
-                childId: document.getElementById('vaccineChildId').value,
-                vaccineId: document.getElementById('vaccineId').value,
-                appointmentDate: document.getElementById('vaccineAppointmentDate').value,
-                appointmentTime: document.getElementById('vaccineAppointmentTime').value,
-                notes: document.getElementById('vaccineNotes').value,
-                type: 'VACCINE'
-            };
+              // Enable the book button
+              document.getElementById("btnBookPackage").disabled = false;
+              document.getElementById("packageSelectionWarning").style.display =
+                "none";
 
-            const token = localStorage.getItem('token');
+              // Add 'selected' class to the selected package card
+              document.querySelectorAll(".package-card").forEach((card) => {
+                card.classList.remove("selected");
+              });
+              this.closest(".package-card").classList.add("selected");
+            });
+          });
 
-            axios.post('/appointments/book', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+        // Filter packages based on child's age when child selection changes
+        document
+          .getElementById("packageChildId")
+          .addEventListener("change", function () {
+            if (this.selectedIndex > 0) {
+              const selectedOption = this.options[this.selectedIndex];
+              const childAgeInMonths = parseInt(
+                selectedOption.dataset.ageInMonths
+              );
+
+              document.querySelectorAll(".package-card").forEach((card) => {
+                const ageStart = parseInt(card.dataset.ageStart);
+                const ageEnd = parseInt(card.dataset.ageEnd);
+                const isSuitable =
+                  childAgeInMonths >= ageStart && childAgeInMonths <= ageEnd;
+
+                const radio = card.querySelector('input[type="radio"]');
+                radio.disabled = !isSuitable;
+
+                if (!isSuitable) {
+                  radio.checked = false;
+                  card.classList.remove("selected");
+
+                  // Add age warning if not already present
+                  const warningDiv = card.querySelector(".text-danger.small");
+                  if (!warningDiv) {
+                    const vaccinesDiv = card.querySelector(".package-vaccines");
+                    const warning = document.createElement("div");
+                    warning.className = "text-danger small mt-1";
+                    warning.innerHTML =
+                      '<i class="bi bi-exclamation-triangle"></i> Không phù hợp với độ tuổi của bé';
+                    vaccinesDiv.after(warning);
+                  }
+                } else {
+                  // Remove age warning if present
+                  const warningDiv = card.querySelector(".text-danger.small");
+                  if (warningDiv) {
+                    warningDiv.remove();
+                  }
                 }
-            })
-                .then(response => {
-                    document.getElementById('vaccineMessage').innerHTML = 
-                        '<div class="alert alert-success">✅ Đặt lịch tiêm vắc xin thành công!</div>';
-                    // Redirect to home page after 1.5 seconds
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1500);
-                })
-                .catch(error => {
-                    document.getElementById('vaccineMessage').innerHTML = 
-                        `<div class="alert alert-danger">❌ Đặt lịch thất bại! ${error.response?.data || ''}</div>`;
-                    console.error(error);
-                });
-        });
+              });
 
-        // Đặt lịch tiêm gói vắc xin
-        document.getElementById('packageAppointmentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const packageId = document.getElementById('selectedPackageId').value;
-            if (!packageId) {
-                document.getElementById('packageMessage').innerHTML = 
-                    '<div class="alert alert-warning">Vui lòng chọn gói vắc xin trước khi đặt lịch.</div>';
-                return;
+              // Update book button status
+              const anyChecked = document.querySelector(
+                'input[name="packageSelection"]:checked'
+              );
+              document.getElementById("btnBookPackage").disabled = !anyChecked;
+              document.getElementById("packageSelectionWarning").style.display =
+                anyChecked ? "none" : "inline";
             }
+          });
+      }
 
-            const data = {
-                childId: document.getElementById('packageChildId').value,
-                packageId: packageId,
-                appointmentDate: document.getElementById('packageAppointmentDate').value,
-                appointmentTime: document.getElementById('packageAppointmentTime').value,
-                notes: document.getElementById('packageNotes').value,
-                type: 'PACKAGE'
-            };
+      // Filter packages by type
+      function filterPackages(type) {
+        // Update active button
+        document
+          .querySelectorAll(
+            "#btnAllPackages, #btnStandardPackages, #btnCustomPackages"
+          )
+          .forEach((btn) => {
+            btn.classList.remove("active");
+          });
 
-            const token = localStorage.getItem('token');
+        if (type === "all") {
+          document.getElementById("btnAllPackages").classList.add("active");
+        } else if (type === "PACKAGE") {
+          document
+            .getElementById("btnStandardPackages")
+            .classList.add("active");
+        } else if (type === "CUSTOM") {
+          document.getElementById("btnCustomPackages").classList.add("active");
+        }
 
-            axios.post('/appointments/book-package', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+        loadPackages(type);
+      }
+
+      // Thêm bé mới
+      document
+        .getElementById("addChildForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const token = localStorage.getItem("token");
+          if (!token) {
+            window.location.href = "/auth/login";
+            return;
+          }
+
+          const childName = document.getElementById("childName").value.trim();
+          const childDob = document.getElementById("childDob").value;
+          const childGender = document.getElementById("childGender").value;
+
+          // Validate inputs
+          if (!childName) {
+            document.getElementById("addChildMessage").innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng nhập tên trẻ</div>';
+            return;
+          }
+
+          if (!childDob) {
+            document.getElementById("addChildMessage").innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng chọn ngày sinh</div>';
+            return;
+          }
+
+          // Create FormData object
+          const formData = new FormData();
+          formData.append("name", childName);
+          formData.append("dob", childDob);
+          formData.append("gender", childGender);
+
+          // Send request to the new endpoint
+          axios
+            .post("/child/add-from-form", formData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
             })
-            .then(response => {
-                document.getElementById('packageMessage').innerHTML = 
-                    '<div class="alert alert-success">✅ Đặt lịch tiêm gói vắc xin thành công!</div>';
-                
-                // Redirect to home page after 1.5 seconds
+            .then((response) => {
+              if (response.data.success) {
+                // Show success message
+                document.getElementById("addChildMessage").innerHTML =
+                  '<div class="alert alert-success">✅ Thêm hồ sơ trẻ thành công!</div>';
+
+                // Reset form
+                document.getElementById("addChildForm").reset();
+
+                // Reload children list
                 setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
-                
-                // Rest of the reset code
-                document.getElementById('packageAppointmentForm').reset();
-                document.getElementById('selectedPackageId').value = '';
-                document.getElementById('btnBookPackage').disabled = true;
-                document.getElementById('packageSelectionWarning').style.display = 'inline';
-                
-                // Remove 'selected' class from all package cards
-                document.querySelectorAll('.package-card').forEach(card => {
-                    card.classList.remove('selected');
-                });
-                
-                // Uncheck all radio buttons
-                document.querySelectorAll('input[name="packageSelection"]').forEach(radio => {
-                    radio.checked = false;
-                });
+                  loadChildren();
+                }, 500);
+              } else {
+                document.getElementById(
+                  "addChildMessage"
+                ).innerHTML = `<div class="alert alert-danger">${response.data.message}</div>`;
+              }
             })
-            .catch(error => {
-                document.getElementById('packageMessage').innerHTML = 
-                    `<div class="alert alert-danger">❌ Đặt lịch thất bại! ${error.response?.data || ''}</div>`;
-                console.error(error);
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById(
+                "addChildMessage"
+              ).innerHTML = `<div class="alert alert-danger">❌ Lỗi: ${
+                error.response?.data?.message || "Không thể thêm hồ sơ trẻ"
+              }</div>`;
             });
         });
 
-        // Cập nhật danh sách vaccine dựa trên bé được chọn
-        function updateVaccineList() {
-            const vaccineChildSelect = document.getElementById('vaccineChildId');
-            const vaccineSelect = document.getElementById('vaccineId');
-            
-            // Reset vaccine select
-            vaccineSelect.innerHTML = '<option value="">Chọn vaccine</option>';
-            
-            // If a child is selected
-            if (vaccineChildSelect.selectedIndex > 0) {
-                const selectedOption = vaccineChildSelect.options[vaccineChildSelect.selectedIndex];
-                const childAgeInMonths = parseInt(selectedOption.dataset.ageInMonths);
-                
-                // Filter and add vaccines based on child's age
-                // ... existing code ...
-            }
+      // Cập nhật danh sách vaccine dựa trên bé được chọn
+      function updateVaccineList() {
+        const childSelect = document.getElementById("vaccineChildId");
+        const vaccineSelect = document.getElementById("vaccineId");
+        const selectedChild = childSelect.value;
+        const selectedOption = childSelect.options[childSelect.selectedIndex];
+
+        if (!selectedChild || !selectedOption) {
+          vaccineSelect.innerHTML = '<option value="">Chọn vaccine</option>';
+          return;
         }
+
+        const ageInMonths = parseInt(selectedOption.dataset.ageInMonths);
+        if (isNaN(ageInMonths)) {
+          console.error("Invalid age in months");
+          vaccineSelect.innerHTML =
+            '<option value="">Lỗi: Không thể xác định độ tuổi</option>';
+          return;
+        }
+
+        console.log("Child age in months:", ageInMonths);
+
+        // Hiển thị trạng thái đang tải
+        vaccineSelect.innerHTML =
+          '<option value="">Đang tải danh sách vaccine...</option>';
+        document.getElementById("vaccineMessage").innerHTML = "";
+
+        // Load vaccines from server
+        axios
+          .get("/vaccine/vaccine-list", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+          .then((response) => {
+            if (!response.data || !response.data.vaccines) {
+              throw new Error("Invalid response format");
+            }
+
+            const vaccines = response.data.vaccines;
+            console.log("All vaccines:", vaccines);
+
+            // Filter vaccines based on age
+            const suitableVaccines = vaccines.filter((vaccine) => {
+              const minAge = vaccine.minAge || 0;
+              const maxAge = vaccine.maxAge || Infinity;
+              console.log(
+                `Vaccine ${vaccine.name}: minAge=${minAge}, maxAge=${maxAge}, price=${vaccine.price}`
+              );
+              return ageInMonths >= minAge && ageInMonths <= maxAge;
+            });
+
+            console.log("Suitable vaccines:", suitableVaccines);
+
+            if (suitableVaccines.length === 0) {
+              vaccineSelect.innerHTML =
+                '<option value="">Không có vaccine phù hợp với độ tuổi của bé</option>';
+              document.getElementById("vaccineMessage").innerHTML = `
+                <div class="alert alert-warning">
+                  <i class="bi bi-exclamation-triangle"></i> Không có vaccine nào phù hợp với độ tuổi của bé. 
+                  Vui lòng chọn bé khác hoặc liên hệ bác sĩ để được tư vấn.
+                </div>`;
+              return;
+            }
+
+            vaccineSelect.innerHTML =
+              '<option value="">Chọn vaccine</option>' +
+              suitableVaccines
+                .map(
+                  (vaccine) =>
+                    `<option value="${vaccine.id}" data-price="${
+                      vaccine.price
+                    }">${vaccine.name} - ${formatCurrency(
+                      vaccine.price
+                    )}</option>`
+                )
+                .join("");
+          })
+          .catch((error) => {
+            console.error("Error loading vaccines:", error);
+            vaccineSelect.innerHTML =
+              '<option value="">Lỗi khi tải danh sách vaccine</option>';
+
+            let errorMessage =
+              "Không thể tải danh sách vaccine. Vui lòng thử lại sau.";
+            if (error.response) {
+              if (error.response.status === 401) {
+                errorMessage =
+                  "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+                setTimeout(() => {
+                  window.location.href = "/auth/login";
+                }, 2000);
+              } else if (error.response.data && error.response.data.message) {
+                errorMessage = error.response.data.message;
+              }
+            }
+
+            document.getElementById("vaccineMessage").innerHTML = `
+              <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle"></i> ${errorMessage}
+              </div>`;
+          });
+      }
+
+      // Đặt lịch tiêm vaccine đơn lẻ
+      document
+        .getElementById("vaccineAppointmentForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const childId = document.getElementById("vaccineChildId").value;
+          const vaccineSelect = document.getElementById("vaccineId");
+          const vaccineId = vaccineSelect.value;
+          const selectedOption =
+            vaccineSelect.options[vaccineSelect.selectedIndex];
+          const appointmentDate = document.getElementById(
+            "vaccineAppointmentDate"
+          ).value;
+          const appointmentTime = document.getElementById(
+            "vaccineAppointmentTime"
+          ).value;
+          const notes = document.getElementById("vaccineNotes").value;
+          const vaccineMessage = document.getElementById("vaccineMessage");
+
+          // Validate inputs
+          if (!childId) {
+            vaccineMessage.innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng chọn bé</div>';
+            return;
+          }
+
+          if (!vaccineId) {
+            vaccineMessage.innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng chọn vaccine</div>';
+            return;
+          }
+
+          if (!appointmentDate) {
+            vaccineMessage.innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng chọn ngày tiêm</div>';
+            return;
+          }
+
+          if (!appointmentTime) {
+            vaccineMessage.innerHTML =
+              '<div class="alert alert-danger">❌ Vui lòng chọn giờ tiêm</div>';
+            return;
+          }
+
+          const amount = selectedOption
+            ? parseFloat(selectedOption.dataset.price)
+            : 0;
+          if (isNaN(amount) || amount <= 0) {
+            vaccineMessage.innerHTML = `
+              <div class="alert alert-danger">
+                ❌ Lỗi: Không thể xác định giá vaccine. Vui lòng thử lại.
+              </div>`;
+            return;
+          }
+
+          const data = {
+            childId: childId,
+            vaccineId: vaccineId,
+            appointmentDate: appointmentDate,
+            appointmentTime: appointmentTime,
+            notes: notes,
+            type: "VACCINE",
+            amount: amount,
+          };
+
+          const token = localStorage.getItem("token");
+
+          axios
+            .post("/appointments/book", data, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => {
+              // Kiểm tra và lấy appointmentId từ response
+              console.log("Appointment response:", response.data); // Debug log
+              const appointmentId = response.data.id;
+
+              if (!appointmentId) {
+                throw new Error("Không nhận được mã lịch hẹn từ server");
+              }
+
+              // Tạo FormData object cho thanh toán
+              const paymentFormData = new FormData();
+              paymentFormData.append("appointmentId", appointmentId.toString());
+              paymentFormData.append("amount", amount.toString());
+              paymentFormData.append("paymentMethod", "POST_VACCINATION");
+              paymentFormData.append("status", "PENDING");
+              paymentFormData.append("notes", "Thanh toán sau khi tiêm");
+
+              // Gọi API tạo thanh toán
+              fetch("/payment/create", {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+                body: paymentFormData,
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    return response.json().then((data) => {
+                      throw new Error(data.message || "Lỗi khi tạo thanh toán");
+                    });
+                  }
+                  return response.json();
+                })
+                .then((paymentData) => {
+                  console.log("Payment created:", paymentData); // Debug log
+
+                  // Hiển thị thông báo đặt lịch thành công
+                  document.getElementById("vaccineMessage").innerHTML = `
+                  <div class="alert alert-success">
+                      <h4>✅ Đặt lịch tiêm vaccine thành công!</h4>
+                      <p>Tổng số tiền cần thanh toán: <strong>${formatCurrency(
+                        amount
+                      )}</strong></p>
+                      <p>Mã lịch hẹn: ${appointmentId}</p>
+                      <p>Ngày tiêm: ${formatDate(
+                        appointmentDate
+                      )} ${appointmentTime}</p>
+                      <div class="mt-3">
+                          <a href="/payment/history" class="btn btn-primary">
+                              <i class="bi bi-clock-history"></i> Xem lịch sử thanh toán
+                          </a>
+                      </div>
+                  </div>
+                `;
+
+                  // Reset form
+                  document.getElementById("vaccineAppointmentForm").reset();
+
+                  // Chuyển hướng đến trang lịch sử thanh toán sau 2 giây
+                  setTimeout(() => {
+                    window.location.href = "/payment/history";
+                  }, 2000);
+                })
+                .catch((paymentError) => {
+                  console.error("Error creating payment:", paymentError);
+                  vaccineMessage.innerHTML = `
+                  <div class="alert alert-warning">
+                    <h4>✅ Đặt lịch tiêm vaccine thành công!</h4>
+                    <p>Tổng số tiền cần thanh toán: <strong>${formatCurrency(
+                      amount
+                    )}</strong></p>
+                    <p>Mã lịch hẹn: ${appointmentId}</p>
+                    <p>Ngày tiêm: ${formatDate(
+                      appointmentDate
+                    )} ${appointmentTime}</p>
+                    <p class="text-warning">⚠️ Lưu ý: Có lỗi khi tạo bản ghi thanh toán. Vui lòng kiểm tra lại trong lịch sử thanh toán.</p>
+                    <div class="mt-3">
+                        <a href="/payment/history" class="btn btn-primary">
+                            <i class="bi bi-clock-history"></i> Xem lịch sử thanh toán
+                        </a>
+                    </div>
+                  </div>
+                `;
+                });
+            })
+            .catch((error) => {
+              console.error("Error booking appointment:", error);
+              vaccineMessage.innerHTML = `<div class="alert alert-danger">❌ Đặt lịch thất bại! ${
+                error.response?.data?.message || "Vui lòng thử lại sau"
+              }</div>`;
+            });
+        });
+
+      // Format date
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+      }
+
+      // Thêm hàm mới để xử lý thanh toán
+      function handlePayment(appointmentId, amount, paymentMethod) {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          document.getElementById("vaccineMessage").innerHTML += `
+            <div class="alert alert-danger mt-3">
+              ❌ Lỗi: Không tìm thấy thông tin đăng nhập. Vui lòng đăng nhập lại.
+            </div>
+          `;
+          return;
+        }
+
+        // Validate inputs
+        if (!appointmentId || !amount || !paymentMethod) {
+          document.getElementById("vaccineMessage").innerHTML += `
+            <div class="alert alert-danger mt-3">
+              ❌ Lỗi: Dữ liệu thanh toán không hợp lệ. Vui lòng thử lại.
+            </div>
+          `;
+          return;
+        }
+
+        // Tạo FormData object
+        const formData = new FormData();
+        formData.append("appointmentId", appointmentId.toString());
+        formData.append("amount", amount.toString());
+        formData.append("paymentMethod", paymentMethod);
+        formData.append(
+          "notes",
+          paymentMethod === "POST_VACCINATION"
+            ? "Thanh toán sau khi tiêm"
+            : "Thanh toán ngay"
+        );
+
+        // Gửi request tạo thanh toán
+        fetch("/payment/create", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((data) => {
+                throw new Error(data.message || "Lỗi khi tạo thanh toán");
+              });
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              document.getElementById("vaccineMessage").innerHTML += `
+              <div class="alert alert-success mt-3">
+                ✅ Tạo thanh toán thành công! Vui lòng thanh toán trước khi đến tiêm.
+              </div>
+            `;
+              // Chuyển hướng đến trang lịch sử thanh toán sau 2 giây
+              setTimeout(() => {
+                window.location.href = "/payment/history";
+              }, 2000);
+            } else {
+              throw new Error(data.message || "Lỗi khi tạo thanh toán");
+            }
+          })
+          .catch((error) => {
+            document.getElementById("vaccineMessage").innerHTML += `
+            <div class="alert alert-danger mt-3">
+              ❌ Lỗi: ${error.message}
+            </div>
+          `;
+          });
+      }
+
+      // Đặt lịch tiêm gói vắc xin
+      document
+        .getElementById("packageAppointmentForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const packageId = document.getElementById("selectedPackageId").value;
+          if (!packageId) {
+            document.getElementById("packageMessage").innerHTML =
+              '<div class="alert alert-warning">Vui lòng chọn gói vắc xin trước khi đặt lịch.</div>';
+            return;
+          }
+
+          const data = {
+            childId: document.getElementById("packageChildId").value,
+            packageId: packageId,
+            appointmentDate: document.getElementById("packageAppointmentDate")
+              .value,
+            appointmentTime: document.getElementById("packageAppointmentTime")
+              .value,
+            notes: document.getElementById("packageNotes").value,
+            type: "PACKAGE",
+          };
+
+          const token = localStorage.getItem("token");
+
+          axios
+            .post("/appointments/book-package", data, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              document.getElementById("packageMessage").innerHTML =
+                '<div class="alert alert-success">✅ Đặt lịch tiêm gói vắc xin thành công!</div>';
+
+              // Redirect to home page after 1.5 seconds
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 1500);
+
+              // Rest of the reset code
+              document.getElementById("packageAppointmentForm").reset();
+              document.getElementById("selectedPackageId").value = "";
+              document.getElementById("btnBookPackage").disabled = true;
+              document.getElementById("packageSelectionWarning").style.display =
+                "inline";
+
+              // Remove 'selected' class from all package cards
+              document.querySelectorAll(".package-card").forEach((card) => {
+                card.classList.remove("selected");
+              });
+
+              // Uncheck all radio buttons
+              document
+                .querySelectorAll('input[name="packageSelection"]')
+                .forEach((radio) => {
+                  radio.checked = false;
+                });
+            })
+            .catch((error) => {
+              document.getElementById(
+                "packageMessage"
+              ).innerHTML = `<div class="alert alert-danger">❌ Đặt lịch thất bại! ${
+                error.response?.data || ""
+              }</div>`;
+              console.error(error);
+            });
+        });
     </script>
-</body>
+  </body>
 </html>
