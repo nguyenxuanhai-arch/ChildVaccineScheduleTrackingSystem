@@ -205,7 +205,7 @@ body {
 }
 
 .footer a:hover {
-  color: var(--secondary-color);
+  color: var (--secondary-color);
   text-decoration: none;
 }
 
@@ -363,4 +363,72 @@ body.dark-mode .card {
 
 body.dark-mode .bg-light {
   background-color: var(--card-bg) !important;
+}
+
+/* Contact Section */
+.contact-section {
+  background-color: #e3f2fd; /* Màu xanh nước biển nhạt */
+  padding: 50px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.contact-section h2 {
+  color: #0d47a1; /* Màu xanh đậm */
+  font-weight: bold;
+}
+
+.contact-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contact-icon {
+  font-size: 2.5rem;
+  color: #1976d2;
+  margin-bottom: 15px;
+}
+
+/* Xóa đoạn CSS này hoặc đặt display: none */
+.process-steps .row:not(:last-child) .process-step::after {
+    display: none; /* Vô hiệu hóa đường nối */
+}
+
+/* Info Box */
+.info-box {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    width: 100%; /* Kéo dài toàn bộ chiều ngang */
+    text-align: left; /* Căn trái nội dung */
+}
+
+.info-box-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.info-box h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.info-box p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 15px;
 }
