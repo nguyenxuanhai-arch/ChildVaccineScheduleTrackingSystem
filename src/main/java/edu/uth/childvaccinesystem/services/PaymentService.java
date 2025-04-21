@@ -33,21 +33,21 @@ public class PaymentService {
     }
 
     @Transactional
+    public Payment savePayment(Payment payment) {
+        return paymentRepository.save(payment);
+    }
+
+    @Transactional
     public Payment updatePayment(Long paymentId, String username, String paymentMethod, String notes) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy thanh toán"));
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        if (!isPaymentBelongsToUser(paymentId, username)) {
-            throw new RuntimeException("Bạn không có quyền cập nhật thanh toán này");
-        }
-
-        if (!payment.getStatus().equals("PENDING")) {
-            throw new RuntimeException("Chỉ có thể cập nhật thanh toán đang chờ xử lý");
+        if (!payment.getAppointment().getChild().getParentUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized access");
         }
 
         payment.setPaymentMethod(paymentMethod);
         payment.setNotes(notes);
-        payment.setStatus("COMPLETED");
         payment.setPaymentDate(LocalDateTime.now());
 
         return paymentRepository.save(payment);

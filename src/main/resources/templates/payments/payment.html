@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh toán</title>
+    <link rel="stylesheet" href="/css/payments.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="payment-header">
+        <h1>Thanh toán</h1>
+        <p class="appointment-info">
+          <i class="fas fa-calendar-check"></i> Lịch hẹn:
+          <span
+            th:text="${appointment.appointmentDate} + ' ' + ${appointment.appointmentTime}"
+          ></span>
+        </p>
+      </div>
+
+      <div class="payment-options">
+        <div class="payment-method" id="cashPayment">
+          <div class="method-header">
+            <i class="fas fa-money-bill-wave"></i>
+            <h3>Thanh toán tiền mặt</h3>
+          </div>
+          <p>Thanh toán trực tiếp tại phòng khám khi đến tiêm</p>
+          <button class="btn btn-primary" onclick="processCashPayment()">
+            Xác nhận
+          </button>
+        </div>
+
+        <div class="payment-method" id="bankTransfer">
+          <div class="method-header">
+            <i class="fas fa-university"></i>
+            <h3>Chuyển khoản ngân hàng</h3>
+          </div>
+          <div class="bank-info">
+            <p><strong>Ngân hàng:</strong> Vietcombank</p>
+            <p><strong>Số tài khoản:</strong> 1234567890</p>
+            <p><strong>Chủ tài khoản:</strong> Phòng khám tiêm chủng</p>
+            <p>
+              <strong>Số tiền:</strong>
+              <span th:text="${amount} + ' VND'"></span>
+            </p>
+            <p>
+              <strong>Nội dung chuyển khoản:</strong>
+              <span th:text="'Thanh toan lich hen ' + ${appointment.id}"></span>
+            </p>
+          </div>
+          <button class="btn btn-primary" onclick="processBankTransfer()">
+            Đã chuyển khoản
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function processCashPayment() {
+          // Call API to process cash payment
+          fetch('/payments/process-cash', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  appointmentId: [[${appointment.id}]]
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  alert('Thanh toán thành công!');
+                  window.location.href = '/';
+              } else {
+                  alert('Có lỗi xảy ra: ' + data.message);
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Có lỗi xảy ra khi xử lý thanh toán');
+          });
+      }
+
+      function processBankTransfer() {
+          // Call API to process bank transfer
+          fetch('/payments/process-bank-transfer', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  appointmentId: [[${appointment.id}]]
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  alert('Đã ghi nhận thông tin chuyển khoản. Vui lòng đợi xác nhận từ phòng khám.');
+                  window.location.href = '/payments/history';
+              } else {
+                  alert('Có lỗi xảy ra: ' + data.message);
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Có lỗi xảy ra khi xử lý thanh toán');
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -58,43 +58,85 @@
                             <span
                               th:case="'BANK_TRANSFER'"
                               class="badge bg-primary"
-                              >Chuyển khoản</span
                             >
-                            <span th:case="'MOMO'" class="badge bg-success"
-                              >MoMo</span
+                              <i class="bi bi-bank"></i> Chuyển khoản
+                            </span>
+                            <span th:case="'MOMO'" class="badge bg-success">
+                              <i class="bi bi-wallet2"></i> MoMo
+                            </span>
+                            <span th:case="'CASH'" class="badge bg-secondary">
+                              <i class="bi bi-cash"></i> Tiền mặt
+                            </span>
+                            <span
+                              th:case="'POST_PAYMENT'"
+                              class="badge bg-info"
                             >
-                            <span th:case="'CASH'" class="badge bg-secondary"
-                              >Tiền mặt</span
-                            >
+                              <i class="bi bi-credit-card"></i> Thanh toán sau
+                            </span>
                           </span>
                         </td>
                         <td>
                           <span th:switch="${payment.status}">
-                            <span th:case="'PENDING'" class="badge bg-warning"
-                              >Chờ thanh toán</span
+                            <span th:case="'PENDING'" class="badge bg-warning">
+                              <i class="bi bi-clock"></i> Chờ thanh toán
+                            </span>
+                            <span
+                              th:case="'COMPLETED'"
+                              class="badge bg-success"
                             >
-                            <span th:case="'COMPLETED'" class="badge bg-success"
-                              >Đã thanh toán</span
-                            >
-                            <span th:case="'FAILED'" class="badge bg-danger"
-                              >Thất bại</span
-                            >
+                              <i class="bi bi-check-circle"></i> Thanh toán
+                              thành công
+                            </span>
+                            <span th:case="'CONFIRMED'" class="badge bg-info">
+                              <i class="bi bi-bank"></i> Đã chuyển khoản
+                            </span>
+                            <span th:case="'FAILED'" class="badge bg-danger">
+                              <i class="bi bi-x-circle"></i> Thất bại
+                            </span>
+                            <span th:case="'SUCCESS'" class="badge bg-success">
+                              <i class="bi bi-check-circle-fill"></i> Thanh toán
+                              thành công
+                            </span>
                           </span>
                         </td>
                         <td>
-                          <a
-                            th:href="@{/payment/process/{id}(id=${payment.id})}"
-                            class="btn btn-sm btn-primary"
-                            th:if="${payment.status == 'PENDING'}"
-                          >
-                            <i class="bi bi-credit-card"></i> Thanh toán
-                          </a>
-                          <a
-                            th:href="@{/appointments/{id}(id=${payment.appointment.id})}"
-                            class="btn btn-sm btn-info"
-                          >
-                            <i class="bi bi-calendar-check"></i> Xem lịch hẹn
-                          </a>
+                          <div class="btn-group" role="group">
+                            <a
+                              th:href="@{/payment/process/{id}(id=${payment.id})}"
+                              class="btn btn-sm btn-primary"
+                              th:if="${payment.status == 'PENDING' && payment.paymentMethod == 'BANK_TRANSFER'}"
+                            >
+                              <i class="bi bi-bank"></i> Chuyển khoản
+                            </a>
+                            <a
+                              th:href="@{/payment/process/{id}(id=${payment.id})}"
+                              class="btn btn-sm btn-info"
+                              th:if="${payment.status == 'PENDING' && payment.paymentMethod == 'POST_PAYMENT'}"
+                            >
+                              <i class="bi bi-credit-card"></i> Thanh toán sau
+                            </a>
+                            <a
+                              th:href="@{/appointments/{id}(id=${payment.appointment.id})}"
+                              class="btn btn-sm btn-info"
+                            >
+                              <i class="bi bi-calendar-check"></i> Xem lịch hẹn
+                            </a>
+                            <button
+                              th:if="${payment.status == 'CONFIRMED'}"
+                              class="btn btn-sm btn-success"
+                              disabled
+                            >
+                              <i class="bi bi-check-circle"></i> Đã xác nhận
+                            </button>
+                            <button
+                              th:if="${payment.status == 'SUCCESS'}"
+                              class="btn btn-sm btn-success"
+                              disabled
+                            >
+                              <i class="bi bi-check-circle-fill"></i> Đã thanh
+                              toán
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
