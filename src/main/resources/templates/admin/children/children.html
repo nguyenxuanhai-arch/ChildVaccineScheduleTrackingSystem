@@ -2,11 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Admin - Vaccine Package Management</title>
+  <title>Admin - Quản lý Hồ sơ Trẻ em</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="title" content="Admin - Vaccine Package Management" />
-  <meta name="author" content="Your Name/Company" />
-  <meta name="description" content="Admin dashboard for Child Vaccine Schedule Tracking System - Vaccine Package Management." />
+  <meta name="title" content="Admin - Quản lý Hồ sơ Trẻ em" />
   <!-- Fonts -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
   <!-- OverlayScrollbars -->
@@ -15,6 +13,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
   <!-- AdminLTE -->
   <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <div class="app-wrapper">
@@ -72,7 +72,7 @@
 
             <!-- Quản lí Hồ sơ trẻ em -->
             <li class="nav-item">
-              <a th:href="@{/admin/children}" class="nav-link">
+              <a th:href="@{/admin/children}" class="nav-link active">
                 <i class="nav-icon bi bi-person-badge"></i>
                 <p>Quản lí Hồ sơ trẻ em</p>
               </a>
@@ -104,7 +104,7 @@
 
             <!-- Quản lí Thanh toán -->
             <li class="nav-item">
-              <a th:href="@{/admin/payments}" class="nav-link active">
+              <a th:href="@{/admin/payments}" class="nav-link">
                 <i class="nav-icon bi bi-credit-card"></i>
                 <p>Quản lí Thanh toán</p>
               </a>
@@ -129,7 +129,7 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-6">
-              <h3 class="mb-0">Quản lí Gói Vaccine</h3>
+              <h3 class="mb-0">Quản lí Hồ sơ Trẻ em</h3>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-end">
@@ -137,7 +137,7 @@
                   <a th:href="@{/admin}">Home</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                  Quản lí Gói Vaccine
+                  Quản lí Hồ sơ Trẻ em
                 </li>
               </ol>
             </div>
@@ -147,30 +147,14 @@
 
       <div class="app-content">
         <div class="container-fluid">
-          <div class="row mb-3">
-            <div class="col-12">
-              <ul class="nav nav-tabs">
-                <li class="nav-item">
-                  <a class="nav-link" th:classappend="${packageType == null ? 'active' : ''}" th:href="@{/admin/packages}">All</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" th:classappend="${packageType == 'Standard' ? 'active' : ''}" th:href="@{/admin/packages/standard}">Trọn gói</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" th:classappend="${packageType == 'Custom' ? 'active' : ''}" th:href="@{/admin/packages/custom}">Cá thể hóa</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          
           <div class="row">
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Danh sách Gói Vaccine</h3>
+                  <h3 class="card-title">Danh sách Hồ sơ Trẻ em</h3>
                   <div class="card-tools">
-                    <a th:href="@{/admin/packages/new}" class="btn btn-primary btn-sm">
-                      <i class="bi bi-plus-lg"></i> Thêm Gói Vaccine
+                    <a th:href="@{/admin/children/new}" class="btn btn-primary btn-sm">
+                      <i class="bi bi-plus"></i> Thêm mới
                     </a>
                   </div>
                 </div>
@@ -184,47 +168,63 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>
 
-                  <table id="packageTable" class="table table-bordered table-striped">
+                  <!-- Thông tin hệ thống -->
+                  <div class="alert alert-info mb-3" th:if="${children != null}">
+                    <p><strong>Số lượng hồ sơ trẻ em:</strong> <span th:text="${children.size()}">0</span></p>
+                    <p th:if="${debug_parent_count != null}"><strong>Số lượng phụ huynh:</strong> <span th:text="${debug_parent_count}">0</span></p>
+                    <div th:if="${children.empty}" class="mt-2">
+                      <p class="mb-0">Không có dữ liệu hồ sơ trẻ em. Vui lòng thêm mới.</p>
+                    </div>
+                  </div>
+
+                  <!-- Bảng danh sách trẻ em -->
+                  <table id="childrenTable" class="table table-bordered table-striped">
                     <thead>
                       <tr>
                         <th>ID</th>
-                        <th>Tên</th>
-                        <th>Loại gói</th>
-                        <th>Giá (VND)</th>
-                        <th>Độ tuổi (tháng)</th>
-                        <th>Số lượng vắc xin</th>
-                        <th>Hình ảnh</th>
+                        <th>Họ tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Giới tính</th>
+                        <th>Phụ huynh</th>
+                        <th>Địa chỉ</th>
                         <th>Thao tác</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr th:each="package : ${packages}">
-                        <td th:text="${package.id}"></td>
-                        <td th:text="${package.name}"></td>
-                        <td th:text="${package.type.displayName}"></td>
-                        <td th:text="${#numbers.formatDecimal(package.price, 0, 'COMMA', 0, 'POINT')}"></td>
-                        <td th:text="${package.ageRangeStart} + ' - ' + ${package.ageRangeEnd}"></td>
-                        <td th:text="${package.vaccines.size()}"></td>
+                      <tr th:each="child : ${children}">
+                        <td th:text="${child.id}"></td>
+                        <td th:text="${child.name}"></td>
+                        <td th:text="${child.dob != null ? #temporals.format(child.dob, 'dd/MM/yyyy') : 'N/A'}"></td>
+                        <td th:text="${child.gender == 'MALE' ? 'Nam' : (child.gender == 'FEMALE' ? 'Nữ' : 'Khác')}"></td>
                         <td>
-                          <img th:if="${package.imageBase64}" th:src="'data:image/jpeg;base64,' + ${package.imageBase64}" alt="Package Image" style="width: 100px; height: auto" />
-                          <span th:unless="${package.imageBase64}">No image</span>
+                          <span th:if="${child.parent != null}" class="badge bg-success me-1">
+                            <i class="bi bi-check-circle"></i>
+                          </span>
+                          <span th:text="${child.parent != null ? child.parent.name + ' (' + child.parent.username + ')' : (child.parentUsername != null ? child.parentUsername + ' (chưa liên kết)' : 'Chưa có phụ huynh')}"></span>
+                          <span th:if="${child.parent == null}" class="badge bg-warning text-dark ms-1">
+                            <i class="bi bi-exclamation-triangle"></i>
+                          </span>
                         </td>
+                        <td th:text="${child.parent != null && child.parent.address != null ? child.parent.address : 'N/A'}"></td>
                         <td>
-                          <div class="btn-group" role="group">
-                            <a th:href="@{/admin/packages/edit/{id}(id=${package.id})}" class="btn btn-primary btn-sm">
-                              <i class="bi bi-pencil"></i>
+                          <div class="btn-group">
+                            <a th:href="@{/admin/children/{id}(id=${child.id})}" class="btn btn-sm btn-info">
+                              <i class="bi bi-eye"></i> Chi tiết
                             </a>
-                            <form th:action="@{/admin/packages/delete/{id}(id=${package.id})}" method="post" style="display: inline" 
-                                onsubmit="return confirm('Are you sure you want to delete this package?');">
-                              <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </form>
+                            <a th:href="@{/admin/children/edit/{id}(id=${child.id})}" class="btn btn-sm btn-warning">
+                              <i class="bi bi-pencil"></i> Sửa
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger" 
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                    th:data-child-id="${child.id}" 
+                                    th:data-child-name="${child.name}">
+                              <i class="bi bi-trash"></i> Xóa
+                            </button>
                           </div>
                         </td>
                       </tr>
-                      <tr th:if="${#lists.isEmpty(packages)}">
-                        <td colspan="8" class="text-center">No packages found.</td>
+                      <tr th:if="${#lists.isEmpty(children)}">
+                        <td colspan="7" class="text-center">Không có dữ liệu hồ sơ trẻ em nào</td>
                       </tr>
                     </tbody>
                   </table>
@@ -235,6 +235,29 @@
         </div>
       </div>
     </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa hồ sơ trẻ <span id="childNameToDelete"></span>?</p>
+            <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan đến hồ sơ này.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <form id="deleteForm" method="post" action="#">
+              <input type="hidden" name="_csrf" th:if="${_csrf != null}" th:value="${_csrf.token}" />
+              <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <footer class="app-footer">
       <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
@@ -250,6 +273,49 @@
   <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
   <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    $(document).ready(function() {
+        // Khởi tạo DataTable
+        $('#childrenTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ mục",
+                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+                "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+                "infoFiltered": "(được lọc từ _MAX_ mục)",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                },
+                "emptyTable": "Không có dữ liệu"
+            }
+        });
+        
+        // Xử lý xóa
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var childId = button.data('child-id');
+            var childName = button.data('child-name');
+            
+            var modal = $(this);
+            modal.find('#childNameToDelete').text(childName);
+            modal.find('#deleteForm').attr('action', '/admin/children/delete/' + childId);
+        });
+    });
+  </script>
 </body>
 </html> 

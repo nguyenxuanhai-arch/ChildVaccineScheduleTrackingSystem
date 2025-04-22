@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xác nhận thanh toán</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, var(--primary-color) 0%, #2979ff 100%);
+            --secondary-gradient: linear-gradient(135deg, var(--secondary-color) 0%, #45cea2 100%);
+            --card-border-radius: 12px;
+            --button-border-radius: 8px;
+        }
+
+        .page-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .confirmation-card {
+            background-color: var(--card-bg);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .confirmation-header h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirmation-header .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1rem;
+        }
+
+        .appointment-details {
+            background-color: rgba(var(--primary-color-rgb), 0.05);
+            border-radius: var(--card-border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        .appointment-details h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 180px;
+        }
+
+        .payment-methods {
+            margin-top: 2rem;
+        }
+
+        .payment-methods h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .payment-option {
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(var(--primary-color-rgb), 0.05);
+        }
+
+        .payment-option-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .payment-option-header i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+
+        .payment-option-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .payment-option-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .bank-details {
+            background-color: var(--bg-color);
+            border-radius: var(--card-border-radius);
+            padding: 1.25rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .bank-details.show {
+            display: block;
+        }
+
+        .transaction-form {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .transaction-form.show {
+            display: block;
+        }
+
+        .confirmation-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: var(--button-border-radius);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--secondary-gradient);
+            border: none;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-card {
+                padding: 1.5rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                margin-bottom: 0.25rem;
+            }
+
+            .confirmation-actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .confirmation-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="page-container">
+        <div class="confirmation-card">
+            <div class="confirmation-header">
+                <i class="bi bi-check-circle-fill success-icon"></i>
+                <h1>Đặt lịch thành công!</h1>
+                <p class="lead">Vui lòng xác nhận phương thức thanh toán cho lịch tiêm của bạn</p>
+            </div>
+
+            <div class="appointment-details">
+                <h3><i class="bi bi-calendar-check"></i> Thông tin lịch hẹn</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Mã lịch hẹn:</div>
+                    <div class="detail-value" th:text="${appointment.id}">123456</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tên trẻ:</div>
+                    <div class="detail-value" th:text="${appointment.child.name}">Nguyễn Văn A</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Ngày tiêm:</div>
+                    <div class="detail-value" th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}">01/01/2023</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Giờ tiêm:</div>
+                    <div class="detail-value" th:text="${appointment.appointmentTime}">09:30</div>
+                </div>
+                <div class="detail-row" th:if="${appointment.type == 'VACCINE'}">
+                    <div class="detail-label">Vắc xin:</div>
+                    <div class="detail-value" th:text="${appointment.vaccine.name}">Vắc xin COVID-19</div>
+                </div>
+                <div class="detail-row" th:if="${appointment.type == 'PACKAGE'}">
+                    <div class="detail-label">Gói vắc xin:</div>
+                    <div class="detail-value" th:text="${appointment.vaccinePackage.name}">Gói tiêm chủng cơ bản</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Số tiền:</div>
+                    <div class="detail-value fw-bold" th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,000,000 VNĐ</div>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <h3><i class="bi bi-credit-card"></i> Chọn phương thức thanh toán</h3>
+                
+                <div class="payment-option" id="bankTransferOption" onclick="selectPaymentMethod('BANK_TRANSFER')">
+                    <div class="payment-option-header">
+                        <i class="bi bi-bank text-primary"></i>
+                        <h4>Chuyển khoản ngân hàng</h4>
+                    </div>
+                    <div class="payment-option-description">
+                        Chuyển khoản qua tài khoản ngân hàng của phòng khám trước khi đến tiêm
+                    </div>
+                    
+                    <div class="bank-details" id="bankDetails">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Ngân hàng</th>
+                                    <td>Vietcombank</td>
+                                </tr>
+                                <tr>
+                                    <th>Số tài khoản</th>
+                                    <td>1234567890</td>
+                                </tr>
+                                <tr>
+                                    <th>Chủ tài khoản</th>
+                                    <td>TRUNG TÂM Y TẾ TIÊM CHỦNG</td>
+                                </tr>
+                                <tr>
+                                    <th>Số tiền</th>
+                                    <td th:text="${#numbers.formatDecimal(amount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,000,000 VNĐ</td>
+                                </tr>
+                                <tr>
+                                    <th>Nội dung</th>
+                                    <td th:text="'TTTC ' + ${appointment.id}">TTTC 123456</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <form id="bankTransferForm" class="transaction-form">
+                            <div class="mb-3">
+                                <label for="transactionId" class="form-label">Mã giao dịch (nếu có)</label>
+                                <input type="text" class="form-control" id="transactionId" placeholder="Nhập mã giao dịch của bạn">
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="confirmBankTransfer" required>
+                                <label class="form-check-label" for="confirmBankTransfer">
+                                    Tôi xác nhận đã chuyển khoản đầy đủ số tiền trên
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="confirmPayment('BANK_TRANSFER')">
+                                <i class="bi bi-check-circle"></i> Xác nhận đã chuyển khoản
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="payment-option" id="cashOption" onclick="selectPaymentMethod('CASH')">
+                    <div class="payment-option-header">
+                        <i class="bi bi-cash-coin text-success"></i>
+                        <h4>Thanh toán tiền mặt</h4>
+                    </div>
+                    <div class="payment-option-description">
+                        Thanh toán trực tiếp bằng tiền mặt tại quầy lễ tân khi đến tiêm
+                    </div>
+                    
+                    <form id="cashForm" class="transaction-form">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmCash" required>
+                            <label class="form-check-label" for="confirmCash">
+                                Tôi sẽ thanh toán tiền mặt khi đến tiêm vắc xin
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="confirmPayment('CASH')">
+                            <i class="bi bi-check-circle"></i> Xác nhận thanh toán tiền mặt
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle-fill"></i> Vui lòng thanh toán trước ngày tiêm để đảm bảo lịch hẹn của bạn được xác nhận.
+            </div>
+
+            <div class="confirmation-actions">
+                <a href="/appointments" class="btn btn-outline-secondary">
+                    <i class="bi bi-calendar-check"></i> Xem lịch tiêm đã đặt
+                </a>
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="bi bi-house"></i> Quay về trang chủ
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedMethod = null;
+        
+        function selectPaymentMethod(method) {
+            selectedMethod = method;
+            
+            // Reset all options
+            document.getElementById('bankTransferOption').classList.remove('selected');
+            document.getElementById('cashOption').classList.remove('selected');
+            document.getElementById('bankDetails').classList.remove('show');
+            document.getElementById('bankTransferForm').classList.remove('show');
+            document.getElementById('cashForm').classList.remove('show');
+            
+            // Highlight selected option and show relevant form
+            if (method === 'BANK_TRANSFER') {
+                document.getElementById('bankTransferOption').classList.add('selected');
+                document.getElementById('bankDetails').classList.add('show');
+                document.getElementById('bankTransferForm').classList.add('show');
+            } else if (method === 'CASH') {
+                document.getElementById('cashOption').classList.add('selected');
+                document.getElementById('cashForm').classList.add('show');
+            }
+        }
+        
+        function confirmPayment(method) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                window.location.href = '/auth/login';
+                return;
+            }
+            
+            // Validate form
+            if (method === 'BANK_TRANSFER') {
+                if (!document.getElementById('confirmBankTransfer').checked) {
+                    alert('Vui lòng xác nhận đã chuyển khoản');
+                    return;
+                }
+            } else if (method === 'CASH') {
+                if (!document.getElementById('confirmCash').checked) {
+                    alert('Vui lòng xác nhận thanh toán tiền mặt');
+                    return;
+                }
+            }
+            
+            // Prepare payment data
+            const appointmentId = [[${appointment.id}]];
+            const amount = [[${amount}]];
+            const transactionId = method === 'BANK_TRANSFER' ? document.getElementById('transactionId').value : null;
+            
+            const paymentData = {
+                appointmentId: appointmentId,
+                amount: amount,
+                paymentMethod: method,
+                status: 'PENDING',
+                notes: method === 'BANK_TRANSFER' ? 'Thanh toán chuyển khoản' : 'Thanh toán tiền mặt khi đến tiêm'
+            };
+            
+            if (transactionId) {
+                paymentData.transactionId = transactionId;
+            }
+            
+            // Create loading state
+            const actionButton = method === 'BANK_TRANSFER' 
+                ? document.querySelector('#bankTransferForm .btn')
+                : document.querySelector('#cashForm .btn');
+            
+            const originalText = actionButton.innerHTML;
+            actionButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...`;
+            actionButton.disabled = true;
+            
+            // Call API to create payment
+            axios.post('/payments/create', paymentData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.data.success) {
+                    const paymentId = response.data.payment.id;
+                    
+                    // Update payment status
+                    return axios.post('/payments/confirm', {
+                        paymentId: paymentId,
+                        status: 'PENDING',
+                        notes: method === 'BANK_TRANSFER' ? 'Đã xác nhận chuyển khoản' : 'Đã xác nhận thanh toán tiền mặt'
+                    }, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                } else {
+                    throw new Error(response.data.message || 'Có lỗi xảy ra khi tạo thanh toán');
+                }
+            })
+            .then(confirmResponse => {
+                if (confirmResponse.data.success) {
+                    // Show success message and redirect
+                    alert('Xác nhận thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.');
+                    window.location.href = '/payments/history';
+                } else {
+                    throw new Error(confirmResponse.data.message || 'Có lỗi xảy ra khi xác nhận thanh toán');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra: ' + (error.response?.data?.message || error.message || 'Không thể xử lý thanh toán'));
+                
+                // Reset button
+                actionButton.innerHTML = originalText;
+                actionButton.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html> 

@@ -27,6 +27,9 @@ public class AuthController {
     @Autowired
     private AppointmentService appointmentService;
 
+    @Autowired
+    private edu.uth.childvaccinesystem.services.UserService userService;
+
     @GetMapping("/register")
     public String registerUser() {
         return "auth/register"; // Ensure this maps to the correct template path
@@ -206,17 +209,50 @@ public class AuthController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // Clear JWT token from cookies
-        jakarta.servlet.http.Cookie jwtCookie = new jakarta.servlet.http.Cookie("jwt", null);
-        jwtCookie.setMaxAge(0);
-        jwtCookie.setPath("/");
-        response.addCookie(jwtCookie);
-
-        // Clear security context
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/";
+        return "redirect:/login?logout";
+    }
+    
+    @GetMapping("/change-password")
+    public String showChangePasswordForm() {
+        return "auth/change-password";
+    }
+    
+    @PostMapping("/change-password")
+    public String changePassword(
+            @RequestParam("currentPassword") String currentPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmPassword") String confirmPassword,
+            RedirectAttributes redirectAttributes) {
+        
+        // Validate input
+        if (!newPassword.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp");
+            return "redirect:/auth/change-password";
+        }
+        
+        if (newPassword.length() < 6) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự");
+            return "redirect:/auth/change-password";
+        }
+        
+        // Get current logged in user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        
+        try {
+            userService.changePassword(username, currentPassword, newPassword);
+            redirectAttributes.addFlashAttribute("success", "Mật khẩu đã được thay đổi thành công");
+            return "redirect:/auth/profile";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", "Mật khẩu hiện tại không đúng");
+            return "redirect:/auth/change-password";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+            return "redirect:/auth/change-password";
+        }
     }
 }

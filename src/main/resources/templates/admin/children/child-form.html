@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Quản lý Hồ sơ Trẻ em</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="Admin - Quản lý Hồ sơ Trẻ em" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link active">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0" th:text="${child.id != null ? 'Chỉnh sửa Hồ sơ Trẻ em' : 'Thêm mới Hồ sơ Trẻ em'}">Hồ sơ Trẻ em</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin/children}">Quản lí Hồ sơ Trẻ em</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${child.id != null ? 'Chỉnh sửa' : 'Thêm mới'}">
+                  Form
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title" th:text="${child.id != null ? 'Chỉnh sửa thông tin' : 'Nhập thông tin'}">Thông tin trẻ em</h3>
+                </div>
+                <div class="card-body">
+                  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+
+                  <form th:action="@{/admin/children/save}" method="post" th:object="${child}">
+                    <input type="hidden" th:field="*{id}" />
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="name" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="dob" class="form-label">Ngày sinh <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="dob" th:field="*{dob}" required>
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="gender" class="form-label">Giới tính <span class="text-danger">*</span></label>
+                        <select class="form-select" id="gender" th:field="*{gender}" required>
+                          <option value="">-- Chọn giới tính --</option>
+                          <option value="MALE">Nam</option>
+                          <option value="FEMALE">Nữ</option>
+                          <option value="OTHER">Khác</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="parentId" class="form-label">Phụ huynh <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                          <select class="form-select" id="parentId" name="parentId" required>
+                            <option value="">-- Chọn phụ huynh --</option>
+                            <option th:each="parent : ${parents}" 
+                                    th:value="${parent.id}" 
+                                    th:text="${parent.name + ' (' + parent.username + ')' + (parent.role != null ? ' [' + parent.role + ']' : '')}"
+                                    th:selected="${child.parent != null && child.parent.id == parent.id}">
+                              Tên phụ huynh
+                            </option>
+                          </select>
+                          <a href="/admin/users/new?role=PARENT" class="btn btn-outline-secondary" title="Thêm phụ huynh mới" target="_blank">
+                            <i class="bi bi-plus-circle"></i>
+                          </a>
+                        </div>
+                        <div th:if="${parents.empty}" class="alert alert-warning mt-2">
+                          <i class="bi bi-exclamation-triangle"></i> Không tìm thấy phụ huynh nào trong hệ thống.
+                          <a href="/admin/users/new?role=PARENT" target="_blank">Bấm vào đây</a> để thêm phụ huynh mới.
+                        </div>
+                        <div class="form-text">
+                          <span th:if="${child.parent != null}" class="text-success">
+                            <i class="bi bi-check-circle"></i> 
+                            Đã liên kết với phụ huynh: <strong th:text="${child.parent.name}"></strong>
+                          </span>
+                          <span th:if="${child.parent == null && child.parentUsername != null}" class="text-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Phụ huynh có username: <strong th:text="${child.parentUsername}"></strong> chưa được liên kết đúng
+                          </span>
+                          <span th:if="${child.parent == null && child.parentUsername == null}" class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Vui lòng chọn phụ huynh để liên kết với trẻ
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="placeOfBirth" class="form-label">Nơi sinh</label>
+                        <input type="text" class="form-control" id="placeOfBirth" th:field="*{placeOfBirth}">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="nationality" class="form-label">Quốc tịch</label>
+                        <input type="text" class="form-control" id="nationality" th:field="*{nationality}" placeholder="Việt Nam">
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <label for="address" class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="address" th:field="*{address}">
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="bloodType" class="form-label">Nhóm máu</label>
+                        <select class="form-select" id="bloodType" th:field="*{bloodType}">
+                          <option value="">-- Chọn nhóm máu --</option>
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="AB">AB</option>
+                          <option value="O">O</option>
+                          <option value="A_POSITIVE">A+</option>
+                          <option value="A_NEGATIVE">A-</option>
+                          <option value="B_POSITIVE">B+</option>
+                          <option value="B_NEGATIVE">B-</option>
+                          <option value="AB_POSITIVE">AB+</option>
+                          <option value="AB_NEGATIVE">AB-</option>
+                          <option value="O_POSITIVE">O+</option>
+                          <option value="O_NEGATIVE">O-</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="healthInsuranceNumber" class="form-label">Số thẻ bảo hiểm y tế</label>
+                        <input type="text" class="form-control" id="healthInsuranceNumber" th:field="*{healthInsuranceNumber}">
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <label for="allergies" class="form-label">Dị ứng (nếu có)</label>
+                        <textarea class="form-control" id="allergies" th:field="*{allergies}" rows="3"></textarea>
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <label for="medicalHistory" class="form-label">Tiền sử bệnh (nếu có)</label>
+                        <textarea class="form-control" id="medicalHistory" th:field="*{medicalHistory}" rows="3"></textarea>
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <div class="col-md-12">
+                        <label for="notes" class="form-label">Ghi chú</label>
+                        <textarea class="form-control" id="notes" th:field="*{notes}" rows="3"></textarea>
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                      <a th:href="@{/admin/children}" class="btn btn-secondary">Quay lại</a>
+                      <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Your Company</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+</body>
+</html> 

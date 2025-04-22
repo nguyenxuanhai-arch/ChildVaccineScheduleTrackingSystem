@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Chi tiết Hồ sơ Trẻ em</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="Admin - Chi tiết Hồ sơ Trẻ em" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link active">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Chi tiết Hồ sơ Trẻ em</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin/children}">Quản lí Hồ sơ Trẻ em</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Chi tiết
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Thông tin trẻ em</h3>
+                  <div class="card-tools">
+                    <a th:href="@{/admin/children/edit/{id}(id=${child.id})}" class="btn btn-warning btn-sm">
+                      <i class="bi bi-pencil"></i> Chỉnh sửa
+                    </a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <table class="table table-bordered">
+                        <tr>
+                          <th style="width: 30%">ID</th>
+                          <td th:text="${child.id}">1</td>
+                        </tr>
+                        <tr>
+                          <th>Họ và tên</th>
+                          <td th:text="${child.name}">Nguyễn Văn A</td>
+                        </tr>
+                        <tr>
+                          <th>Ngày sinh</th>
+                          <td th:text="${child.dob != null ? #temporals.format(child.dob, 'dd/MM/yyyy') : 'N/A'}">01/01/2020</td>
+                        </tr>
+                        <tr>
+                          <th>Giới tính</th>
+                          <td th:text="${child.gender == 'MALE' ? 'Nam' : (child.gender == 'FEMALE' ? 'Nữ' : 'Khác')}">Nam</td>
+                        </tr>
+                        <tr>
+                          <th>Nơi sinh</th>
+                          <td th:text="${child.placeOfBirth != null ? child.placeOfBirth : 'N/A'}">Hà Nội</td>
+                        </tr>
+                        <tr>
+                          <th>Quốc tịch</th>
+                          <td th:text="${child.nationality != null ? child.nationality : 'Việt Nam'}">Việt Nam</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="col-md-6">
+                      <table class="table table-bordered">
+                        <tr>
+                          <th style="width: 30%">Phụ huynh</th>
+                          <td>
+                            <span th:if="${child.parent != null}">
+                              <a th:href="@{/admin/users/{id}(id=${child.parent.id})}" class="text-primary" th:text="${child.parent.name + ' (' + child.parent.username + ')'}">Nguyễn Văn B (parent1)</a>
+                            </span>
+                            <span th:if="${child.parent == null && child.parentUsername != null}" th:text="${child.parentUsername}">parent1</span>
+                            <span th:if="${child.parent == null && child.parentUsername == null}">N/A</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Địa chỉ</th>
+                          <td th:text="${child.address != null ? child.address : 'N/A'}">Hà Nội</td>
+                        </tr>
+                        <tr>
+                          <th>Nhóm máu</th>
+                          <td th:text="${child.bloodType != null ? child.bloodType : 'N/A'}">O</td>
+                        </tr>
+                        <tr>
+                          <th>Số BHYT</th>
+                          <td th:text="${child.healthInsuranceNumber != null ? child.healthInsuranceNumber : 'N/A'}">BH12345678</td>
+                        </tr>
+                        <tr>
+                          <th>Dị ứng</th>
+                          <td th:text="${child.allergies != null && !child.allergies.isEmpty() ? child.allergies : 'Không'}">Không</td>
+                        </tr>
+                        <tr>
+                          <th>Tiền sử bệnh</th>
+                          <td th:text="${child.medicalHistory != null && !child.medicalHistory.isEmpty() ? child.medicalHistory : 'Không'}">Không</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="row mt-4" th:if="${child.notes != null && !child.notes.isEmpty()}">
+                    <div class="col-12">
+                      <div class="card card-outline card-info">
+                        <div class="card-header">
+                          <h3 class="card-title">Ghi chú</h3>
+                        </div>
+                        <div class="card-body">
+                          <p th:text="${child.notes}">Ghi chú về trẻ em...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danh sách lịch hẹn tiêm -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Lịch sử tiêm chủng</h3>
+                  <div class="card-tools">
+                    <a th:href="@{/admin/appointments/new(childId=${child.id})}" class="btn btn-primary btn-sm">
+                      <i class="bi bi-plus"></i> Thêm lịch hẹn
+                    </a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <table id="appointmentsTable" class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Ngày hẹn</th>
+                        <th>Vaccine/Gói</th>
+                        <th>Trạng thái</th>
+                        <th>Ghi chú</th>
+                        <th>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="appointment : ${appointments}">
+                        <td th:text="${appointment.id}">1</td>
+                        <td th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'dd/MM/yyyy HH:mm') : 'N/A'}">01/01/2023 09:00</td>
+                        <td>
+                          <span th:if="${appointment.vaccine != null}" th:text="${appointment.vaccine.name}">Vaccine A</span>
+                          <span th:if="${appointment.vaccinePackage != null}" th:text="${appointment.vaccinePackage.name + ' (Gói)'}">Gói A</span>
+                          <span th:if="${appointment.vaccine == null && appointment.vaccinePackage == null}">N/A</span>
+                        </td>
+                        <td>
+                          <span th:if="${appointment.status == 'SCHEDULED'}" class="badge bg-primary">Đã lên lịch</span>
+                          <span th:if="${appointment.status == 'COMPLETED'}" class="badge bg-success">Hoàn thành</span>
+                          <span th:if="${appointment.status == 'CANCELLED'}" class="badge bg-danger">Đã hủy</span>
+                          <span th:if="${appointment.status == 'PENDING'}" class="badge bg-warning">Chờ xác nhận</span>
+                          <span th:if="${appointment.status == 'RESCHEDULED'}" class="badge bg-info">Đã đổi lịch</span>
+                          <span th:if="${appointment.status == null || (appointment.status != 'SCHEDULED' && appointment.status != 'COMPLETED' && appointment.status != 'CANCELLED' && appointment.status != 'PENDING' && appointment.status != 'RESCHEDULED')}" 
+                                class="badge bg-secondary" th:text="${appointment.status}">Khác</span>
+                        </td>
+                        <td th:text="${appointment.notes != null && !appointment.notes.isEmpty() ? appointment.notes : 'Không có ghi chú'}">Ghi chú</td>
+                        <td>
+                          <div class="btn-group">
+                            <a th:href="@{/admin/appointments/{id}(id=${appointment.id})}" class="btn btn-sm btn-info">
+                              <i class="bi bi-eye"></i> Chi tiết
+                            </a>
+                            <a th:href="@{/admin/appointments/edit/{id}(id=${appointment.id})}" class="btn btn-sm btn-warning">
+                              <i class="bi bi-pencil"></i> Sửa
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr th:if="${#lists.isEmpty(appointments)}">
+                        <td colspan="6" class="text-center">Chưa có lịch sử tiêm chủng</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Your Company</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    $(document).ready(function() {
+        // Khởi tạo DataTable
+        $('#appointmentsTable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "search": "Tìm kiếm:",
+                "lengthMenu": "Hiển thị _MENU_ mục",
+                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+                "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+                "infoFiltered": "(được lọc từ _MAX_ mục)",
+                "paginate": {
+                    "first": "Đầu",
+                    "last": "Cuối",
+                    "next": "Tiếp",
+                    "previous": "Trước"
+                },
+                "emptyTable": "Không có dữ liệu"
+            }
+        });
+    });
+  </script>
+</body>
+</html> 

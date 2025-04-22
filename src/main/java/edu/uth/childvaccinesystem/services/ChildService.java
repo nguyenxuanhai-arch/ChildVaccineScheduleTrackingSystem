@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 public class ChildService {
@@ -32,12 +33,36 @@ public class ChildService {
     public List<Child> getChildrenByParentUsername(String parentUsername) {
         // Tìm User từ username
         Optional<User> parentOpt = userRepository.findByUsername(parentUsername);  // Sử dụng UserRepository để tìm User
+        
+        // Tìm danh sách trẻ theo cả parent và parentUsername để đảm bảo lấy đầy đủ
+        List<Child> childrenList = new ArrayList<>();
+        
         if (parentOpt.isPresent()) {
             User parent = parentOpt.get();
-            List<Child> children = childRepository.findByParent(parent);  // Sử dụng mối quan hệ với User
-            return children;
+            List<Child> childrenByParent = childRepository.findByParent(parent);  // Sử dụng mối quan hệ với User
+            childrenList.addAll(childrenByParent);
+            
+            // Log debug
+            System.out.println("Found " + childrenByParent.size() + " children by parent object");
         }
-        return List.of(); // Trả về danh sách trống nếu không tìm thấy User
+        
+        // Tìm thêm theo parentUsername để lấy những trường hợp chưa liên kết đúng
+        List<Child> childrenByUsername = childRepository.findByParentUsername(parentUsername);
+        
+        // Log debug
+        System.out.println("Found " + childrenByUsername.size() + " children by parentUsername");
+        
+        // Thêm vào danh sách những child chưa có trong kết quả
+        for (Child child : childrenByUsername) {
+            if (!childrenList.contains(child)) {
+                childrenList.add(child);
+            }
+        }
+        
+        // Log kết quả cuối cùng
+        System.out.println("Total children found for parent " + parentUsername + ": " + childrenList.size());
+        
+        return childrenList;
     }
 
     public Child saveChild(Child child) {

@@ -53,6 +53,43 @@
                 >
                   <i class="fas fa-times-circle"></i> Thất bại
                 </span>
+                <span
+                  th:if="${payment.status == 'CONFIRMED'}"
+                  class="status confirmed"
+                >
+                  <i class="fas fa-check"></i> Đã xác nhận
+                </span>
+                <span
+                  th:if="${payment.status == 'CANCELLED'}"
+                  class="status cancelled"
+                >
+                  <i class="fas fa-ban"></i> Đã hủy
+                </span>
+                <span
+                  th:if="${payment.status == 'REFUNDED'}"
+                  class="status refunded"
+                >
+                  <i class="fas fa-undo"></i> Đã hoàn tiền
+                </span>
+                <span
+                  th:if="${payment.status == 'SUCCESS'}"
+                  class="status completed"
+                >
+                  <i class="fas fa-check-circle"></i> Thành công
+                </span>
+                <span
+                  th:if="${payment.status != 'COMPLETED' && payment.status != 'PENDING' && payment.status != 'FAILED' && payment.status != 'CONFIRMED' && payment.status != 'CANCELLED' && payment.status != 'REFUNDED' && payment.status != 'SUCCESS'}"
+                  class="status default"
+                >
+                  <i class="fas fa-info-circle"></i> 
+                  <span th:switch="${payment.status}">
+                    <span th:case="'PROCESSING'">Đang xử lý</span>
+                    <span th:case="'PARTIAL'">Thanh toán một phần</span>
+                    <span th:case="'EXPIRED'">Đã hết hạn</span>
+                    <span th:case="'DECLINED'">Bị từ chối</span>
+                    <span th:case="*" th:text="${payment.status}"></span>
+                  </span>
+                </span>
               </td>
               <td>
                 <a
@@ -117,6 +154,26 @@
       .failed {
         background-color: rgba(220, 53, 69, 0.1);
         color: var(--danger-color);
+      }
+
+      .confirmed {
+        background-color: rgba(0, 123, 255, 0.1);
+        color: #0d6efd;
+      }
+
+      .cancelled {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+      }
+
+      .refunded {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: #17a2b8;
+      }
+
+      .default {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
       }
 
       .appointment-link {

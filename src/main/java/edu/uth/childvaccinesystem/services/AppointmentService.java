@@ -151,4 +151,8 @@ public class AppointmentService {
         child.getAppointments().clear();
         child.getAppointments().addAll(childAppointments);
     }
+
+    public void saveAppointment(Appointment appointment) {
+        appointmentRepository.save(appointment);
+    }
 }

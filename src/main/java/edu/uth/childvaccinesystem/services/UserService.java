@@ -69,21 +69,50 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(User user) {
-        // Kiểm tra trùng lặp username
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
-
-        // Kiểm tra trùng lặp email
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
-        // Mã hóa mật khẩu nếu là người dùng mới
+        // Kiểm tra ID để phân biệt giữa tạo mới và cập nhật
         if (user.getId() == null) {
+            // Đây là tạo mới - kiểm tra trùng lặp username và email
+            if (userRepository.existsByUsername(user.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
+            
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new RuntimeException("Email already exists");
+            }
+            
+            // Mã hóa mật khẩu cho người dùng mới
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            // Đây là cập nhật - lấy người dùng hiện tại
+            User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            // Chỉ kiểm tra trùng lặp username nếu username thay đổi
+            if (!existingUser.getUsername().equals(user.getUsername()) 
+                    && userRepository.existsByUsername(user.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
+            
+            // Chỉ kiểm tra trùng lặp email nếu email thay đổi
+            if (!existingUser.getEmail().equals(user.getEmail()) 
+                    && userRepository.existsByEmail(user.getEmail())) {
+                throw new RuntimeException("Email already exists");
+            }
+            
+            // Giữ nguyên mật khẩu hiện tại nếu không cung cấp mật khẩu mới
+            if (user.getPassword() == null || user.getPassword().isEmpty()) {
+                user.setPassword(existingUser.getPassword());
+            } else {
+                // Mã hóa mật khẩu mới nếu được cung cấp
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+            
+            // Đảm bảo giữ nguyên createdAt
+            if (user.getCreatedAt() == null) {
+                user.setCreatedAt(existingUser.getCreatedAt());
+            }
         }
-
+        
         return userRepository.save(user);
     }
 
@@ -136,5 +165,60 @@ public class UserService implements UserDetailsService {
         } catch (NumberFormatException e) {
             return userRepository.findByUsername(idOrUsername).orElse(null);
         }
+    }
+
+    public List<User> getUsersByRole(String role) {
+        // Kiểm tra và chuẩn hóa định dạng role
+        if (role == null || role.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
+        // Nếu tên vai trò không bắt đầu bằng "ROLE_", chuẩn hóa
+        String normalizedRole = role;
+        if (!role.startsWith("ROLE_")) {
+            normalizedRole = "ROLE_" + role;
+        }
+        
+        // Log debug
+        System.out.println("Searching for users with role: " + normalizedRole + " (original: " + role + ")");
+        
+        // Tìm kiếm linh hoạt hơn: thử cả với và không có prefix ROLE_
+        List<User> users = userRepository.findByRole(normalizedRole);
+        if (users.isEmpty() && role.startsWith("ROLE_")) {
+            // Nếu không tìm thấy với ROLE_ prefix, thử tìm không có prefix
+            String withoutPrefix = role.substring(5); // Bỏ "ROLE_"
+            System.out.println("Not found with ROLE_ prefix, trying without: " + withoutPrefix);
+            users = userRepository.findByRole(withoutPrefix);
+        }
+        
+        // Log số lượng tìm thấy
+        System.out.println("Found " + users.size() + " users with role: " + role);
+        
+        return users;
+    }
+    
+    /**
+     * Change password for a user
+     * @param username The username of the user
+     * @param currentPassword The current password
+     * @param newPassword The new password to set
+     * @return true if password changed successfully, false otherwise
+     * @throws UsernameNotFoundException if user not found
+     * @throws IllegalArgumentException if current password is incorrect
+     */
+    public boolean changePassword(String username, String currentPassword, String newPassword) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+        
+        // Set new password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        return true;
     }
 }

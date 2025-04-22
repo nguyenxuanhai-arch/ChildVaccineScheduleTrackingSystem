@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Quản lý Thanh toán</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="Admin - Quản lý Thanh toán" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link active">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Quản lí Thanh toán</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Quản lí Thanh toán
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách Thanh toán</h3>
+                </div>
+                <div class="card-body">
+                  <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${message}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+
+                  <!-- Debug Info (During Development) -->
+                  <div class="alert alert-info mb-3" th:if="${payments != null}">
+                    <p><strong>Số lượng thanh toán:</strong> <span th:text="${payments.size()}">0</span></p>
+                    <div th:if="${payments.empty}" class="mt-2">
+                      <p class="mb-0">Không có dữ liệu thanh toán. Vui lòng kiểm tra cơ sở dữ liệu.</p>
+                    </div>
+                  </div>
+
+                  <!-- Filter Controls -->
+                  <div class="row mb-3">
+                    <div class="col-md-3">
+                      <select id="statusFilter" class="form-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="PENDING">Đang chờ</option>
+                        <option value="COMPLETED">Hoàn thành</option>
+                        <option value="CONFIRMED">Đã xác nhận</option>
+                        <option value="FAILED">Thất bại</option>
+                        <option value="CANCELLED">Đã hủy</option>
+                        <option value="REFUNDED">Đã hoàn tiền</option>
+                        <option value="SUCCESS">Thành công</option>
+                        <option value="PROCESSING">Đang xử lý</option>
+                        <option value="PARTIAL">Thanh toán một phần</option>
+                        <option value="EXPIRED">Đã hết hạn</option>
+                        <option value="DECLINED">Bị từ chối</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <select id="paymentMethodFilter" class="form-select">
+                        <option value="">Tất cả phương thức</option>
+                        <option value="BANK_TRANSFER">Chuyển khoản</option>
+                        <option value="CASH">Tiền mặt</option>
+                        <option value="CREDIT_CARD">Thẻ tín dụng</option>
+                        <option value="MOMO">Ví MoMo</option>
+                        <option value="VNPAY">VNPay</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="toggleSimpleView" checked>
+                        <label class="form-check-label" for="toggleSimpleView">
+                          Hiển thị dạng đơn giản (khi có lỗi dữ liệu)
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Simplified View -->
+                  <div id="simpleView">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Mã lịch hẹn</th>
+                          <th>Ngày thanh toán</th>
+                          <th>Số tiền</th>
+                          <th>Phương thức</th>
+                          <th>Trạng thái</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="payment : ${payments}">
+                          <td th:text="${payment.id}"></td>
+                          <td th:text="${payment.appointment != null ? payment.appointment.id : 'N/A'}"></td>
+                          <td th:text="${payment.paymentDate != null ? #temporals.format(payment.paymentDate, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                          <td th:text="${payment.amount != null ? #numbers.formatDecimal(payment.amount, 0, 'COMMA', 0, 'POINT') + ' VND' : 'N/A'}"></td>
+                          <td th:text="${payment.paymentMethod != null ? payment.paymentMethod : 'N/A'}"></td>
+                          <td th:text="${payment.status != null ? payment.status : 'N/A'}" th:class="${'badge ' + (payment.status == 'COMPLETED' || payment.status == 'SUCCESS' ? 'bg-success' : (payment.status == 'PENDING' || payment.status == 'PROCESSING' ? 'bg-warning' : (payment.status == 'FAILED' || payment.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')))}"></td>
+                          <td>
+                            <a th:href="@{/admin/payments/{id}(id=${payment.id})}" class="btn btn-sm btn-primary">Chi tiết</a>
+                          </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(payments)}">
+                          <td colspan="7" class="text-center">Không có dữ liệu thanh toán nào</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Detailed View -->
+                  <div id="detailedView" style="display: none;">
+                    <table id="paymentTable" class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Mã lịch hẹn</th>
+                          <th>Người dùng</th>
+                          <th>Ngày thanh toán</th>
+                          <th>Số tiền</th>
+                          <th>Phương thức</th>
+                          <th>Trạng thái</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="payment : ${payments}">
+                          <td th:text="${payment.id}"></td>
+                          <td th:if="${payment.appointment != null}">
+                            <a th:href="@{/admin/appointments/view/{id}(id=${payment.appointment.id})}" 
+                               th:text="${payment.appointment.id}" class="text-primary"></a>
+                          </td>
+                          <td th:if="${payment.appointment == null}">N/A</td>
+                          <td th:if="${payment.appointment != null && payment.appointment.child != null && payment.appointment.child.parent != null}" 
+                              th:text="${payment.appointment.child.parent.fullName}"></td>
+                          <td th:if="${payment.appointment == null || payment.appointment.child == null || payment.appointment.child.parent == null}">N/A</td>
+                          <td th:text="${payment.paymentDate != null ? #temporals.format(payment.paymentDate, 'dd/MM/yyyy HH:mm') : 'N/A'}"></td>
+                          <td th:text="${payment.amount != null ? #numbers.formatDecimal(payment.amount, 0, 'COMMA', 0, 'POINT') + ' VND' : 'N/A'}"></td>
+                          <td>
+                            <span th:if="${payment.paymentMethod == 'BANK_TRANSFER'}" class="badge bg-info">Chuyển khoản</span>
+                            <span th:if="${payment.paymentMethod == 'CASH'}" class="badge bg-success">Tiền mặt</span>
+                            <span th:if="${payment.paymentMethod == 'CREDIT_CARD'}" class="badge bg-primary">Thẻ tín dụng</span>
+                            <span th:if="${payment.paymentMethod == 'MOMO'}" class="badge bg-danger">Ví MoMo</span>
+                            <span th:if="${payment.paymentMethod == 'VNPAY'}" class="badge bg-warning">VNPay</span>
+                            <span th:if="${payment.paymentMethod == null || (payment.paymentMethod != 'BANK_TRANSFER' && payment.paymentMethod != 'CASH' && payment.paymentMethod != 'CREDIT_CARD' && payment.paymentMethod != 'MOMO' && payment.paymentMethod != 'VNPAY')}" 
+                                  class="badge bg-secondary" th:text="${payment.paymentMethod != null ? payment.paymentMethod : 'N/A'}"></span>
+                          </td>
+                          <td>
+                            <span th:text="${payment.status != null ? payment.status : 'N/A'}" th:class="${'badge ' + (payment.status == 'COMPLETED' || payment.status == 'SUCCESS' ? 'bg-success' : (payment.status == 'PENDING' || payment.status == 'PROCESSING' ? 'bg-warning' : (payment.status == 'FAILED' || payment.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary')))}"></span>
+                          </td>
+                          <td class="text-center">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-info btn-sm" onclick="window.location.href=`/admin/payments/${this.getAttribute('data-payment-id')}`" th:data-payment-id="${payment.id}" th:data-notes="${payment.notes != null ? payment.notes : 'Không có ghi chú'}">
+                                <i class="fas fa-info-circle"></i> Chi tiết
+                              </button>
+                              <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" th:if="${payment.id != null}">
+                                Trạng thái
+                              </button>
+                              <select class="form-select form-select-sm status-dropdown" th:data-payment-id="${payment.id}" th:attr="data-current-status=${payment.status}">
+                                <option value="COMPLETED" th:selected="${payment.status == 'COMPLETED'}">Hoàn thành</option>
+                                <option value="PENDING" th:selected="${payment.status == 'PENDING'}">Đang chờ</option>
+                                <option value="CONFIRMED" th:selected="${payment.status == 'CONFIRMED'}">Đã xác nhận</option>
+                                <option value="FAILED" th:selected="${payment.status == 'FAILED'}">Thất bại</option>
+                                <option value="CANCELLED" th:selected="${payment.status == 'CANCELLED'}">Đã hủy</option>
+                                <option value="REFUNDED" th:selected="${payment.status == 'REFUNDED'}">Đã hoàn tiền</option>
+                              </select>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(payments)}">
+                          <td colspan="8" class="text-center">Không có dữ liệu thanh toán nào</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Payment Details Modal -->
+    <div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="paymentDetailsModalLabel">Chi tiết thanh toán</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="paymentDetails">
+              <div class="row mb-3">
+                <div class="col-md-4"><strong>ID thanh toán:</strong></div>
+                <div class="col-md-8" id="modalPaymentId"></div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4"><strong>Ghi chú:</strong></div>
+                <div class="col-md-8" id="modalPaymentNotes"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div class="modal fade" id="statusUpdateModal" tabindex="-1" aria-labelledby="statusUpdateModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="statusUpdateModalLabel">Cập nhật trạng thái thanh toán</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="updateStatusForm" method="post" action="/admin/payments/update-status">
+              <input type="hidden" id="modalPaymentIdForStatus" name="paymentId" value="">
+              <input type="hidden" id="modalCsrfToken" name="_csrf" value="">
+              
+              <div class="mb-3">
+                <label for="statusSelect" class="form-label">Chọn trạng thái mới:</label>
+                <select class="form-select" id="statusSelect" name="status">
+                  <option value="COMPLETED">Hoàn thành</option>
+                  <option value="PENDING">Đang chờ</option>
+                  <option value="CONFIRMED">Đã xác nhận</option>
+                  <option value="CANCELLED">Đã hủy</option>
+                  <option value="FAILED">Thất bại</option>
+                  <option value="REFUNDED">Đã hoàn tiền</option>
+                  <option value="SUCCESS">Thành công</option>
+                  <option value="PROCESSING">Đang xử lý</option>
+                  <option value="PARTIAL">Thanh toán một phần</option>
+                  <option value="EXPIRED">Đã hết hạn</option>
+                  <option value="DECLINED">Bị từ chối</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="updateNotes" class="form-label">Ghi chú (tùy chọn):</label>
+                <textarea class="form-control" id="updateNotes" name="notes" rows="2"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" id="submitStatusUpdate">Cập nhật</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Your Company</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    // Khai báo các biến và hàm ở phạm vi toàn cục
+    var paymentDetailsModal;
+    var statusUpdateModal;
+    
+    // Hàm hiển thị modal cập nhật trạng thái
+    function showStatusUpdateModal(paymentId) {
+        try {
+            // Lấy CSRF token từ bất kỳ form nào trên trang
+            let csrfToken = '';
+            let csrfParameter = '_csrf';
+            
+            // Tìm từ thẻ meta
+            const metaToken = $('meta[name="_csrf"]').attr('content');
+            if (metaToken) {
+                csrfToken = metaToken;
+                csrfParameter = $('meta[name="_csrf_parameter"]').attr('content') || '_csrf';
+            } else {
+                // Tìm từ form
+                const tokenInput = $('input[name="_csrf"]').first();
+                if (tokenInput.length) {
+                    csrfToken = tokenInput.val();
+                    csrfParameter = '_csrf';
+                }
+            }
+            
+            // Thiết lập giá trị cho form
+            $('#modalPaymentIdForStatus').val(paymentId);
+            $('#modalCsrfToken').attr('name', csrfParameter);
+            $('#modalCsrfToken').val(csrfToken);
+            
+            // Hiển thị modal
+            if (statusUpdateModal) {
+                statusUpdateModal.show();
+            } else {
+                console.log("Khởi tạo modal status update");
+                const modalElement = document.getElementById('statusUpdateModal');
+                if (modalElement) {
+                    statusUpdateModal = new bootstrap.Modal(modalElement);
+                    statusUpdateModal.show();
+                } else {
+                    $('#statusUpdateModal').modal('show');
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi khi hiển thị modal cập nhật trạng thái:", error);
+            alert("Có lỗi khi hiển thị cập nhật trạng thái: " + error.message);
+        }
+    }
+    
+    // Hàm hiển thị chi tiết thanh toán
+    function togglePaymentDetails(paymentId) {
+        try {
+            // Kiểm tra và khởi tạo modal nếu cần
+            if (typeof bootstrap !== 'undefined') {
+                if (!paymentDetailsModal) {
+                    var modalElement = document.getElementById('paymentDetailsModal');
+                    if (modalElement) {
+                        paymentDetailsModal = new bootstrap.Modal(modalElement);
+                    }
+                }
+                
+                if (paymentDetailsModal) {
+                    $('#modalPaymentId').text(paymentId);
+                    
+                    // Tìm ghi chú
+                    let notes = 'Không có ghi chú';
+                    try {
+                        const detailsButton = $(`button[data-payment-id="${paymentId}"]`);
+                        if (detailsButton.length) {
+                            notes = detailsButton.data('notes') || 'Không có ghi chú';
+                        }
+                    } catch (e) {
+                        console.warn("Không thể lấy ghi chú:", e);
+                    }
+                    
+                    $('#modalPaymentNotes').text(notes);
+                    paymentDetailsModal.show();
+                } else {
+                    // Fallback nếu không khởi tạo được modal
+                    $('#paymentDetailsModal').modal('show');
+                }
+            } else {
+                // jQuery fallback
+                $('#paymentDetailsModal').modal('show');
+                $('#modalPaymentId').text(paymentId);
+                
+                // Tìm ghi chú từ thuộc tính data
+                const detailsButton = $(`button[data-payment-id="${paymentId}"]`);
+                const notes = detailsButton.length ? detailsButton.data('notes') : 'Không có ghi chú';
+                $('#modalPaymentNotes').text(notes);
+            }
+        } catch (error) {
+            console.error("Lỗi khi hiển thị chi tiết thanh toán:", error);
+            alert("ID thanh toán: " + paymentId + "\nCó lỗi khi hiển thị chi tiết. Vui lòng tải lại trang.");
+        }
+    }
+    
+    // Đảm bảo chờ cho tài liệu sẵn sàng
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            // Kiểm tra nếu Bootstrap và jQuery đã sẵn sàng
+            if (typeof bootstrap !== 'undefined' && typeof jQuery !== 'undefined') {
+                console.log("Bootstrap và jQuery đã sẵn sàng");
+                
+                // Khởi tạo modals
+                var modalElements = document.querySelectorAll('.modal');
+                modalElements.forEach(function(element) {
+                    try {
+                        new bootstrap.Modal(element);
+                    } catch (e) {
+                        console.warn("Không thể khởi tạo modal: " + element.id, e);
+                    }
+                });
+            } else {
+                console.warn("Bootstrap hoặc jQuery chưa được tải");
+            }
+        } catch (e) {
+            console.error("Lỗi khi khởi tạo modals:", e);
+        }
+    });
+    
+    $(document).ready(function() {
+        try {
+            console.log("Document ready, initializing payment management functionality");
+            
+            // Khởi tạo các modal
+            try {
+                paymentDetailsModal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
+                statusUpdateModal = new bootstrap.Modal(document.getElementById('statusUpdateModal'));
+                console.log("Modal initialization successful");
+            } catch (e) {
+                console.error("Error initializing modals:", e);
+            }
+            
+            // Xử lý sự kiện submit cập nhật trạng thái
+            $('#submitStatusUpdate').on('click', function() {
+                try {
+                    console.log("Submitting status update");
+                    $('#updateStatusForm').submit();
+                } catch (e) {
+                    console.error("Error submitting status update:", e);
+                    alert("Lỗi khi cập nhật trạng thái: " + e.message);
+                }
+            });
+            
+            try {
+                let table = $('#paymentTable').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "language": {
+                        "search": "Tìm kiếm:",
+                        "lengthMenu": "Hiển thị _MENU_ mục",
+                        "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+                        "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+                        "infoFiltered": "(được lọc từ _MAX_ mục)",
+                        "paginate": {
+                            "first": "Đầu",
+                            "last": "Cuối",
+                            "next": "Tiếp",
+                            "previous": "Trước"
+                        },
+                        "emptyTable": "Không có dữ liệu"
+                    }
+                });
+                console.log("DataTable initialized successfully");
+            } catch (e) {
+                console.error("Error initializing DataTable:", e);
+            }
+            
+            // Toggle between simple and detailed view
+            $('#toggleSimpleView').on('change', function() {
+                if(this.checked) {
+                    $('#simpleView').show();
+                    $('#detailedView').hide();
+                } else {
+                    $('#simpleView').hide();
+                    $('#detailedView').show();
+                }
+            });
+            
+            // Status filter
+            $('#statusFilter').on('change', function() {
+                let status = $(this).val();
+                table.column(6).search(status).draw();
+            });
+            
+            // Payment method filter
+            $('#paymentMethodFilter').on('change', function() {
+                let method = $(this).val();
+                table.column(5).search(method).draw();
+            });
+            
+            // Event listener for status dropdown
+            $(document).on('change', '.status-dropdown', function() {
+                const dropdown = $(this);
+                const paymentId = dropdown.data('payment-id');
+                const newStatus = dropdown.val();
+                const currentStatus = dropdown.data('current-status');
+                
+                // Don't make a request if status hasn't changed
+                if (newStatus === currentStatus) {
+                    return;
+                }
+                
+                // Show spinner and disable dropdown
+                const spinner = dropdown.siblings('.status-spinner');
+                spinner.removeClass('d-none');
+                dropdown.prop('disabled', true);
+                
+                // Make AJAX call to update status
+                $.ajax({
+                    url: `/admin/payments/${paymentId}/status`,
+                    type: 'POST',
+                    data: {
+                        status: newStatus,
+                        '[[${_csrf.parameterName}]]': '[[${_csrf.token}]]'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Show success message with toast
+                            showToast('Thành công', response.message, 'success');
+                            
+                            // Update the current status data attribute
+                            dropdown.data('current-status', newStatus);
+                            
+                            // Update the status display in any other places
+                            $(`.payment-status-badge[data-payment-id="${paymentId}"]`).text(newStatus);
+                        } else {
+                            // Show error message
+                            showToast('Lỗi', response.message || 'Không thể cập nhật trạng thái', 'error');
+                            
+                            // Revert to previous value
+                            dropdown.val(currentStatus);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error updating payment status:', xhr);
+                        let errorMsg = 'Lỗi khi cập nhật trạng thái thanh toán';
+                        
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+                        
+                        // Show error message
+                        showToast('Lỗi', errorMsg, 'error');
+                        
+                        // Revert to previous value
+                        dropdown.val(currentStatus);
+                    },
+                    complete: function() {
+                        // Hide spinner and enable dropdown
+                        spinner.addClass('d-none');
+                        dropdown.prop('disabled', false);
+                    }
+                });
+            });
+        } catch (error) {
+            console.error("Fatal error in document ready function:", error);
+        }
+    });
+
+    // Function to show toast messages
+    function showToast(title, message, type) {
+        // Check if we have a toast container
+        if (!$('#toastContainer').length) {
+            $('body').append('<div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1050;"></div>');
+        }
+        
+        // Create toast element
+        const toastId = 'toast-' + new Date().getTime();
+        const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+        
+        const toastHtml = `
+            <div id="${toastId}" class="toast ${bgClass} text-white" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            </div>
+        `;
+        
+        // Add toast to container
+        $('#toastContainer').append(toastHtml);
+        
+        // Initialize and show the toast
+        const toastElement = new bootstrap.Toast(document.getElementById(toastId), {
+            delay: 5000
+        });
+        toastElement.show();
+    }
+  </script>
+</body>
+</html> 

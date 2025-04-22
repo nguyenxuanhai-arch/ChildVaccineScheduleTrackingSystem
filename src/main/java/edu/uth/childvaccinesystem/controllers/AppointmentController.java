@@ -8,10 +8,13 @@ import edu.uth.childvaccinesystem.dtos.request.AppointmentRequest;
 import edu.uth.childvaccinesystem.dtos.request.PackageAppointmentRequest;
 import edu.uth.childvaccinesystem.services.AppointmentService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping("/appointments")
-public class AppoinmentController {
+public class AppointmentController {
 
     @Autowired
     private AppointmentService appointmentService;
@@ -23,23 +26,47 @@ public class AppoinmentController {
 
     @PostMapping("/book")
     @ResponseBody
-    public ResponseEntity<Appointment> bookAppointment(@RequestBody AppointmentRequest request) {
+    public ResponseEntity<?> bookAppointment(@RequestBody AppointmentRequest request) {
         try {
             Appointment bookedAppointment = appointmentService.bookAppointment(request);
-            return ResponseEntity.ok(bookedAppointment);
+            // Return the appointment id and redirect URL for client-side redirect
+            return ResponseEntity.ok(
+                java.util.Map.of(
+                    "id", bookedAppointment.getId(),
+                    "success", true,
+                    "redirectUrl", "/payments/confirm/" + bookedAppointment.getId()
+                )
+            );
         } catch (Exception e) {
-            return ResponseEntity.badRequest().header("error", e.getMessage()).build();
+            return ResponseEntity.badRequest().body(
+                java.util.Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                )
+            );
         }
     }
     
     @PostMapping("/book-package")
     @ResponseBody
-    public ResponseEntity<Appointment> bookPackageAppointment(@RequestBody PackageAppointmentRequest request) {
+    public ResponseEntity<?> bookPackageAppointment(@RequestBody PackageAppointmentRequest request) {
         try {
             Appointment bookedAppointment = appointmentService.bookPackageAppointment(request);
-            return ResponseEntity.ok(bookedAppointment);
+            // Return the appointment id and redirect URL for client-side redirect
+            return ResponseEntity.ok(
+                java.util.Map.of(
+                    "id", bookedAppointment.getId(),
+                    "success", true,
+                    "redirectUrl", "/payments/confirm/" + bookedAppointment.getId()
+                )
+            );
         } catch (Exception e) {
-            return ResponseEntity.badRequest().header("error", e.getMessage()).build();
+            return ResponseEntity.badRequest().body(
+                java.util.Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+                )
+            );
         }
     }
 

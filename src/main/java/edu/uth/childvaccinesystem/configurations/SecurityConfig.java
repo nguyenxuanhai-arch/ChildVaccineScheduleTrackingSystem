@@ -66,6 +66,7 @@ public class SecurityConfig {
                 .requestMatchers("/auth/profile/children/*/edit").hasAnyRole("USER", "STAFF", "ADMIN") 
                 .requestMatchers("/auth/profile/children/*/update").hasAnyRole("USER", "STAFF", "ADMIN")
                 .requestMatchers("/auth/profile/children/*").hasAnyRole("USER", "STAFF", "ADMIN")
+                .requestMatchers("/auth/change-password").authenticated()
                 
                 .requestMatchers("/dashboard/**").authenticated()
                 .requestMatchers("/appointments/**").hasAnyRole("USER", "ADMIN", "STAFF")

@@ -40,6 +40,26 @@ public class PaymentController {
         model.addAttribute("amount", amount);
         return "payments/payment";
     }
+    
+    @GetMapping("/confirm/{appointmentId}")
+    public String paymentConfirmPage(@PathVariable Long appointmentId, Model model) {
+        try {
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+            double amount = calculateAmount(appointment);
+            
+            model.addAttribute("appointment", appointment);
+            model.addAttribute("amount", amount);
+            return "payments/confirm";
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error showing payment confirmation page: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Redirect to appointments page with error message
+            model.addAttribute("errorMessage", "Không thể tải thông tin lịch hẹn. Vui lòng thử lại sau.");
+            return "redirect:/appointments";
+        }
+    }
 
     @PostMapping("/process-cash")
     @ResponseBody

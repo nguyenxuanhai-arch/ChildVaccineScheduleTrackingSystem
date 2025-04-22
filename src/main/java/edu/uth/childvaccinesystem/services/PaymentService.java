@@ -25,7 +25,13 @@ public class PaymentService {
     }
 
     public Payment getPaymentById(Long paymentId) {
-        return paymentRepository.findById(paymentId).orElse(null);
+        try {
+            return paymentRepository.findByIdWithAppointment(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        } catch (Exception e) {
+            return paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        }
     }
 
     public boolean isPaymentBelongsToUser(Long paymentId, String username) {
@@ -79,5 +85,15 @@ public class PaymentService {
         payment.setStatus(status);
         payment.setTransactionId(transactionId);
         return paymentRepository.save(payment);
+    }
+
+    public List<Payment> getAllPayments() {
+        try {
+            return paymentRepository.findAllWithDetails();
+        } catch (Exception e) {
+            System.err.println("Error loading payments with details: " + e.getMessage());
+            e.printStackTrace();
+            return paymentRepository.findAll(); // Fallback to basic query if detailed query fails
+        }
     }
 }

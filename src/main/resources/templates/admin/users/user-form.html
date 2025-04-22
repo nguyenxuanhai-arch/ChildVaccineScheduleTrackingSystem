@@ -2,46 +2,85 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>User Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   </head>
   <body>
-    <h1 th:if="${user.id == null}">Create User</h1>
-    <h1 th:if="${user.id != null}">Edit User</h1>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+          <div class="card">
+            <div class="card-header">
+              <h3 th:if="${user.id == null}" class="mb-0">Tạo người dùng mới</h3>
+              <h3 th:if="${user.id != null}" class="mb-0">Chỉnh sửa người dùng</h3>
+            </div>
+            <div class="card-body">
+              <!-- Hiển thị thông báo gợi ý -->
+              <div th:if="${roleHint}" class="alert alert-info">
+                <i class="bi bi-info-circle"></i> <span th:text="${roleHint}"></span>
+              </div>
+              
+              <!-- Hiển thị thông báo lỗi -->
+              <div th:if="${error}" class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+              </div>
 
-    <!-- Hiển thị thông báo lỗi -->
-    <div th:if="${error}" style="color: red">
-      <p th:text="${error}"></p>
+              <form th:action="@{/admin/users/save}" th:object="${user}" method="post" class="needs-validation" novalidate>
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                  <label for="username" class="form-label">Tên đăng nhập:</label>
+                  <input type="text" class="form-control" id="username" th:field="*{username}" required />
+                </div>
+
+                <div class="mb-3" th:if="${user.id == null}">
+                  <label for="password" class="form-label">Mật khẩu:</label>
+                  <input type="password" class="form-control" id="password" th:field="*{password}" required />
+                </div>
+                
+                <div class="mb-3">
+                  <label for="name" class="form-label">Họ tên:</label>
+                  <input type="text" class="form-control" id="name" th:field="*{name}" required />
+                </div>
+                
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email:</label>
+                  <input type="email" class="form-control" id="email" th:field="*{email}" required />
+                </div>
+                
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Số điện thoại:</label>
+                  <input type="text" class="form-control" id="phone" th:field="*{phone}" />
+                </div>
+                
+                <div class="mb-3">
+                  <label for="address" class="form-label">Địa chỉ:</label>
+                  <input type="text" class="form-control" id="address" th:field="*{address}" />
+                </div>
+
+                <div class="mb-3">
+                  <label for="role" class="form-label">Vai trò:</label>
+                  <select class="form-select" id="role" th:field="*{role}">
+                    <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Admin</option>
+                    <option value="USER" th:selected="${user.role == 'USER'}">Người dùng</option>
+                    <option value="STAFF" th:selected="${user.role == 'STAFF'}">Nhân viên</option>
+                  </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <a th:href="@{/admin/users}" class="btn btn-secondary">Hủy</a>
+                  <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <form th:action="@{/admin/users/save}" th:object="${user}" method="post">
-      <input type="hidden" th:field="*{id}" />
-
-      <label for="username">Username:</label>
-      <input type="text" id="username" th:field="*{username}" required />
-      <br />
-
-      <label for="password">Password:</label>
-      <input
-        type="password"
-        id="password"
-        th:field="*{password}"
-        th:if="${user.id == null}"
-        required
-      />
-      <br />
-      <label for="email">Email:</label>
-      <input type="text" id="email" th:field="*{email}" required />
-
-      <label for="role">Role:</label>
-      <select id="role" th:field="*{role}">
-        <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">
-          Admin
-        </option>
-        <option value="USER" th:selected="${user.role == 'USER'}">User</option>
-      </select>
-      <br />
-
-      <button type="submit">Save</button>
-      <a th:href="@{/admin/users}">Cancel</a>
-    </form>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

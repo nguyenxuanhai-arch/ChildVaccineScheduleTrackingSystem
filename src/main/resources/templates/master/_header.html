@@ -104,16 +104,12 @@
             <div class="dropdown-menu dropdown-menu-end">
               <a class="dropdown-item" th:href="@{/auth/profile}">ℹ️ Profile</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" th:href="@{/payment/history}"
+              <a class="dropdown-item" th:href="@{/payments/history}"
                 >💰 Lịch sử thanh toán</a
               >
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" th:href="@{/auth/change-password}"
-                >🔑 Đổi mật khẩu</a
-              >
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" th:href="@{/auth/change-email}"
-                >📧 Đổi email</a
+              <a class="dropdown-item" href="/auth/change-password"
+                  ><i class="bi bi-key"></i> Đổi mật khẩu</a
               >
               <div class="dropdown-divider"></div>
               <form th:action="@{/auth/logout}" method="post">

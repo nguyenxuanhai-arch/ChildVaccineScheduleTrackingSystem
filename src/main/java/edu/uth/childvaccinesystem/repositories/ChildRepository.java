@@ -11,4 +11,5 @@ import java.util.List;
 public interface ChildRepository extends JpaRepository<Child, Long> {
     boolean existsByNameAndDob(String name, LocalDate dob);
     List<Child> findByParent(User parent);  // Sửa phương thức để tìm theo đối tượng User
+    List<Child> findByParentUsername(String parentUsername); // Tìm theo parentUsername
 }
