@@ -1,16 +1,25 @@
 package edu.uth.childvaccinesystem.controllers;
 
+import edu.uth.childvaccinesystem.dtos.request.ChildRequestDTO;
+import edu.uth.childvaccinesystem.dtos.response.ChildResponseDTO;
 import edu.uth.childvaccinesystem.entities.Child;
+import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.services.ChildService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import edu.uth.childvaccinesystem.utils.JwtUtil; // Để sử dụng JwtUtil
+import edu.uth.childvaccinesystem.services.UserService;
+import edu.uth.childvaccinesystem.utils.ChildMapper;
+import edu.uth.childvaccinesystem.utils.JwtUtil;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/child")
@@ -20,31 +29,59 @@ public class ChildController {
     private ChildService childService;
 
     @Autowired
-    private JwtUtil jwtUtil; // Sử dụng JwtUtil để lấy thông tin từ token
+    private UserService userService;
 
-    @GetMapping("/by-parent")
-    public ResponseEntity<List<Child>> getChildrenByToken(@RequestHeader("Authorization") String token) {
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    // New endpoint using DTO for simple list
+    @GetMapping("/simple-list")
+    public ResponseEntity<List<ChildResponseDTO>> getSimpleChildList(@RequestHeader("Authorization") String token) {
         try {
-            String jwt = token.substring(7); // Bỏ "Bearer "
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            System.out.println("Getting simplified children for parent: " + username);
+            
+            List<Child> children = childService.getChildrenByParentUsername(username);
+            List<ChildResponseDTO> childDTOs = ChildMapper.toDTOList(children);
+            
+            return ResponseEntity.ok(childDTOs);
+        } catch (Exception e) {
+            System.out.println("Error getting simplified children: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    // Modified to use DTO for response
+    @GetMapping("/by-parent")
+    public ResponseEntity<List<ChildResponseDTO>> getChildrenByToken(@RequestHeader("Authorization") String token) {
+        try {
+            String jwt = token.substring(7);
             String username = jwtUtil.extractUsername(jwt);
             System.out.println("Getting children for parent: " + username);
 
             List<Child> children = childService.getChildrenByParentUsername(username);
             System.out.println("Found " + children.size() + " children");
 
-            if (children.isEmpty()) {
+            // Convert to DTOs
+            List<ChildResponseDTO> childDTOs = ChildMapper.toDTOList(children);
+
+            if (childDTOs.isEmpty()) {
                 System.out.println("No children found for parent: " + username);
-                return ResponseEntity.ok(children); // Trả về danh sách rỗng thay vì No Content
+                return ResponseEntity.ok(childDTOs);
             }
 
-            // Log thông tin chi tiết của từng bé
-            for (Child child : children) {
-                System.out.println("Child: " + child.getName() + 
-                                 ", DOB: " + child.getDob() + 
-                                 ", Gender: " + child.getGender());
+            // Log information for each child
+            for (ChildResponseDTO dto : childDTOs) {
+                if (dto != null) {
+                    System.out.println("Child: " + dto.getName() + 
+                                    ", DOB: " + dto.getDob() + 
+                                    ", Gender: " + dto.getGender());
+                }
             }
 
-            return ResponseEntity.ok(children);
+            return ResponseEntity.ok(childDTOs);
         } catch (Exception e) {
             System.out.println("Error getting children: " + e.getMessage());
             e.printStackTrace();
@@ -52,49 +89,86 @@ public class ChildController {
         }
     }
 
+    // Modified to use DTO for request
     @PostMapping("/add")
-    public ResponseEntity<String> addChild(@RequestBody Child child, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Map<String, Object>> addChild(@RequestBody ChildRequestDTO childRequestDTO, 
+                                                     @RequestHeader("Authorization") String token) {
+        Map<String, Object> response = new HashMap<>();
+        
         try {
             // Validate required fields
-            if (child.getName() == null || child.getName().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body("❌ Tên trẻ không được để trống");
+            if (childRequestDTO.getName() == null || childRequestDTO.getName().trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "❌ Tên trẻ không được để trống");
+                return ResponseEntity.badRequest().body(response);
             }
             
-            if (child.getDob() == null) {
-                return ResponseEntity.badRequest().body("❌ Ngày sinh không được để trống");
+            if (childRequestDTO.getDob() == null) {
+                response.put("success", false);
+                response.put("message", "❌ Ngày sinh không được để trống");
+                return ResponseEntity.badRequest().body(response);
             }
 
             // Log input data for debugging
             System.out.println("Received child data:");
-            System.out.println("Name: " + child.getName());
-            System.out.println("DOB: " + child.getDob());
-            System.out.println("Gender: " + child.getGender());
+            System.out.println("Name: " + childRequestDTO.getName());
+            System.out.println("DOB: " + childRequestDTO.getDob());
+            System.out.println("Gender: " + childRequestDTO.getGender());
 
-            String parentUsername = jwtUtil.extractUsername(token.substring(7));
-            child.setParentUsername(parentUsername);
+            // Extract username from token
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            
+            // Get user from username
+            User parent;
+            try {
+                parent = userService.getUserByUsername(username);
+            } catch (UsernameNotFoundException e) {
+                response.put("success", false);
+                response.put("message", "❌ Không tìm thấy thông tin phụ huynh");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            
+            // Convert DTO to entity
+            Child child = ChildMapper.toEntity(childRequestDTO);
+            child.setParent(parent);
+            child.setParentUsername(username);
             
             // Save child to database
             Child savedChild = childService.saveChild(child);
             
             if (savedChild != null && savedChild.getId() != null) {
+                // Convert saved entity to DTO for response
+                ChildResponseDTO savedDTO = ChildMapper.toDTO(savedChild);
+                
                 // Log saved data for debugging
+                if (savedDTO != null) {
                 System.out.println("Saved child data:");
-                System.out.println("ID: " + savedChild.getId());
-                System.out.println("Name: " + savedChild.getName());
-                System.out.println("DOB: " + savedChild.getDob());
-                System.out.println("Gender: " + savedChild.getGender());
-                return ResponseEntity.ok("✅ Thêm bé thành công!");
+                    System.out.println("ID: " + savedDTO.getId());
+                    System.out.println("Name: " + savedDTO.getName());
+                    System.out.println("DOB: " + savedDTO.getDob());
+                    System.out.println("Gender: " + savedDTO.getGender());
+                }
+                
+                response.put("success", true);
+                response.put("message", "✅ Thêm bé thành công!");
+                response.put("child", savedDTO);
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(500).body("❌ Thêm bé thất bại: Không thể lưu vào cơ sở dữ liệu");
+                response.put("success", false);
+                response.put("message", "❌ Thêm bé thất bại: Không thể lưu vào cơ sở dữ liệu");
+                return ResponseEntity.status(500).body(response);
             }
         } catch (Exception e) {
             System.out.println("Error saving child: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(500).body("❌ Thêm bé thất bại: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "❌ Thêm bé thất bại: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
         }
     }
 
-    // Thêm endpoint mới để xử lý form thêm hồ sơ trẻ
+    // Modified to use DTO for form submission
     @PostMapping("/add-from-form")
     public ResponseEntity<Map<String, Object>> addChildFromForm(
             @RequestParam("name") String name,
@@ -118,7 +192,21 @@ public class ChildController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Create new Child object
+            // Extract username from token
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            
+            // Get user from username
+            User parent;
+            try {
+                parent = userService.getUserByUsername(username);
+            } catch (UsernameNotFoundException e) {
+                response.put("success", false);
+                response.put("message", "❌ Không tìm thấy thông tin phụ huynh");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            // Create new Child object (you could also use ChildRequestDTO here)
             Child child = new Child();
             child.setName(name.trim());
             
@@ -133,18 +221,19 @@ public class ChildController {
             }
             
             child.setGender(gender.equals("male") ? "MALE" : "FEMALE");
-
-            // Set parent username
-            String parentUsername = jwtUtil.extractUsername(token.substring(7));
-            child.setParentUsername(parentUsername);
+            child.setParent(parent);
+            child.setParentUsername(username);
 
             // Save child to database
             Child savedChild = childService.saveChild(child);
             
             if (savedChild != null && savedChild.getId() != null) {
+                // Convert to DTO for response
+                ChildResponseDTO savedDTO = ChildMapper.toDTO(savedChild);
+                
                 response.put("success", true);
                 response.put("message", "✅ Thêm bé thành công!");
-                response.put("child", savedChild);
+                response.put("child", savedDTO);
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
@@ -160,23 +249,186 @@ public class ChildController {
         }
     }
 
+    // Modified to use DTO for update
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateChild(@PathVariable Long id, @RequestBody Child childDetails) {
+    public ResponseEntity<Map<String, Object>> updateChild(
+            @PathVariable Long id, 
+            @RequestBody ChildRequestDTO childRequestDTO,
+            @RequestHeader("Authorization") String token) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
         try {
-            long updatedId = Long.parseLong(childService.updateChild(id, childDetails));
-            return ResponseEntity.ok(updatedId);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            // Extract username from token
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            
+            // Get the existing child
+            Optional<Child> existingChildOpt = childService.getChildById(id);
+            if (!existingChildOpt.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Child not found with id: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            Child existingChild = existingChildOpt.get();
+            
+            // Check permissions (only parent can update their own child)
+            if (existingChild.getParent() == null || !username.equals(existingChild.getParentUsername())) {
+                response.put("success", false);
+                response.put("message", "You don't have permission to update this child");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            
+            // Update child from DTO
+            existingChild.setName(childRequestDTO.getName());
+            existingChild.setDob(childRequestDTO.getDob());
+            existingChild.setGender(childRequestDTO.getGender());
+            
+            // Use the existing service method
+            String updatedId = childService.updateChild(id, existingChild);
+            
+            // Get the updated child
+            Optional<Child> updatedChildOpt = childService.getChildById(Long.parseLong(updatedId));
+            if (!updatedChildOpt.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Error retrieving updated child");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+            
+            // Convert to DTO for response
+            ChildResponseDTO updatedDTO = ChildMapper.toDTO(updatedChildOpt.get());
+            
+            response.put("success", true);
+            response.put("message", "Child updated successfully");
+            response.put("child", updatedDTO);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to update child: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
+    // Modified to use DTO for delete response
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> deleteChild(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteChild(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String token) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
         try {
+            // Extract username from token
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            
+            // Get the child
+            Optional<Child> existingChildOpt = childService.getChildById(id);
+            if (!existingChildOpt.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Child not found with id: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            Child existingChild = existingChildOpt.get();
+            
+            // Check permissions (only parent can delete their own child)
+            if (existingChild.getParent() == null || !username.equals(existingChild.getParentUsername())) {
+                response.put("success", false);
+                response.put("message", "You don't have permission to delete this child");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            
+            // Delete the child
             long deletedId = childService.deleteChild(id);
-            return ResponseEntity.ok(deletedId);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            
+            response.put("success", true);
+            response.put("message", "Child deleted successfully");
+            response.put("id", deletedId);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to delete child: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
+    // New endpoint to get a child by ID using DTO
+    @GetMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> getChildById(
+            @PathVariable Long id,
+            @RequestHeader("Authorization") String token) {
+        
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Extract username from token
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            
+            // Get the child
+            Optional<Child> childOpt = childService.getChildById(id);
+            if (!childOpt.isPresent()) {
+                response.put("success", false);
+                response.put("message", "Child not found with id: " + id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            Child child = childOpt.get();
+            
+            // Check permissions (only parent can view their own child)
+            if (child.getParent() == null || !username.equals(child.getParentUsername())) {
+                response.put("success", false);
+                response.put("message", "You don't have permission to view this child");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+            
+            // Convert to DTO
+            ChildResponseDTO childDTO = ChildMapper.toDTO(child);
+            
+            response.put("success", true);
+            response.put("child", childDTO);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Failed to get child: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/basic-by-parent")
+    public ResponseEntity<List<Map<String, Object>>> getBasicChildrenData(@RequestHeader("Authorization") String token) {
+        try {
+            String jwt = token.substring(7);
+            String username = jwtUtil.extractUsername(jwt);
+            System.out.println("Getting basic children data for parent: " + username);
+            
+            List<Child> children = childService.getChildrenByParentUsername(username);
+            List<Map<String, Object>> result = new ArrayList<>();
+            
+            for (Child child : children) {
+                Map<String, Object> childData = new HashMap<>();
+                childData.put("id", child.getId());
+                childData.put("name", child.getName());
+                childData.put("dob", child.getDob());
+                childData.put("gender", child.getGender());
+                
+                // Calculate age in months
+                if (child.getDob() != null) {
+                    LocalDate now = LocalDate.now();
+                    long months = java.time.temporal.ChronoUnit.MONTHS.between(child.getDob(), now);
+                    childData.put("ageInMonths", months);
+                }
+                
+                result.add(childData);
+            }
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            System.out.println("Error getting basic children data: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
         }
     }
 }

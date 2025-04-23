@@ -461,6 +461,7 @@
                 <label for="vaccineChildId" class="form-label"
                   ><i class="bi bi-person-check"></i> Chọn bé:</label
                 >
+                <div class="input-group">
                 <select
                   class="form-select"
                   id="vaccineChildId"
@@ -469,6 +470,15 @@
                 >
                   <option value="">-- Vui lòng chọn --</option>
                 </select>
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="refreshChildrenBtn"
+                    title="Làm mới danh sách"
+                  >
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="col-md-6">
@@ -593,12 +603,22 @@
 
               <div class="col-md-6">
                 <label for="packageChildId" class="form-label">Chọn bé:</label>
+                <div class="input-group">
                 <select
                   class="form-select"
                   id="packageChildId"
                   name="childId"
                   required
                 ></select>
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    onclick="loadChildren()"
+                    title="Làm mới danh sách"
+                  >
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="col-12">
@@ -638,13 +658,19 @@
     <script th:src="@{/js/main.js}"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        loadChildren();
+        // Try the workaround first, then fall back to the regular method if it fails
+        loadChildrenWorkaround();
         loadVaccines();
         setupPackageTab();
 
         // Set min date for appointment to today
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("vaccineAppointmentDate").min = today;
+        
+        // Add event listener for refresh button
+        document.getElementById("refreshChildrenBtn").addEventListener("click", function() {
+          loadChildrenWorkaround();
+        });
       });
 
       // Hàm format giới tính
@@ -664,7 +690,305 @@
         }).format(amount);
       }
 
-      // Tải danh sách bé của phụ huynh
+      // HÀM TRÁNH LỖI JSON NESTING - cần thêm endpoint mới trên server
+      function loadChildrenWorkaround() {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/auth/login";
+          return;
+        }
+
+        // Debug token information
+        try {
+          const tokenPreview = token.substring(0, 15) + "...";
+          console.log("Using token (preview):", tokenPreview);
+          
+          // Check if token is potentially expired
+          const tokenParts = token.split('.');
+          if (tokenParts.length === 3) {
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              const expTime = payload.exp * 1000;
+              const currentTime = new Date().getTime();
+              
+              if (expTime < currentTime) {
+                console.error("Token appears to be expired. Redirecting to login...");
+                localStorage.removeItem("token");
+                window.location.href = "/auth/login?reason=expired";
+                return;
+              } else {
+                console.log("Token valid until:", new Date(expTime).toLocaleString());
+              }
+            } catch (e) {
+              console.warn("Could not parse token payload:", e);
+            }
+          }
+        } catch (e) {
+          console.error("Error checking token:", e);
+        }
+
+        const vaccineChildSelect = document.getElementById("vaccineChildId");
+        const packageChildSelect = document.getElementById("packageChildId");
+
+        if (!vaccineChildSelect || !packageChildSelect) {
+          console.error("Child select elements not found in the DOM");
+          return;
+        }
+
+        // Hiển thị trạng thái đang tải
+        vaccineChildSelect.innerHTML = '<option value="">Đang tải...</option>';
+        packageChildSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+        console.log("Attempting direct database query workaround...");
+        
+        // Cách 1: Thử API để lấy dữ liệu đơn giản
+        trySimplifiedChildrenApi()
+          .then(children => {
+            if (children && children.length > 0) {
+              // Nếu thành công, cập nhật dropdown
+              updateChildrenDropdown(children, vaccineChildSelect, packageChildSelect);
+            } else {
+              // Thử cách 2: Phân tích text nếu cách 1 không có kết quả
+              tryTextBasedFallback()
+                .then(children => {
+                  if (children && children.length > 0) {
+                    updateChildrenDropdown(children, vaccineChildSelect, packageChildSelect);
+                  } else {
+                    // Thử cách 3: sử dụng phương pháp gốc
+                    console.log("Falling back to original method...");
+                    loadChildren();
+                  }
+                })
+                .catch(error => {
+                  console.error("Text fallback failed:", error);
+                  loadChildren(); // Fallback to original method
+                });
+            }
+          })
+          .catch(error => {
+            console.error("API workaround failed:", error);
+            loadChildren(); // Fallback to original method
+          });
+      }
+
+      // Thử endpoint đơn giản hơn
+      async function trySimplifiedChildrenApi() {
+        const token = localStorage.getItem("token");
+        
+        // Danh sách các endpoints để thử:
+        const endpoints = [
+          "/child/simple-list",
+          "/child/basic-by-parent",
+          "/api/children/basic",
+          "/child/list/basic"
+        ];
+        
+        for (const endpoint of endpoints) {
+          try {
+            console.log(`Trying endpoint: ${endpoint}`);
+            const response = await axios.get(endpoint, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+              },
+              timeout: 5000 // 5 second timeout
+            });
+            
+            if (response.data && (Array.isArray(response.data) || response.data.children)) {
+              console.log(`Success with endpoint: ${endpoint}`);
+              const children = Array.isArray(response.data) ? response.data : response.data.children;
+              return children;
+            }
+          } catch (error) {
+            console.log(`Endpoint ${endpoint} failed or not available`);
+            // Continue to next endpoint
+          }
+        }
+        
+        // If we got here, no endpoints worked
+        return null;
+      }
+
+      // Thử phân tích dữ liệu từ text
+      async function tryTextBasedFallback() {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await axios.get("/child/by-parent", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Accept': 'text/plain',
+              'X-Raw-Response': 'true',
+              'Cache-Control': 'no-cache'
+            },
+            transformResponse: [data => data], // Không phân tích JSON
+            timeout: 5000
+          });
+          
+          if (response.data) {
+            return extractChildInfo(response.data);
+          }
+          return null;
+        } catch (error) {
+          console.error("Text based fallback failed:", error);
+          return null;
+        }
+      }
+
+      // Trích xuất thông tin trẻ từ text response
+      function extractChildInfo(textData) {
+        const children = [];
+        console.log("Raw text data length:", textData.length);
+        
+        // TRY 1: Tìm các khối JSON hoàn chỉnh
+        try {
+          const jsonMatches = textData.match(/{[^{]*?"id":\d+[^}]*?}/g) || [];
+          for (const jsonStr of jsonMatches) {
+            try {
+              const child = JSON.parse(jsonStr);
+              if (child && child.id) {
+                children.push(child);
+              }
+            } catch (e) {
+              // Invalid JSON, skip
+            }
+          }
+          
+          if (children.length > 0) {
+            console.log("Found children using JSON blocks:", children.length);
+            return children;
+          }
+        } catch (e) {
+          console.warn("Error in JSON block extraction:", e);
+        }
+        
+        // TRY 2: Tìm kiếm dựa trên regex
+        try {
+          // Sample: "id":1,"name":"test","dob":"2025-04-01","gender":"MALE"
+          const regex = /"id":(\d+).*?"name":"([^"]+)".*?"dob":"([^"]+)".*?"gender":"([^"]+)"/g;
+          let match;
+          
+          while ((match = regex.exec(textData)) !== null) {
+            const id = match[1];
+            const name = match[2];
+            const dob = match[3];
+            const gender = match[4];
+            
+            children.push({
+              id: id,
+              name: name,
+              dob: dob,
+              gender: gender
+            });
+          }
+          
+          if (children.length > 0) {
+            console.log("Found children using regex:", children.length);
+            return children;
+          }
+        } catch (e) {
+          console.warn("Error in regex extraction:", e);
+        }
+        
+        // TRY 3: Tìm thông tin trực tiếp từ logs
+        try {
+          const childInfoRegex = /Child: ([^,]+), DOB: ([^,]+), Gender: ([^\n]+)/g;
+          let match;
+          let id = 1000; // Tạm dùng ID tùy ý > 999 để không xung đột
+          
+          while ((match = childInfoRegex.exec(textData)) !== null) {
+            const name = match[1].trim();
+            const dob = match[2].trim();
+            const gender = match[3].trim();
+            
+            children.push({
+              id: id++,
+              name: name,
+              dob: dob,
+              gender: gender
+            });
+          }
+          
+          if (children.length > 0) {
+            console.log("Found children using log format:", children.length);
+            return children;
+          }
+        } catch (e) {
+          console.warn("Error in log extraction:", e);
+        }
+        
+        console.warn("Could not extract child information from response");
+        return [];
+      }
+
+      // Cập nhật dropdown với dữ liệu trẻ
+      function updateChildrenDropdown(children, vaccineSelect, packageSelect) {
+        if (!Array.isArray(children) || children.length === 0) {
+          console.warn("No children data to update dropdowns");
+          vaccineSelect.innerHTML = '<option value="">Không có bé nào</option>';
+          packageSelect.innerHTML = '<option value="">Không có bé nào</option>';
+          return;
+        }
+        
+        console.log(`Updating dropdowns with ${children.length} children`);
+        
+        vaccineSelect.innerHTML = '<option value="">Chọn bé</option>';
+        packageSelect.innerHTML = '<option value="">Chọn bé</option>';
+        
+        let addedCount = 0;
+        
+        children.forEach(child => {
+          try {
+            if (!child || !child.id) {
+              console.warn("Invalid child data:", child);
+              return;
+            }
+            
+            // Format date
+            let formattedDob = "Không rõ";
+            try {
+              if (child.dob) {
+                const dob = new Date(child.dob);
+                formattedDob = dob.toLocaleDateString("vi-VN");
+              }
+            } catch (e) {
+              console.warn("Error formatting date:", e);
+            }
+            
+            // Format gender
+            const genderText = (child.gender === "MALE") ? "Nam" : 
+                              (child.gender === "FEMALE") ? "Nữ" : "Không rõ";
+            
+            // Calculate age
+            let ageInMonths = 0;
+            try {
+              if (child.dob) {
+                ageInMonths = calculateAgeInMonths(child.dob);
+              }
+            } catch (e) {
+              console.warn("Error calculating age:", e);
+            }
+            
+            const option = `
+              <option value="${child.id}" data-age-in-months="${ageInMonths}">
+                ${child.name} (${formattedDob}, ${genderText})
+              </option>`;
+            
+            vaccineSelect.insertAdjacentHTML("beforeend", option);
+            packageSelect.insertAdjacentHTML("beforeend", option);
+            addedCount++;
+          } catch (e) {
+            console.error("Error adding child to dropdown:", e);
+          }
+        });
+        
+        console.log(`Successfully added ${addedCount} children to dropdowns`);
+        
+        // Add change event listener
+        vaccineSelect.addEventListener("change", updateVaccineList);
+      }
+
+      // Tải danh sách bé của phụ huynh (phương pháp gốc)
       function loadChildren() {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -672,32 +996,102 @@
           return;
         }
 
+        // Debug token information
+        try {
+          // Display token information for debugging (only first few characters)
+          const tokenPreview = token.substring(0, 15) + "...";
+          console.log("Using token (preview):", tokenPreview);
+          
+          // Check if token is potentially expired by examining its structure
+          const tokenParts = token.split('.');
+          if (tokenParts.length !== 3) {
+            console.warn("Token format appears invalid - not a standard JWT format");
+          } else {
+            try {
+              const payload = JSON.parse(atob(tokenParts[1]));
+              const expTime = payload.exp * 1000; // Convert to milliseconds
+              const currentTime = new Date().getTime();
+              
+              if (expTime < currentTime) {
+                console.error("Token appears to be expired. Redirecting to login...");
+                localStorage.removeItem("token");
+                window.location.href = "/auth/login?reason=expired";
+                return;
+              } else {
+                console.log("Token valid until:", new Date(expTime).toLocaleString());
+              }
+            } catch (e) {
+              console.warn("Could not parse token payload:", e);
+            }
+          }
+        } catch (e) {
+          console.error("Error checking token:", e);
+        }
+
         const vaccineChildSelect = document.getElementById("vaccineChildId");
         const packageChildSelect = document.getElementById("packageChildId");
+
+        // Make sure selects exist before trying to modify them
+        if (!vaccineChildSelect || !packageChildSelect) {
+          console.error("Child select elements not found in the DOM");
+          return;
+        }
 
         // Hiển thị trạng thái đang tải
         vaccineChildSelect.innerHTML = '<option value="">Đang tải...</option>';
         packageChildSelect.innerHTML = '<option value="">Đang tải...</option>';
 
+        const requestUrl = "/child/by-parent";
+        console.log("Making API request to:", window.location.origin + requestUrl);
+
         // Gọi API để lấy danh sách bé
         axios
-          .get("/child/by-parent", {
+          .get(requestUrl, {
             headers: {
               Authorization: `Bearer ${token}`,
+              'Cache-Control': 'no-cache', // Prevent caching
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'application/json' // Explicitly request JSON
             },
+            timeout: 10000 // 10 second timeout
           })
           .then((response) => {
+            // Check if response data exists and is valid
+            if (!response || !response.data) {
+              throw new Error("Empty response received");
+            }
+            
             console.log("Children data:", response.data); // Debug log
 
             // Xóa trạng thái đang tải
             vaccineChildSelect.innerHTML = '<option value="">Chọn bé</option>';
             packageChildSelect.innerHTML = '<option value="">Chọn bé</option>';
 
-            if (response.data && response.data.length > 0) {
-              response.data.forEach((child) => {
+            // Handle both array and object responses
+            let children = response.data;
+            if (!Array.isArray(children)) {
+              console.warn("Response is not an array, attempting to handle as an object");
+              if (children.children) {
+                children = children.children;
+              } else {
+                console.error("Cannot parse children data:", children);
+                vaccineChildSelect.innerHTML = '<option value="">Lỗi dữ liệu không đúng định dạng</option>';
+                packageChildSelect.innerHTML = '<option value="">Lỗi dữ liệu không đúng định dạng</option>';
+                return;
+              }
+            }
+
+            if (children && children.length > 0) {
+              let addedCount = 0;
+              children.forEach((child) => {
                 try {
+                  if (!child || !child.id || !child.name) {
+                    console.warn("Invalid child data:", child);
+                    return; // Skip this child
+                  }
+
                   // Format ngày sinh
-                  const dob = new Date(child.dob);
+                  const dob = child.dob ? new Date(child.dob) : new Date();
                   const formattedDob = dob.toLocaleDateString("vi-VN");
 
                   // Format giới tính
@@ -714,13 +1108,18 @@
 
                   vaccineChildSelect.insertAdjacentHTML("beforeend", option);
                   packageChildSelect.insertAdjacentHTML("beforeend", option);
+                  addedCount++;
                 } catch (error) {
                   console.error("Error processing child data:", error, child);
                 }
               });
 
+              console.log(`Successfully added ${addedCount} of ${children.length} children to the dropdown`);
+
               // Thêm event listener để cập nhật danh sách vaccine khi chọn bé
+              if (vaccineChildSelect) {
               vaccineChildSelect.addEventListener("change", updateVaccineList);
+              }
             } else {
               // Nếu không có bé nào
               vaccineChildSelect.innerHTML =
@@ -731,15 +1130,54 @@
           })
           .catch((error) => {
             console.error("Error loading children:", error);
+            // Add detailed error information
+            if (error.response) {
+              // Server responded with a status code outside of 2xx range
+              console.error("Response data:", error.response.data);
+              console.error("Response status:", error.response.status);
+              console.error("Response headers:", error.response.headers);
+              
+              // Check for specific error related to JSON nesting depth
+              const errorStr = JSON.stringify(error.response.data || '');
+              if (errorStr.includes("nesting depth") || errorStr.includes("maximum allowed")) {
+                console.error("JSON nesting depth error detected. This is likely due to circular references in the data model.");
+                
+                // Try to get simplified children data
+                retryWithSimplifiedData();
+                return;
+              }
+            } else if (error.request) {
+              // Request was made but no response received
+              console.error("No response received:", error.request);
+            } else {
+              // Something happened in setting up the request
+              console.error("Error message:", error.message);
+            }
+            console.error("Error config:", error.config);
+            
+            // Show error message in the select dropdown
+            if (vaccineChildSelect) {
             vaccineChildSelect.innerHTML =
-              '<option value="">Lỗi tải danh sách</option>';
+                '<option value="">Lỗi tải danh sách: ' + (error.message || 'Không thể kết nối đến máy chủ') + '</option>';
+            }
+            if (packageChildSelect) {
             packageChildSelect.innerHTML =
-              '<option value="">Lỗi tải danh sách</option>';
+                '<option value="">Lỗi tải danh sách: ' + (error.message || 'Không thể kết nối đến máy chủ') + '</option>';
+            }
+              
+            // If authentication error, redirect to login
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+              alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+              localStorage.removeItem("token");
+              window.location.href = "/auth/login?reason=expired";
+            }
           });
       }
 
       // Helper function to calculate age in months
       function calculateAgeInMonths(dob) {
+        if (!dob) return 0;
+        
         const birthDate = new Date(dob);
         const today = new Date();
         let months = (today.getFullYear() - birthDate.getFullYear()) * 12;
@@ -748,7 +1186,7 @@
         if (today.getDate() < birthDate.getDate()) {
           months--;
         }
-        return months;
+        return months >= 0 ? months : 0; // Ensure non-negative
       }
 
       // Tải danh sách vắc xin
