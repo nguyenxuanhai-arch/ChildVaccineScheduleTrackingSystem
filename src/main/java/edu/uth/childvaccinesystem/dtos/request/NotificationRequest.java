@@ -8,4 +8,6 @@ import lombok.Setter;
 public class NotificationRequest {
     private Long userId;
     private String message;
+    private String title;
+    private String type;
 }

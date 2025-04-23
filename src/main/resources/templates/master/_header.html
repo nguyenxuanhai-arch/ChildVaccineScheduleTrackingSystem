@@ -62,6 +62,35 @@
             </button>
           </li>
 
+          <!-- Dropdown thông báo -->
+          <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+            <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-bell-fill"></i>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                0
+                <span class="visually-hidden">thông báo chưa đọc</span>
+              </span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+              <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                <h6 class="dropdown-header m-0">Thông báo mới</h6>
+                <a href="#" id="markAllAsRead" class="text-decoration-none small">Đánh dấu đã đọc tất cả</a>
+              </div>
+              
+              <div id="notificationsList">
+                <!-- Thông báo sẽ được thêm vào đây bằng JavaScript -->
+                <div class="dropdown-item text-center p-3">
+                  <p class="text-muted mb-0">Đang tải thông báo...</p>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider mb-0"></div>
+              <a class="dropdown-item text-center p-2" th:href="@{/user/notifications}">
+                Xem tất cả thông báo
+              </a>
+            </div>
+          </li>
+
           <!-- Chưa đăng nhập -->
           <li class="nav-item" sec:authorize="isAnonymous()">
             <a
@@ -108,6 +137,10 @@
                 >💰 Lịch sử thanh toán</a
               >
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="@{/appointments/history}">
+                📅 Lịch sử đặt lịch
+              </a>
+              <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/auth/change-password"
                   ><i class="bi bi-key"></i> Đổi mật khẩu</a
               >
@@ -123,4 +156,247 @@
       </div>
     </div>
   </nav>
+  
+  <!-- CSS cho dropdown thông báo -->
+  <style>
+    .notification-dropdown {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .notification-dropdown .dropdown-item {
+      white-space: normal;
+      transition: background-color 0.2s;
+    }
+    .notification-dropdown .dropdown-item:hover {
+      background-color: #f8f9fa;
+    }
+    .notification-dropdown .dropdown-item.unread {
+      background-color: #f0f7ff;
+    }
+  </style>
+  
+  <!-- Scripts cho Dark Mode -->
+  <script>
+    // Dark Mode Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', function() {
+          document.body.classList.toggle('dark-mode');
+          const isDarkMode = document.body.classList.contains('dark-mode');
+          localStorage.setItem('darkMode', isDarkMode);
+          this.innerHTML = isDarkMode ? '☀️' : '🌙';
+        });
+        
+        // Kiểm tra chế độ tối khi trang tải
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.body.classList.add('dark-mode');
+          darkModeToggle.innerHTML = '☀️';
+        }
+      }
+    });
+  </script>
+  
+  <!-- Script cho hệ thống thông báo -->
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      // Chỉ khởi tạo hệ thống thông báo nếu người dùng đã đăng nhập
+      if ($('[sec\\:authorize="isAuthenticated()"]').length) {
+        try {
+          let currentUser = null;
+          // Khởi tạo biến đếm lỗi
+          window.notificationErrorCount = 0;
+          
+          // Thử lấy ID người dùng từ session
+          /*[+
+            if(${#authentication != null && #authentication.principal != null}) {
+              currentUser = ${#authentication.principal.id};
+            }
+          +]*/
+          
+          if (currentUser) {
+            console.log("Đã tìm thấy người dùng ID:", currentUser);
+            // Ẩn badge ban đầu
+            $('.notification-badge').hide();
+            
+            // Khởi tạo sự kiện
+            setupNotificationEvents(currentUser);
+            
+            // Tải thông báo ban đầu
+            fetchNotifications(currentUser);
+            
+            // Thiết lập interval để kiểm tra thông báo mới
+            setInterval(function() {
+              fetchNotifications(currentUser);
+            }, 300000);
+          }
+        } catch (e) {
+          console.error('Lỗi khởi tạo hệ thống thông báo:', e);
+        }
+      }
+      
+      // Thiết lập sự kiện cho hệ thống thông báo
+      function setupNotificationEvents(userId) {
+        // Nút đánh dấu tất cả đã đọc
+        $('#markAllAsRead').on('click', function(e) {
+          e.preventDefault();
+          markAllAsRead(userId);
+        });
+      }
+      
+      // Lấy thông báo từ server
+      function fetchNotifications(userId) {
+        // Thêm biến đếm thử lại và thời gian chờ
+        if (window.notificationErrorCount >= 3) {
+          console.log("Đã thử lấy thông báo nhiều lần thất bại, tạm dừng để tránh gửi quá nhiều request");
+          return;
+        }
+        
+        $.ajax({
+          url: '/notifications/' + userId,
+          type: 'GET',
+          success: function(notifications) {
+            // Reset error count khi thành công
+            window.notificationErrorCount = 0;
+            displayNotifications(notifications);
+          },
+          error: function(error) {
+            // Tăng đếm lỗi
+            window.notificationErrorCount = (window.notificationErrorCount || 0) + 1;
+            console.error('Lỗi khi tải thông báo:', error);
+            $('#notificationsList').html('<div class="dropdown-item text-center p-3"><p class="text-muted mb-0">Không thể tải thông báo</p></div>');
+          }
+        });
+      }
+      
+      // Hiển thị thông báo
+      function displayNotifications(notifications) {
+        const $list = $('#notificationsList');
+        $list.empty();
+        
+        if (!notifications || notifications.length === 0) {
+          $list.html('<div class="dropdown-item text-center p-3"><p class="text-muted mb-0">Không có thông báo mới</p></div>');
+          $('.notification-badge').hide();
+          return;
+        }
+        
+        // Đếm thông báo chưa đọc
+        const unreadCount = notifications.filter(n => !n.status).length;
+        
+        // Cập nhật badge
+        if (unreadCount > 0) {
+          $('.notification-badge').text(unreadCount).show();
+        } else {
+          $('.notification-badge').hide();
+        }
+        
+        // Hiển thị các thông báo
+        notifications.slice(0, 5).forEach(function(notification) {
+          const isUnread = !notification.status;
+          const title = notification.title || 'Thông báo';
+          const icon = getNotificationIcon(notification);
+          
+          $list.append(`
+            <a class="dropdown-item p-2 border-bottom ${isUnread ? 'unread' : ''}" href="#" data-id="${notification.id}">
+              <div class="d-flex">
+                <div class="flex-shrink-0">
+                  ${icon}
+                </div>
+                <div class="ms-3">
+                  <div class="d-flex justify-content-between">
+                    <p class="mb-0 ${isUnread ? 'fw-bold' : ''}">${title}</p>
+                    <small class="text-muted">${formatTimeAgo(notification.sentAt)}</small>
+                  </div>
+                  <p class="text-muted mb-0 small">${notification.message}</p>
+                </div>
+              </div>
+            </a>
+          `);
+        });
+        
+        // Thêm sự kiện click cho các thông báo
+        $list.find('a[data-id]').on('click', function(e) {
+          e.preventDefault();
+          const notificationId = $(this).data('id');
+          markAsRead(notificationId);
+        });
+      }
+      
+      // Lấy icon dựa trên loại thông báo
+      function getNotificationIcon(notification) {
+        const type = notification.type || '';
+        
+        if (type === 'VACCINE' || notification.message.includes('vắc-xin'))
+          return '<i class="bi bi-syringe text-success fs-5"></i>';
+        else if (type === 'PACKAGE' || notification.message.includes('gói'))
+          return '<i class="bi bi-box-seam text-warning fs-5"></i>';
+        else if (type === 'PAYMENT' || notification.message.includes('thanh toán'))
+          return '<i class="bi bi-credit-card text-primary fs-5"></i>';
+        else
+          return '<i class="bi bi-bell-fill text-info fs-5"></i>';
+      }
+      
+      // Định dạng thời gian
+      function formatTimeAgo(timestamp) {
+        if (!timestamp) return '';
+        
+        const now = new Date();
+        const time = new Date(timestamp);
+        const diff = Math.floor((now - time) / 1000);
+        
+        if (diff < 60) return 'Vừa xong';
+        if (diff < 3600) return Math.floor(diff / 60) + ' phút trước';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' giờ trước';
+        
+        return time.toLocaleDateString('vi-VN');
+      }
+      
+      // Đánh dấu một thông báo đã đọc
+      function markAsRead(notificationId) {
+        $.ajax({
+          url: '/notifications/' + notificationId + '/read',
+          type: 'PUT',
+          success: function() {
+            // Tải lại thông báo sau khi đánh dấu đã đọc
+            fetchNotifications(getCurrentUserId());
+          },
+          error: function(error) {
+            console.error('Lỗi khi đánh dấu đã đọc:', error);
+          }
+        });
+      }
+      
+      // Đánh dấu tất cả thông báo đã đọc
+      function markAllAsRead(userId) {
+        $.ajax({
+          url: '/notifications/read-all/' + userId,
+          type: 'PUT',
+          success: function() {
+            // Tải lại thông báo sau khi đánh dấu đã đọc
+            fetchNotifications(userId);
+          },
+          error: function(error) {
+            console.error('Lỗi khi đánh dấu đã đọc:', error);
+          }
+        });
+      }
+      
+      // Lấy ID người dùng hiện tại
+      function getCurrentUserId() {
+        let currentUser = null;
+        /*[+
+          if(${#authentication != null && #authentication.principal != null}) {
+            currentUser = ${#authentication.principal.id};
+          }
+        +]*/
+        return currentUser;
+      }
+    });
+  </script>
+  
+  <!-- Vùng chứa toast thông báo -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div class="toast-container"></div>
+  </div>
 </div>

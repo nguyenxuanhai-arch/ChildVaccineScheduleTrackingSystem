@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo của tôi</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    
+    <style>
+        .notification-card {
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .notification-unread {
+            border-left: 4px solid #0d6efd;
+            background-color: #f0f7ff;
+        }
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        .notification-vaccine {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+        }
+        .notification-package {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+        .notification-payment {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+        .notification-system {
+            background-color: rgba(108, 117, 125, 0.1);
+            color: #6c757d;
+        }
+        .filter-button.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{master/_header :: header}"></div>
+    
+    <div class="container py-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="mb-0">Thông báo của tôi</h2>
+                <p class="text-muted">Quản lý tất cả thông báo của bạn</p>
+            </div>
+        </div>
+        
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${error}" class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${error}">Đã xảy ra lỗi</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Lọc thông báo</h5>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-primary filter-button active" data-filter="all">Tất cả</button>
+                                <button type="button" class="btn btn-outline-primary filter-button" data-filter="VACCINE">Tiêm lẻ</button>
+                                <button type="button" class="btn btn-outline-primary filter-button" data-filter="PACKAGE">Tiêm gói</button>
+                                <button type="button" class="btn btn-outline-primary filter-button" data-filter="PAYMENT">Thanh toán</button>
+                                <button type="button" class="btn btn-outline-primary filter-button" data-filter="SYSTEM">Hệ thống</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div id="notifications-container">
+                    <!-- Trường hợp không có thông báo -->
+                    <div th:if="${notifications.isEmpty()}" class="text-center py-5">
+                        <i class="bi bi-bell-slash fs-1 text-muted"></i>
+                        <h4 class="mt-3">Không có thông báo</h4>
+                        <p class="text-muted">Bạn sẽ nhận được thông báo khi có cập nhật về lịch tiêm, thanh toán và các thông báo hệ thống</p>
+                    </div>
+                    
+                    <!-- Danh sách thông báo -->
+                    <div th:each="notification : ${notifications}" th:class="'card notification-card ' + (${!notification.status} ? 'notification-unread' : '')" th:data-type="${notification.type}">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div th:class="'notification-icon ' + 
+                                    (${notification.type == 'VACCINE'} ? 'notification-vaccine' : 
+                                    (${notification.type == 'PACKAGE'} ? 'notification-package' : 
+                                    (${notification.type == 'PAYMENT'} ? 'notification-payment' : 'notification-system')))">
+                                    <i th:class="'bi ' + 
+                                        (${notification.type == 'VACCINE'} ? 'bi-syringe' : 
+                                        (${notification.type == 'PACKAGE'} ? 'bi-box-seam' : 
+                                        (${notification.type == 'PAYMENT'} ? 'bi-credit-card' : 'bi-bell-fill')))"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="card-title mb-1" th:text="${notification.title ?: 'Thông báo'}">Tiêu đề thông báo</h5>
+                                        <small class="text-muted" th:text="${#temporals.format(notification.sentAt, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:30</small>
+                                    </div>
+                                    <p class="card-text" th:text="${notification.message}">Nội dung thông báo</p>
+                                    <span th:if="${!notification.status}" class="badge bg-primary">Chưa đọc</span>
+                                    <span th:class="'badge ' + 
+                                        (${notification.type == 'VACCINE'} ? 'bg-success' : 
+                                        (${notification.type == 'PACKAGE'} ? 'bg-warning' : 
+                                        (${notification.type == 'PAYMENT'} ? 'bg-primary' : 'bg-secondary')))"
+                                        th:text="${notification.type == 'VACCINE'} ? 'Tiêm lẻ' : 
+                                                 (${notification.type == 'PACKAGE'} ? 'Tiêm gói' : 
+                                                 (${notification.type == 'PAYMENT'} ? 'Thanh toán' : 'Hệ thống'))">
+                                        Loại thông báo
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div th:replace="~{master/_footer :: footer}"></div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Xử lý filter thông báo
+            $('.filter-button').on('click', function() {
+                // Đổi trạng thái active
+                $('.filter-button').removeClass('active');
+                $(this).addClass('active');
+                
+                const filter = $(this).data('filter');
+                if (filter === 'all') {
+                    // Hiển thị tất cả
+                    $('.notification-card').show();
+                } else {
+                    // Lọc theo loại
+                    $('.notification-card').hide();
+                    $('.notification-card[data-type="' + filter + '"]').show();
+                }
+                
+                // Kiểm tra xem có thông báo nào được hiển thị không
+                const visibleNotifications = $('.notification-card:visible').length;
+                if (visibleNotifications === 0) {
+                    // Nếu không có thông báo nào được hiển thị, hiển thị thông báo trống
+                    if ($('#no-notifications-message').length === 0) {
+                        $('#notifications-container').append(`
+                            <div id="no-notifications-message" class="text-center py-5">
+                                <i class="bi bi-bell-slash fs-1 text-muted"></i>
+                                <h4 class="mt-3">Không có thông báo</h4>
+                                <p class="text-muted">Không có thông báo nào thuộc loại này</p>
+                            </div>
+                        `);
+                    }
+                } else {
+                    // Nếu có thông báo, xóa thông báo trống
+                    $('#no-notifications-message').remove();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

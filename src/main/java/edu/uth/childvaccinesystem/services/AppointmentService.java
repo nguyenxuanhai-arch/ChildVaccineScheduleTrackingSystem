@@ -83,6 +83,8 @@ public class AppointmentService {
             throw new RuntimeException("Gói vắc xin không chứa vaccine nào");
         }
         
+        // For package appointments, the date and time can be null
+        // The actual dates will be determined later by the medical staff
         appointment.setAppointmentDate(request.getAppointmentDate());
         appointment.setAppointmentTime(request.getAppointmentTime());
         appointment.setNotes(request.getNotes());

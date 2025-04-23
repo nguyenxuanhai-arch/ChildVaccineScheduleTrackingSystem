@@ -22,8 +22,12 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentType type;
     
+    @Column(nullable = true)
     private LocalDate appointmentDate;
+    
+    @Column(nullable = true)
     private LocalTime appointmentTime;
+    
     private LocalDate createAt;
     private LocalDate finishAt;
     private String notes;

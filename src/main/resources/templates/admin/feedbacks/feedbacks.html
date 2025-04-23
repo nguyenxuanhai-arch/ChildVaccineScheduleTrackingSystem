@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Quản lý Đánh giá và Phản hồi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Vaccines for children" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+  <style>
+    .feedback-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .feedback-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .rating-box {
+      display: inline-flex;
+      align-items: center;
+      background: #f8f9fa;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+    .star-rating {
+      color: #FFD700;
+    }
+    .rating-progress {
+      height: 10px;
+      margin-bottom: 15px;
+    }
+    .rating-progress .progress-bar {
+      border-radius: 5px;
+    }
+    .rating-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .badge-rating {
+      display: inline-block;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    .badge-rating-5 {
+      background-color: rgba(40, 167, 69, 0.15);
+      color: #28a745;
+    }
+    .badge-rating-4 {
+      background-color: rgba(23, 162, 184, 0.15);
+      color: #17a2b8;
+    }
+    .badge-rating-3 {
+      background-color: rgba(0, 123, 255, 0.15);
+      color: #0d6efd;
+    }
+    .badge-rating-2 {
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #ffc107;
+    }
+    .badge-rating-1 {
+      background-color: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+    .feedback-unread {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #dc3545;
+    }
+    .feedback-important {
+      color: #dc3545;
+    }
+    .action-bar {
+      background-color: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a th:href="@{/admin/feedbacks}" class="nav-link active">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thông báo -->
+            <li class="nav-item">
+              <a th:href="@{/admin/notifications}" class="nav-link">
+                <i class="nav-icon bi bi-bell"></i>
+                <p>Quản lí Thông báo</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Quản lý Đánh giá và Phản hồi</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Quản lý Đánh giá
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <!-- Hiển thị thông báo lỗi/thành công nếu có -->
+          <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Đã xảy ra lỗi</span>
+          </div>
+          <div th:if="${message}" class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${message}">Thao tác thành công</span>
+          </div>
+
+          <!-- Thống kê tổng quan -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-info feedback-card">
+                <div class="inner">
+                  <h3 th:text="${totalFeedbacks}">150</h3>
+                  <p>Tổng số đánh giá</p>
+                </div>
+                <div class="icon">
+                  <i class="bi bi-chat-dots-fill"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-success feedback-card">
+                <div class="inner">
+                  <h3 th:text="${avgRating}">4.5</h3>
+                  <p>Đánh giá trung bình</p>
+                </div>
+                <div class="icon">
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-warning feedback-card">
+                <div class="inner">
+                  <h3 th:text="${fiveStarCount}">84</h3>
+                  <p>Đánh giá 5 sao</p>
+                </div>
+                <div class="icon">
+                  <i class="bi bi-hand-thumbs-up-fill"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-3 col-6">
+              <div class="small-box bg-danger feedback-card">
+                <div class="inner">
+                  <h3 th:text="${oneStarCount + twoStarCount}">11</h3>
+                  <p>Đánh giá tiêu cực</p>
+                </div>
+                <div class="icon">
+                  <i class="bi bi-hand-thumbs-down-fill"></i>
+                </div>
+                <a href="#" class="small-box-footer">
+                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Biểu đồ đánh giá -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Phân phối đánh giá</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="rating-label">
+                        <div>
+                          <span class="star-rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                          <span>5 sao</span>
+                        </div>
+                        <span class="badge bg-primary" th:text="${fiveStarCount}">84</span>
+                      </div>
+                      <div class="progress rating-progress">
+                        <div class="progress-bar bg-success" role="progressbar" th:style="'width: ' + (${totalFeedbacks} > 0 ? ${fiveStarCount}*100/${totalFeedbacks} : 0) + '%'" style="width: 60%"></div>
+                      </div>
+                      
+                      <div class="rating-label">
+                        <div>
+                          <span class="star-rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                          <span>4 sao</span>
+                        </div>
+                        <span class="badge bg-primary" th:text="${fourStarCount}">37</span>
+                      </div>
+                      <div class="progress rating-progress">
+                        <div class="progress-bar bg-primary" role="progressbar" th:style="'width: ' + (${totalFeedbacks} > 0 ? ${fourStarCount}*100/${totalFeedbacks} : 0) + '%'" style="width: 25%"></div>
+                      </div>
+                      
+                      <div class="rating-label">
+                        <div>
+                          <span class="star-rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                          <span>3 sao</span>
+                        </div>
+                        <span class="badge bg-primary" th:text="${threeStarCount}">18</span>
+                      </div>
+                      <div class="progress rating-progress">
+                        <div class="progress-bar bg-info" role="progressbar" th:style="'width: ' + (${totalFeedbacks} > 0 ? ${threeStarCount}*100/${totalFeedbacks} : 0) + '%'" style="width: 10%"></div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="rating-label">
+                        <div>
+                          <span class="star-rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                          <span>2 sao</span>
+                        </div>
+                        <span class="badge bg-primary" th:text="${twoStarCount}">7</span>
+                      </div>
+                      <div class="progress rating-progress">
+                        <div class="progress-bar bg-warning" role="progressbar" th:style="'width: ' + (${totalFeedbacks} > 0 ? ${twoStarCount}*100/${totalFeedbacks} : 0) + '%'" style="width: 5%"></div>
+                      </div>
+                      
+                      <div class="rating-label">
+                        <div>
+                          <span class="star-rating"><i class="bi bi-star-fill"></i></span>
+                          <span>1 sao</span>
+                        </div>
+                        <span class="badge bg-primary" th:text="${oneStarCount}">4</span>
+                      </div>
+                      <div class="progress rating-progress">
+                        <div class="progress-bar bg-danger" role="progressbar" th:style="'width: ' + (${totalFeedbacks} > 0 ? ${oneStarCount}*100/${totalFeedbacks} : 0) + '%'" style="width: 3%"></div>
+                      </div>
+                      
+                      <div class="mt-4">
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                          <span class="me-3 fw-bold" style="font-size: 2rem" th:text="${avgRating}">4.5</span>
+                          <div>
+                            <div class="star-rating fs-4">
+                              <i class="bi" th:classappend="${avgRating >= 1 ? 'bi-star-fill' : (avgRating >= 0.5 ? 'bi-star-half' : 'bi-star')}"></i>
+                              <i class="bi" th:classappend="${avgRating >= 2 ? 'bi-star-fill' : (avgRating >= 1.5 ? 'bi-star-half' : 'bi-star')}"></i>
+                              <i class="bi" th:classappend="${avgRating >= 3 ? 'bi-star-fill' : (avgRating >= 2.5 ? 'bi-star-half' : 'bi-star')}"></i>
+                              <i class="bi" th:classappend="${avgRating >= 4 ? 'bi-star-fill' : (avgRating >= 3.5 ? 'bi-star-half' : 'bi-star')}"></i>
+                              <i class="bi" th:classappend="${avgRating >= 5 ? 'bi-star-fill' : (avgRating >= 4.5 ? 'bi-star-half' : 'bi-star')}"></i>
+                            </div>
+                            <div class="text-muted small" th:text="${totalFeedbacks} + ' đánh giá'">150 đánh giá</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danh sách đánh giá -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">Danh sách đánh giá</h3>
+                    <div class="input-group" style="width: 300px;">
+                      <select id="ratingFilter" class="form-select form-select-sm">
+                        <option value="">Tất cả đánh giá</option>
+                        <option value="5">5 sao</option>
+                        <option value="4">4 sao</option>
+                        <option value="3">3 sao</option>
+                        <option value="2">2 sao</option>
+                        <option value="1">1 sao</option>
+                      </select>
+                      <input type="text" id="searchKeyword" class="form-control form-control-sm" placeholder="Tìm kiếm...">
+                      <button class="btn btn-sm btn-outline-secondary" id="btnSearch">
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="action-bar d-none" id="batchActionBar">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <span class="me-2"><span id="selectedCount">0</span> mục đã chọn</span>
+                        <button class="btn btn-sm btn-outline-primary me-1" id="btnMarkRead">
+                          <i class="bi bi-check-circle me-1"></i> Đánh dấu đã đọc
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning me-1" id="btnMarkImportant">
+                          <i class="bi bi-flag me-1"></i> Đánh dấu quan trọng
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" id="btnBatchDelete">
+                          <i class="bi bi-trash me-1"></i> Xóa đã chọn
+                        </button>
+                      </div>
+                      <button class="btn btn-sm btn-outline-secondary" id="btnClearSelection">
+                        <i class="bi bi-x-circle me-1"></i> Bỏ chọn
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="table-responsive">
+                    <table id="feedbackTable" class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th width="30px">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" id="checkAll">
+                            </div>
+                          </th>
+                          <th>ID</th>
+                          <th>Người dùng</th>
+                          <th>Đánh giá</th>
+                          <th>Nội dung</th>
+                          <th>Thời gian</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Dữ liệu sẽ được tải bằng DataTables Ajax -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Vaccines for children</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Modal xem chi tiết đánh giá -->
+  <div class="modal fade" id="viewFeedbackModal" tabindex="-1" aria-labelledby="viewFeedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewFeedbackModalLabel">Chi tiết đánh giá</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Người dùng:</label>
+            <div id="modalUsername" class="form-control-static"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Đánh giá:</label>
+            <div id="modalRating" class="star-rating fs-4"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nội dung phản hồi:</label>
+            <div id="modalMessage" class="form-control-static"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Thời gian:</label>
+            <div id="modalCreatedAt" class="form-control-static"></div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="modalMarkAsRead">
+              <label class="form-check-label" for="modalMarkAsRead">Đánh dấu đã đọc</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="modalMarkAsImportant">
+              <label class="form-check-label" for="modalMarkAsImportant">Đánh dấu quan trọng</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-primary" id="viewDetailPageBtn" target="_blank">
+            <i class="bi bi-eye"></i> Xem trang chi tiết
+          </a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-danger" id="deleteFeedbackBtn">
+            <i class="bi bi-trash"></i> Xóa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Khởi tạo DataTable
+      const feedbackTable = $('#feedbackTable').DataTable({
+        "ajax": {
+          "url": "/admin/feedbacks/data",
+          "dataSrc": ""
+        },
+        "columns": [
+          { 
+            "data": null,
+            "orderable": false,
+            "render": function(data) {
+              return `<div class="form-check">
+                        <input class="form-check-input checkbox-item" type="checkbox" data-id="${data.id}">
+                      </div>`;
+            }
+          },
+          { "data": "id" },
+          { 
+            "data": "user",
+            "render": function(data) {
+              if (!data) return '<em>Không xác định</em>';
+              return data.username || data.name || '<em>Không xác định</em>';
+            }
+          },
+          { 
+            "data": "rating",
+            "render": function(data) {
+              let stars = '';
+              for (let i = 0; i < 5; i++) {
+                if (i < data) {
+                  stars += '<i class="bi bi-star-fill star-rating"></i>';
+                } else {
+                  stars += '<i class="bi bi-star star-rating"></i>';
+                }
+              }
+              
+              // Add colored badge by rating
+              let badgeClass = `badge-rating badge-rating-${data}`;
+              return stars + ' <span class="' + badgeClass + '">' + data + '/5</span>';
+            }
+          },
+          { 
+            "data": "message",
+            "render": function(data, type, row) {
+              if (!data) return '<em>Không có nội dung</em>';
+              
+              let output = data.length > 80 ? data.substring(0, 80) + '...' : data;
+              
+              // Add indicator for unread or important
+              if (row.status === 'UNREAD') {
+                output = '<div class="position-relative">' + output + 
+                         '<span class="feedback-unread" title="Chưa đọc"></span></div>';
+              }
+              
+              if (row.important) {
+                output = '<i class="bi bi-flag-fill me-1 feedback-important" title="Quan trọng"></i>' + output;
+              }
+              
+              return output;
+            }
+          },
+          { 
+            "data": "createdAt",
+            "render": function(data) {
+              if (!data) return '<em>N/A</em>';
+              try {
+                const date = new Date(data);
+                return date.toLocaleString('vi-VN');
+              } catch (e) {
+                console.error('Error formatting date:', e);
+                return '<em>Không hợp lệ</em>';
+              }
+            }
+          },
+          {
+            "data": "id",
+            "render": function(data) {
+              return `
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-info view-btn" data-id="${data}">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <a href="/admin/feedbacks/${data}" class="btn btn-sm btn-primary" target="_blank">
+                    <i class="bi bi-file-earmark-text"></i>
+                  </a>
+                  <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${data}">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              `;
+            }
+          }
+        ],
+        "order": [[5, "desc"]], // Order by creation date desc
+        "language": {
+          "search": "Tìm kiếm:",
+          "lengthMenu": "Hiển thị _MENU_ mục",
+          "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
+          "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
+          "infoFiltered": "(được lọc từ _MAX_ mục)",
+          "paginate": {
+            "first": "Đầu",
+            "last": "Cuối",
+            "next": "Tiếp",
+            "previous": "Trước"
+          },
+          "emptyTable": "Không có dữ liệu"
+        }
+      });
+
+      // Xử lý checkbox "chọn tất cả"
+      $('#checkAll').on('change', function() {
+        const isChecked = $(this).prop('checked');
+        $('.checkbox-item').prop('checked', isChecked);
+        updateBatchActionBar();
+      });
+      
+      // Xử lý khi click vào các checkbox riêng lẻ
+      $(document).on('change', '.checkbox-item', function() {
+        updateBatchActionBar();
+        const allChecked = $('.checkbox-item:checked').length === $('.checkbox-item').length;
+        $('#checkAll').prop('checked', allChecked);
+      });
+      
+      // Cập nhật thanh hành động hàng loạt
+      function updateBatchActionBar() {
+        const selectedCount = $('.checkbox-item:checked').length;
+        $('#selectedCount').text(selectedCount);
+        
+        if (selectedCount > 0) {
+          $('#batchActionBar').removeClass('d-none');
+        } else {
+          $('#batchActionBar').addClass('d-none');
+        }
+      }
+      
+      // Bỏ chọn tất cả
+      $('#btnClearSelection').on('click', function() {
+        $('#checkAll').prop('checked', false);
+        $('.checkbox-item').prop('checked', false);
+        updateBatchActionBar();
+      });
+      
+      // Xử lý lọc theo đánh giá
+      $('#ratingFilter').on('change', function() {
+        const rating = $(this).val();
+        if (rating) {
+          feedbackTable.column(3).search(rating).draw();
+        } else {
+          feedbackTable.column(3).search('').draw();
+        }
+      });
+      
+      // Xử lý tìm kiếm theo từ khóa
+      $('#btnSearch').on('click', function() {
+        const keyword = $('#searchKeyword').val();
+        feedbackTable.search(keyword).draw();
+      });
+      
+      // Xử lý tìm kiếm khi nhấn Enter
+      $('#searchKeyword').on('keypress', function(e) {
+        if (e.which === 13) {
+          const keyword = $(this).val();
+          feedbackTable.search(keyword).draw();
+        }
+      });
+      
+      // Hành động hàng loạt - Đánh dấu đã đọc
+      $('#btnMarkRead').on('click', function() {
+        const selectedIds = getSelectedIds();
+        if (selectedIds.length === 0) return;
+        
+        markAsRead(selectedIds, true);
+      });
+      
+      // Hành động hàng loạt - Đánh dấu quan trọng
+      $('#btnMarkImportant').on('click', function() {
+        const selectedIds = getSelectedIds();
+        if (selectedIds.length === 0) return;
+        
+        markAsImportant(selectedIds, true);
+      });
+      
+      // Hành động hàng loạt - Xóa nhiều
+      $('#btnBatchDelete').on('click', function() {
+        const selectedIds = getSelectedIds();
+        if (selectedIds.length === 0) return;
+        
+        Swal.fire({
+          title: 'Xác nhận xóa?',
+          text: `Bạn có chắc chắn muốn xóa ${selectedIds.length} đánh giá đã chọn không?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Xóa',
+          cancelButtonText: 'Hủy'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteFeedbacks(selectedIds);
+          }
+        });
+      });
+      
+      // Lấy danh sách ID các đánh giá đã chọn
+      function getSelectedIds() {
+        const ids = [];
+        $('.checkbox-item:checked').each(function() {
+          ids.push($(this).data('id'));
+        });
+        return ids;
+      }
+      
+      // Đánh dấu đã đọc nhiều feedback
+      function markAsRead(ids, read) {
+        $.ajax({
+          url: '/admin/feedbacks/mark-read',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: ids,
+            read: read
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint does not exist yet
+            if (response && response.error) {
+              console.warn("Mark as read endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng đánh dấu đã đọc chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã cập nhật trạng thái đọc.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              feedbackTable.ajax.reload();
+              $('#checkAll').prop('checked', false);
+              updateBatchActionBar();
+            });
+          },
+          error: function(error) {
+            console.error("Error calling mark-read endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng đánh dấu đã đọc chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+      
+      // Đánh dấu quan trọng nhiều feedback
+      function markAsImportant(ids, important) {
+        $.ajax({
+          url: '/admin/feedbacks/mark-important',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: ids,
+            important: important
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint does not exist yet
+            if (response && response.error) {
+              console.warn("Mark as important endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng đánh dấu quan trọng chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã cập nhật trạng thái quan trọng.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              feedbackTable.ajax.reload();
+              $('#checkAll').prop('checked', false);
+              updateBatchActionBar();
+            });
+          },
+          error: function(error) {
+            console.error("Error calling mark-important endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng đánh dấu quan trọng chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+      
+      // Xóa nhiều feedback
+      function deleteFeedbacks(ids) {
+        $.ajax({
+          url: '/admin/feedbacks/batch-delete',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: ids
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint does not exist yet
+            if (response && response.error) {
+              console.warn("Batch delete endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng xóa hàng loạt chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã xóa các đánh giá đã chọn.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              // Reload the page to refresh statistics
+              window.location.reload();
+            });
+          },
+          error: function(error) {
+            console.error("Error calling batch-delete endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng xóa hàng loạt chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+      
+      // Xem chi tiết đánh giá
+      $(document).on('click', '.view-btn', function() {
+        const feedbackId = $(this).data('id');
+        const row = feedbackTable.row($(this).closest('tr')).data();
+        
+        // Reset modal content
+        $('#modalRating').empty();
+        
+        // Fill modal with feedback details
+        $('#modalUsername').text(row.user ? (row.user.username || row.user.name || 'N/A') : 'N/A');
+        
+        // Display rating stars
+        let stars = '';
+        for (let i = 0; i < 5; i++) {
+          if (i < row.rating) {
+            stars += '<i class="bi bi-star-fill"></i>';
+          } else {
+            stars += '<i class="bi bi-star"></i>';
+          }
+        }
+        $('#modalRating').html(stars);
+        
+        $('#modalMessage').text(row.message || 'Không có nội dung');
+        
+        // Format date
+        let formattedDate = 'N/A';
+        if (row.createdAt) {
+          try {
+            const date = new Date(row.createdAt);
+            formattedDate = date.toLocaleString('vi-VN');
+          } catch (e) {
+            console.error('Error formatting date:', e);
+          }
+        }
+        $('#modalCreatedAt').text(formattedDate);
+        
+        // Set switches
+        $('#modalMarkAsRead').prop('checked', row.status !== 'UNREAD');
+        $('#modalMarkAsImportant').prop('checked', row.important === true);
+        
+        // Set delete button data
+        $('#deleteFeedbackBtn').data('id', feedbackId);
+        
+        // Set view detail page link
+        $('#viewDetailPageBtn').attr('href', '/admin/feedbacks/' + feedbackId);
+        
+        // Automatically mark as read when viewing
+        if (row.status === 'UNREAD') {
+          markAsRead([feedbackId], true);
+        }
+        
+        // Show modal
+        $('#viewFeedbackModal').modal('show');
+      });
+      
+      // Xử lý đánh dấu đã đọc/chưa đọc từ modal
+      $('#modalMarkAsRead').on('change', function() {
+        const feedbackId = $('#deleteFeedbackBtn').data('id');
+        const isRead = $(this).prop('checked');
+        markAsRead([feedbackId], isRead);
+      });
+      
+      // Xử lý đánh dấu quan trọng từ modal
+      $('#modalMarkAsImportant').on('change', function() {
+        const feedbackId = $('#deleteFeedbackBtn').data('id');
+        const isImportant = $(this).prop('checked');
+        markAsImportant([feedbackId], isImportant);
+      });
+
+      // Xóa đánh giá (khi bấm nút xóa trong modal)
+      $('#deleteFeedbackBtn').on('click', function() {
+        const feedbackId = $(this).data('id');
+        deleteFeedback(feedbackId);
+      });
+
+      // Xóa đánh giá (khi bấm nút xóa trực tiếp trong bảng)
+      $(document).on('click', '.delete-btn', function() {
+        const feedbackId = $(this).data('id');
+        
+        Swal.fire({
+          title: 'Xác nhận xóa?',
+          text: 'Bạn có chắc chắn muốn xóa đánh giá này không?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Xóa',
+          cancelButtonText: 'Hủy'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            deleteFeedback(feedbackId);
+          }
+        });
+      });
+
+      // Hàm xử lý xóa feedback
+      function deleteFeedback(feedbackId) {
+        $.ajax({
+          url: '/admin/feedbacks/delete/' + feedbackId,
+          type: 'POST',
+          success: function(response) {
+            $('#viewFeedbackModal').modal('hide');
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã xóa đánh giá thành công.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              // Reload the page to refresh statistics
+              window.location.reload();
+            });
+          },
+          error: function(error) {
+            Swal.fire({
+              title: 'Lỗi!',
+              text: 'Không thể xóa đánh giá: ' + (error.responseJSON?.message || 'Đã xảy ra lỗi'),
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

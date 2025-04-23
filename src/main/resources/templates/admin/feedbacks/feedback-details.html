@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Chi tiết đánh giá</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Vaccines for children" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+  <style>
+    .star-rating {
+      color: #FFD700;
+    }
+    .feedback-card {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .feedback-info-item {
+      padding: 10px 0;
+      display: flex;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .feedback-info-label {
+      font-weight: bold;
+      min-width: 150px;
+    }
+    .feedback-message {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 5px solid #0d6efd;
+      font-style: italic;
+    }
+    .badge-rating {
+      display: inline-block;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .badge-rating-5 {
+      background-color: rgba(40, 167, 69, 0.15);
+      color: #28a745;
+    }
+    .badge-rating-4 {
+      background-color: rgba(23, 162, 184, 0.15);
+      color: #17a2b8;
+    }
+    .badge-rating-3 {
+      background-color: rgba(0, 123, 255, 0.15);
+      color: #0d6efd;
+    }
+    .badge-rating-2 {
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #ffc107;
+    }
+    .badge-rating-1 {
+      background-color: rgba(220, 53, 69, 0.15);
+      color: #dc3545;
+    }
+    .appointment-box {
+      background-color: #f0f8ff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      border: 1px solid #cfe2ff;
+    }
+    .appointment-box h5 {
+      margin-bottom: 15px;
+      color: #0d6efd;
+    }
+    .admin-reply {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 5px solid #28a745;
+    }
+    .admin-reply-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #495057;
+    }
+    .status-badge {
+      border-radius: 30px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      display: inline-block;
+      margin-left: 10px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a th:href="@{/admin/feedbacks}" class="nav-link active">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thông báo -->
+            <li class="nav-item">
+              <a th:href="@{/admin/notifications}" class="nav-link">
+                <i class="nav-icon bi bi-bell"></i>
+                <p>Quản lí Thông báo</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Chi tiết đánh giá</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin/feedbacks}">Quản lý Đánh giá</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Chi tiết đánh giá
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <!-- Hiển thị thông báo lỗi/thành công nếu có -->
+          <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Đã xảy ra lỗi</span>
+          </div>
+          <div th:if="${message}" class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span th:text="${message}">Thao tác thành công</span>
+          </div>
+
+          <!-- Chi tiết đánh giá -->
+          <div class="row">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h3 class="card-title">Thông tin đánh giá #<span th:text="${feedback.id}">123</span></h3>
+                  <div>
+                    <span th:if="${feedback.status == 'UNREAD'}" class="badge bg-danger status-badge">Chưa đọc</span>
+                    <span th:if="${feedback.important == true}" class="badge bg-warning status-badge">Quan trọng</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="action-buttons">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="markAsRead" 
+                             th:checked="${feedback.status != 'UNREAD'}">
+                      <label class="form-check-label" for="markAsRead">Đánh dấu đã đọc</label>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="markAsImportant" 
+                             th:checked="${feedback.important == true}">
+                      <label class="form-check-label" for="markAsImportant">Đánh dấu quan trọng</label>
+                    </div>
+                  </div>
+                  
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Người đánh giá:</div>
+                    <div th:if="${feedback.user}" th:text="${feedback.user.username}">username</div>
+                    <div th:unless="${feedback.user}"><em>Không xác định</em></div>
+                  </div>
+                  
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Đánh giá:</div>
+                    <div>
+                      <span class="star-rating" th:each="i : ${#numbers.sequence(1, 5)}">
+                        <i class="bi" th:classappend="${i <= feedback.rating ? 'bi-star-fill' : 'bi-star'}"></i>
+                      </span>
+                      <span th:class="'ms-2 badge-rating badge-rating-' + ${feedback.rating}" 
+                            th:text="${feedback.rating} + '/5'">5/5</span>
+                    </div>
+                  </div>
+                  
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Thời gian gửi:</div>
+                    <div th:text="${#temporals.format(feedback.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2023 13:45</div>
+                  </div>
+                  
+                  <div class="feedback-message">
+                    <p th:text="${feedback.message}">Nội dung phản hồi của khách hàng sẽ được hiển thị ở đây.</p>
+                  </div>
+                  
+                  <!-- Thông tin lịch hẹn liên quan -->
+                  <div class="appointment-box" th:if="${feedback.appointment != null}">
+                    <h5><i class="bi bi-calendar-check me-2"></i>Thông tin lịch hẹn liên quan</h5>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Mã lịch hẹn:</div>
+                          <div th:text="${feedback.appointment.id}">AP123</div>
+                        </div>
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Trạng thái:</div>
+                          <div>
+                            <span th:if="${feedback.appointment.status == 'COMPLETED'}" class="badge bg-success">Hoàn thành</span>
+                            <span th:if="${feedback.appointment.status == 'SCHEDULED'}" class="badge bg-primary">Đã đặt lịch</span>
+                            <span th:if="${feedback.appointment.status == 'CANCELLED'}" class="badge bg-danger">Đã hủy</span>
+                            <span th:if="${feedback.appointment.status == 'RESCHEDULED'}" class="badge bg-warning">Đã đổi lịch</span>
+                          </div>
+                        </div>
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Ngày hẹn:</div>
+                          <div th:text="${#temporals.format(feedback.appointment.appointmentDate, 'dd/MM/yyyy')}">
+                            15/03/2023
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Trẻ:</div>
+                          <div th:text="${feedback.appointment.child != null} ? ${feedback.appointment.child.name} : 'N/A'">
+                            Nguyễn Văn A
+                          </div>
+                        </div>
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Dịch vụ:</div>
+                          <div>
+                            <span th:if="${feedback.appointment.type == 'VACCINE' && feedback.appointment.vaccine != null}" 
+                                  th:text="${feedback.appointment.vaccine.name}">Vaccine A</span>
+                            <span th:if="${feedback.appointment.type == 'PACKAGE' && feedback.appointment.vaccinePackage != null}" 
+                                  th:text="${feedback.appointment.vaccinePackage.name}">Gói vaccine A</span>
+                          </div>
+                        </div>
+                        <div class="feedback-info-item">
+                          <div class="feedback-info-label">Giờ hẹn:</div>
+                          <div th:text="${feedback.appointment.appointmentTime}">09:30</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-end mt-3">
+                      <a th:href="@{/admin/appointments/{id}(id=${feedback.appointment.id})}" 
+                         class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-arrow-up-right-square me-1"></i> Xem chi tiết lịch hẹn
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <!-- Phản hồi từ admin -->
+                  <div th:if="${adminReply != null}" class="admin-reply">
+                    <div class="admin-reply-header">
+                      <div>
+                        <i class="bi bi-reply-fill me-1"></i> Phản hồi của quản trị viên
+                      </div>
+                      <div>
+                        <small th:text="${#temporals.format(adminReply.createdAt, 'dd/MM/yyyy HH:mm')}">02/01/2023 10:15</small>
+                      </div>
+                    </div>
+                    <p th:text="${adminReply.content}">Nội dung phản hồi của quản trị viên.</p>
+                  </div>
+                  
+                  <!-- Form gửi phản hồi mới -->
+                  <div class="card mt-4" th:if="${adminReply == null}">
+                    <div class="card-header">
+                      <h5 class="card-title mb-0"><i class="bi bi-reply me-2"></i>Gửi phản hồi</h5>
+                    </div>
+                    <div class="card-body">
+                      <form id="replyForm">
+                        <input type="hidden" id="feedbackId" th:value="${feedback.id}">
+                        <div class="mb-3">
+                          <label for="replyContent" class="form-label">Nội dung phản hồi</label>
+                          <textarea class="form-control" id="replyContent" rows="4" required></textarea>
+                        </div>
+                        <div class="text-end">
+                          <button type="button" class="btn btn-primary" id="submitReply">
+                            <i class="bi bi-send me-1"></i> Gửi phản hồi
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <a th:if="${prevFeedbackId != null}" th:href="@{/admin/feedbacks/{id}(id=${prevFeedbackId})}" 
+                         class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Đánh giá trước
+                      </a>
+                    </div>
+                    <div>
+                      <a th:href="@{/admin/feedbacks}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-up"></i> Quay lại danh sách
+                      </a>
+                      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteFeedbackModal">
+                        <i class="bi bi-trash"></i> Xóa
+                      </button>
+                    </div>
+                    <div>
+                      <a th:if="${nextFeedbackId != null}" th:href="@{/admin/feedbacks/{id}(id=${nextFeedbackId})}" 
+                         class="btn btn-outline-secondary">
+                        Đánh giá sau <i class="bi bi-arrow-right"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h3 class="card-title">Thông tin người dùng</h3>
+                </div>
+                <div class="card-body" th:if="${feedback.user}">
+                  <div class="text-center mb-3">
+                    <img class="img-fluid rounded-circle" style="width: 100px; height: 100px;"
+                        src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="User Image">
+                  </div>
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Tên:</div>
+                    <div th:text="${feedback.user.name}">User Name</div>
+                  </div>
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Email:</div>
+                    <div th:text="${feedback.user.email}">user@example.com</div>
+                  </div>
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Username:</div>
+                    <div th:text="${feedback.user.username}">username</div>
+                  </div>
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Vai trò:</div>
+                    <div th:text="${feedback.user.role}">ROLE_USER</div>
+                  </div>
+                  <div class="feedback-info-item">
+                    <div class="feedback-info-label">Điện thoại:</div>
+                    <div th:text="${feedback.user.phoneNumber}">0123456789</div>
+                  </div>
+                </div>
+                <div class="card-body" th:unless="${feedback.user}">
+                  <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Không có thông tin người dùng
+                  </div>
+                </div>
+                <div class="card-footer text-end" th:if="${feedback.user}">
+                  <a th:href="@{/admin/users/{id}(id=${feedback.user.id})}" class="btn btn-primary">
+                    <i class="bi bi-person"></i> Xem hồ sơ
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Thống kê đánh giá của người dùng -->
+              <div class="card" th:if="${feedback.user}">
+                <div class="card-header">
+                  <h3 class="card-title">Thống kê đánh giá</h3>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <h6>Tổng số đánh giá: <span class="badge bg-primary" th:text="${userFeedbackStats?.totalCount ?: 0}">5</span></h6>
+                  </div>
+                  <div class="mb-3">
+                    <label>Phân bố đánh giá</label>
+                    <div class="d-flex align-items-center mb-2">
+                      <div style="width: 30px;">5★</div>
+                      <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-success" 
+                             th:style="'width: ' + ${userFeedbackStats?.fiveStarPercent ?: 0} + '%'" 
+                             style="width: 60%;"></div>
+                      </div>
+                      <div class="ms-2" style="width: 30px;" 
+                           th:text="${userFeedbackStats?.fiveStarCount ?: 0}">3</div>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                      <div style="width: 30px;">4★</div>
+                      <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-info" 
+                             th:style="'width: ' + ${userFeedbackStats?.fourStarPercent ?: 0} + '%'" 
+                             style="width: 20%;"></div>
+                      </div>
+                      <div class="ms-2" style="width: 30px;" 
+                           th:text="${userFeedbackStats?.fourStarCount ?: 0}">1</div>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                      <div style="width: 30px;">3★</div>
+                      <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-primary" 
+                             th:style="'width: ' + ${userFeedbackStats?.threeStarPercent ?: 0} + '%'" 
+                             style="width: 0%;"></div>
+                      </div>
+                      <div class="ms-2" style="width: 30px;" 
+                           th:text="${userFeedbackStats?.threeStarCount ?: 0}">0</div>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                      <div style="width: 30px;">2★</div>
+                      <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-warning" 
+                             th:style="'width: ' + ${userFeedbackStats?.twoStarPercent ?: 0} + '%'" 
+                             style="width: 20%;"></div>
+                      </div>
+                      <div class="ms-2" style="width: 30px;" 
+                           th:text="${userFeedbackStats?.twoStarCount ?: 0}">1</div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <div style="width: 30px;">1★</div>
+                      <div class="progress flex-grow-1" style="height: 8px;">
+                        <div class="progress-bar bg-danger" 
+                             th:style="'width: ' + ${userFeedbackStats?.oneStarPercent ?: 0} + '%'" 
+                             style="width: 0%;"></div>
+                      </div>
+                      <div class="ms-2" style="width: 30px;" 
+                           th:text="${userFeedbackStats?.oneStarCount ?: 0}">0</div>
+                    </div>
+                  </div>
+                  <div class="mt-3">
+                    <a th:href="@{/admin/feedbacks(user=${feedback.user.username})}" 
+                       class="btn btn-sm btn-outline-primary w-100">
+                      <i class="bi bi-list-ul me-1"></i> Xem tất cả đánh giá của người dùng
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Vaccines for children</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Modal xác nhận xóa đánh giá -->
+  <div class="modal fade" id="deleteFeedbackModal" tabindex="-1" aria-labelledby="deleteFeedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteFeedbackModalLabel">Xác nhận xóa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Bạn có chắc chắn muốn xóa đánh giá này không?</p>
+          <p><strong>Lưu ý:</strong> Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <form th:action="@{/admin/feedbacks/delete/{id}(id=${feedback.id})}" method="post">
+            <button type="submit" class="btn btn-danger">Xóa</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Đánh dấu đã đọc
+      $('#markAsRead').on('change', function() {
+        const isRead = $(this).prop('checked');
+        const feedbackId = /*[[${feedback.id}]]*/ 0;
+        
+        $.ajax({
+          url: '/admin/feedbacks/mark-read',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: [feedbackId],
+            read: isRead
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint doesn't exist yet
+            if (response && response.error) {
+              console.warn("Mark as read endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng đánh dấu đã đọc chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã cập nhật trạng thái đọc.',
+              icon: 'success',
+              confirmButtonText: 'OK',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            
+            // Cập nhật hiển thị badge
+            if (isRead) {
+              $('.status-badge:contains("Chưa đọc")').remove();
+            } else {
+              if ($('.status-badge:contains("Chưa đọc")').length === 0) {
+                $('.card-header .d-flex').append('<span class="badge bg-danger status-badge">Chưa đọc</span>');
+              }
+            }
+          },
+          error: function(error) {
+            console.error("Error calling mark-read endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng đánh dấu đã đọc chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      });
+      
+      // Đánh dấu quan trọng
+      $('#markAsImportant').on('change', function() {
+        const isImportant = $(this).prop('checked');
+        const feedbackId = /*[[${feedback.id}]]*/ 0;
+        
+        $.ajax({
+          url: '/admin/feedbacks/mark-important',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: [feedbackId],
+            important: isImportant
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint doesn't exist yet
+            if (response && response.error) {
+              console.warn("Mark as important endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng đánh dấu quan trọng chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã cập nhật trạng thái quan trọng.',
+              icon: 'success',
+              confirmButtonText: 'OK',
+              timer: 1500,
+              showConfirmButton: false
+            });
+            
+            // Cập nhật hiển thị badge
+            if (isImportant) {
+              if ($('.status-badge:contains("Quan trọng")').length === 0) {
+                $('.card-header .d-flex').append('<span class="badge bg-warning status-badge">Quan trọng</span>');
+              }
+            } else {
+              $('.status-badge:contains("Quan trọng")').remove();
+            }
+          },
+          error: function(error) {
+            console.error("Error calling mark-important endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng đánh dấu quan trọng chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      });
+      
+      // Gửi phản hồi
+      $('#submitReply').on('click', function() {
+        const feedbackId = $('#feedbackId').val();
+        const content = $('#replyContent').val();
+        
+        if (!content.trim()) {
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Vui lòng nhập nội dung phản hồi',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+        
+        $.ajax({
+          url: '/admin/feedbacks/reply/' + feedbackId,
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            content: content
+          }),
+          success: function(response) {
+            // Fallback in case the endpoint doesn't exist yet
+            if (response && response.error) {
+              console.warn("Reply endpoint not implemented: ", response.error);
+              Swal.fire({
+                title: 'Thông báo!',
+                text: 'Chức năng phản hồi chưa được triển khai đầy đủ trên server.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+              });
+              return;
+            }
+            
+            Swal.fire({
+              title: 'Thành công!',
+              text: 'Đã gửi phản hồi thành công.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              window.location.reload();
+            });
+          },
+          error: function(error) {
+            console.error("Error calling reply endpoint: ", error);
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Chức năng phản hồi chưa được triển khai đầy đủ trên server.',
+              icon: 'info',
+              confirmButtonText: 'OK'
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> 

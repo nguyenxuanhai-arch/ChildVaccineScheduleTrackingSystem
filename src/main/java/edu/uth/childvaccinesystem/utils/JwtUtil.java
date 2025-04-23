@@ -29,7 +29,6 @@ public class JwtUtil {
                                  .parseClaimsJws(token)
                                  .getBody()
                                  .getSubject();  // Lấy username từ token
-            System.out.println("Username từ token: " + username); // Debug log
             return username;
         } catch (Exception e) {
             throw new RuntimeException("Token không hợp lệ");

@@ -176,7 +176,7 @@
   
               <!-- Quản lí Rating, Feedback -->
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a th:href="@{/admin/feedbacks}" class="nav-link active">
                   <i class="nav-icon bi bi-star-half"></i>
                   <p>Quản lí Rating, Feedback</p>
                 </a>
@@ -216,7 +216,7 @@
   
               <!-- Quản lí Thanh toán -->
               <li class="nav-item">
-                <a th:href="@{/admin/payments}" class="nav-link active">
+                <a th:href="@{/admin/payments}" class="nav-link">
                   <i class="nav-icon bi bi-credit-card"></i>
                   <p>Quản lí Thanh toán</p>
                 </a>
@@ -227,6 +227,14 @@
                 <a th:href="@{/admin/appointments}" class="nav-link">
                   <i class="nav-icon bi bi-calendar-check"></i>
                   <p>Quản lí Đặt lịch vaccine</p>
+                </a>
+              </li>
+  
+              <!-- Quản lí Thông báo -->
+              <li class="nav-item">
+                <a th:href="@{/admin/notifications}" class="nav-link">
+                  <i class="nav-icon bi bi-bell"></i>
+                  <p>Quản lí Thông báo</p>
                 </a>
               </li>
             </ul>

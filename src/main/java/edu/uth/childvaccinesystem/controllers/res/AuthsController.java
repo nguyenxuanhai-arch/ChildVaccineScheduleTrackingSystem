@@ -1,8 +1,6 @@
 package edu.uth.childvaccinesystem.controllers.res;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

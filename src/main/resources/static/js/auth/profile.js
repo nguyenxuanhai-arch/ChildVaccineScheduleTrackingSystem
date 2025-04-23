@@ -1,5 +1,9 @@
 async function loadProfile() {
     const profileInfo = document.getElementById('profileInfo');
+    if (!profileInfo) {
+        console.log('Profile info element not found on this page');
+        return;
+    }
 
     try {
         const response = await fetch('/auths/profile', {
@@ -21,82 +25,119 @@ async function loadProfile() {
                 <p><strong>Role:</strong> ${user.role}</p>
             `;
 
-            // Điền dữ liệu vào form
-            document.getElementById('name').value = user.name || '';
-            document.getElementById('phone').value = user.phone || '';
-            document.getElementById('email').value = user.email || '';
-            document.getElementById('address').value = user.address || '';
+            // Điền dữ liệu vào form nếu các phần tử tồn tại
+            const nameField = document.getElementById('name');
+            const phoneField = document.getElementById('phone');
+            const emailField = document.getElementById('email');
+            const addressField = document.getElementById('address');
+            
+            if (nameField) nameField.value = user.name || '';
+            if (phoneField) phoneField.value = user.phone || '';
+            if (emailField) emailField.value = user.email || '';
+            if (addressField) addressField.value = user.address || '';
 
         } else {
             profileInfo.innerHTML = `<p class="text-danger">Không thể tải thông tin người dùng.</p>`;
         }
     } catch (error) {
         console.error('Lỗi khi tải thông tin:', error);
-        profileInfo.innerHTML = `<p class="text-danger">Đã xảy ra lỗi khi tải thông tin hồ sơ.</p>`;
+        if (profileInfo) {
+            profileInfo.innerHTML = `<p class="text-danger">Đã xảy ra lỗi khi tải thông tin hồ sơ.</p>`;
+        }
     }
 }
 
-loadProfile();
+// Cố gắng tải hồ sơ, nhưng chỉ khi cần thiết
+if (document.getElementById('profileInfo')) {
+    loadProfile();
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const updateBtn = document.getElementById("updateProfileButton");
     const updateOverlay = document.getElementById("updateProfileOverlay");
     const closeBtn = document.getElementById("closeUpdateForm");
+    const updateForm = document.getElementById('updateProfileForm');
 
-    updateBtn.addEventListener("click", function () {
-        updateOverlay.style.display = "flex";
-    });
+    // Chỉ thêm các sự kiện nếu các phần tử tồn tại
+    if (updateBtn && updateOverlay) {
+        updateBtn.addEventListener("click", function () {
+            updateOverlay.style.display = "flex";
+        });
+    }
 
-    closeBtn.addEventListener("click", function () {
-        updateOverlay.style.display = "none";
-    });
-
-    updateOverlay.addEventListener("click", function (e) {
-        if (e.target === updateOverlay) {
+    if (closeBtn && updateOverlay) {
+        closeBtn.addEventListener("click", function () {
             updateOverlay.style.display = "none";
-        }
-    });
+        });
+    }
 
-    document.getElementById('updateProfileForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append('name', document.getElementById('name').value);
-        formData.append('phone', document.getElementById('phone').value);
-        formData.append('email', document.getElementById('email').value);
-        formData.append('address', document.getElementById('address').value);
-
-        const imageFile = document.getElementById('image').files[0];
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-
-        try {
-            const response = await fetch('/auths/update-profile', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                body: formData
-            });
-
-            const messageDiv = document.getElementById('updateMessage');
-            if (response.ok) {
-                messageDiv.innerHTML = '<p class="text-success">Cập nhật thành công!</p>';
-                updateOverlay.style.display = 'none';
-                loadProfile(); // Reload
-            } else {
-                const errorText = await response.text();
-                messageDiv.innerHTML = `<p class="text-danger">${errorText}</p>`;
+    if (updateOverlay) {
+        updateOverlay.addEventListener("click", function (e) {
+            if (e.target === updateOverlay) {
+                updateOverlay.style.display = "none";
             }
-        } catch (error) {
-            console.error('Lỗi cập nhật:', error);
-            document.getElementById('updateMessage').innerHTML = '<p class="text-danger">Đã xảy ra lỗi khi cập nhật.</p>';
-        }
-    });
+        });
+    }
+
+    if (updateForm) {
+        updateForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            const nameField = document.getElementById('name');
+            const phoneField = document.getElementById('phone');
+            const emailField = document.getElementById('email');
+            const addressField = document.getElementById('address');
+            const imageField = document.getElementById('image');
+            const messageDiv = document.getElementById('updateMessage');
+            
+            if (nameField) formData.append('name', nameField.value);
+            if (phoneField) formData.append('phone', phoneField.value);
+            if (emailField) formData.append('email', emailField.value);
+            if (addressField) formData.append('address', addressField.value);
+
+            if (imageField && imageField.files && imageField.files[0]) {
+                formData.append('image', imageField.files[0]);
+            }
+
+            try {
+                const response = await fetch('/auths/update-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: formData
+                });
+
+                if (messageDiv) {
+                    if (response.ok) {
+                        messageDiv.innerHTML = '<p class="text-success">Cập nhật thành công!</p>';
+                        if (updateOverlay) updateOverlay.style.display = 'none';
+                        // Chỉ tải lại hồ sơ nếu phần tử profileInfo tồn tại
+                        if (document.getElementById('profileInfo')) {
+                            loadProfile();
+                        }
+                    } else {
+                        const errorText = await response.text();
+                        messageDiv.innerHTML = `<p class="text-danger">${errorText}</p>`;
+                    }
+                }
+            } catch (error) {
+                console.error('Lỗi cập nhật:', error);
+                if (messageDiv) {
+                    messageDiv.innerHTML = '<p class="text-danger">Đã xảy ra lỗi khi cập nhật.</p>';
+                }
+            }
+        });
+    }
 });
+
 async function loadNavbarAvatar() {
     const avatarImg = document.getElementById('navbarAvatar');
+    if (!avatarImg) {
+        console.log('Navbar avatar element not found on this page');
+        return;
+    }
 
     try {
         const response = await fetch('/auths/profile', {
@@ -118,10 +159,15 @@ async function loadNavbarAvatar() {
         }
     } catch (error) {
         console.error("Lỗi tải avatar header:", error);
-        avatarImg.src = '/img/default-avatar.jpg';
+        if (avatarImg) {
+            avatarImg.src = '/img/default-avatar.jpg';
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadNavbarAvatar();
+    // Chỉ tải avatar nếu phần tử avatar tồn tại
+    if (document.getElementById('navbarAvatar')) {
+        loadNavbarAvatar();
+    }
 });

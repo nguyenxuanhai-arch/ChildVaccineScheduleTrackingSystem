@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Admin - Chi tiết Lịch hẹn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Your Name/Company" />
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+  <!-- OverlayScrollbars -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+  <!-- AdminLTE -->
+  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+  <style>
+    .appointment-card {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .appointment-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+    .appointment-body {
+      padding: 1.5rem;
+    }
+    .info-group {
+      margin-bottom: 1rem;
+    }
+    .info-group label {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+    .info-group p {
+      margin-bottom: 0.5rem;
+    }
+    .badge-custom {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .package-note {
+      padding: 1rem;
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+    .package-note-important {
+      padding: 1.25rem;
+      background-color: #ffecb5;
+      border: 1px solid #ffc107;
+      border-left: 6px solid #ffc107;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+    }
+    .child-info {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+    .schedule-form {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+  <div class="app-wrapper">
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+              <i class="bi bi-list"></i>
+            </a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+          <span class="brand-text fw-light">Vaccine Tracker</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <!--begin::Sidebar Menu-->
+          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+            <!-- Dashboard -->
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Rating, Feedback -->
+            <li class="nav-item">
+              <a th:href="@{/admin/feedbacks}" class="nav-link active">
+                <i class="nav-icon bi bi-star-half"></i>
+                <p>Quản lí Rating, Feedback</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Hồ sơ trẻ em -->
+            <li class="nav-item">
+              <a th:href="@{/admin/children}" class="nav-link">
+                <i class="nav-icon bi bi-person-badge"></i>
+                <p>Quản lí Hồ sơ trẻ em</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Người dùng -->
+            <li class="nav-item">
+              <a th:href="@{/admin/users}" class="nav-link">
+                <i class="nav-icon bi bi-people-fill"></i>
+                <p>Quản lí Người dùng</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/vaccines}" class="nav-link">
+                <i class="nav-icon bi bi-shield-plus"></i>
+                <p>Quản lí Vaccine</p>
+              </a>
+            </li>
+            
+            <!-- Quản lí Gói Vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/packages}" class="nav-link">
+                <i class="nav-icon bi bi-box-seam"></i>
+                <p>Quản lí Gói Vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thanh toán -->
+            <li class="nav-item">
+              <a th:href="@{/admin/payments}" class="nav-link">
+                <i class="nav-icon bi bi-credit-card"></i>
+                <p>Quản lí Thanh toán</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Đặt lịch vaccine -->
+            <li class="nav-item">
+              <a th:href="@{/admin/appointments}" class="nav-link">
+                <i class="nav-icon bi bi-calendar-check"></i>
+                <p>Quản lí Đặt lịch vaccine</p>
+              </a>
+            </li>
+
+            <!-- Quản lí Thông báo -->
+            <li class="nav-item">
+              <a th:href="@{/admin/notifications}" class="nav-link">
+                <i class="nav-icon bi bi-bell"></i>
+                <p>Quản lí Thông báo</p>
+              </a>
+            </li>
+          </ul>
+          <!--end::Sidebar Menu-->
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <h3 class="mb-0">Chi tiết Lịch hẹn</h3>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin}">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a th:href="@{/admin/appointments}">Quản lí Đặt lịch</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  Chi tiết Lịch hẹn
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="card appointment-card">
+                <div class="appointment-header d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 class="card-title">
+                      <span th:if="${appointment.type.name() == 'VACCINE'}" class="badge bg-info me-2">Vắc xin đơn lẻ</span>
+                      <span th:if="${appointment.type.name() == 'PACKAGE'}" class="badge bg-success me-2">Gói vắc xin</span>
+                      Lịch hẹn #<span th:text="${appointment.id}"></span>
+                    </h5>
+                    <p class="mb-0 text-muted">
+                      <i class="bi bi-clock-history"></i> Tạo lúc: <span th:text="${#temporals.format(appointment.createAt, 'dd/MM/yyyy')}"></span>
+                    </p>
+                  </div>
+                  <div>
+                    <span th:if="${appointment.status.name() == 'SCHEDULED'}" class="badge badge-custom bg-warning">Đã đặt lịch</span>
+                    <span th:if="${appointment.status.name() == 'COMPLETED'}" class="badge badge-custom bg-success">Hoàn thành</span>
+                    <span th:if="${appointment.status.name() == 'CANCELLED'}" class="badge badge-custom bg-danger">Đã hủy</span>
+                    <span th:if="${appointment.status.name() == 'RESCHEDULED'}" class="badge badge-custom bg-info">Đã đổi lịch</span>
+                  </div>
+                </div>
+                <div class="appointment-body">
+                  <div class="child-info">
+                    <h6 class="mb-2"><i class="bi bi-person"></i> Thông tin trẻ em</h6>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="info-group">
+                          <label>Họ tên:</label>
+                          <p>
+                            <a th:href="@{/admin/children/{id}(id=${appointment.child.id})}" th:text="${appointment.child.name}" class="text-primary"></a>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="info-group">
+                          <label>Ngày sinh:</label>
+                          <p th:text="${#temporals.format(appointment.child.dob, 'dd/MM/yyyy')}"></p>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="info-group">
+                          <label>Giới tính:</label>
+                          <p th:text="${appointment.child.gender == 'MALE' ? 'Nam' : 'Nữ'}"></p>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="info-group">
+                          <label>Phụ huynh:</label>
+                          <p th:if="${appointment.child.parent != null}" th:text="${appointment.child.parent.name}"></p>
+                          <p th:if="${appointment.child.parent == null}">Không có thông tin</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h6 class="mb-3"><i class="bi bi-calendar-event"></i> Thông tin lịch hẹn</h6>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="info-group">
+                        <label>Loại lịch hẹn:</label>
+                        <p>
+                          <span th:if="${appointment.type.name() == 'VACCINE'}" class="badge bg-info">Vắc xin đơn lẻ</span>
+                          <span th:if="${appointment.type.name() == 'PACKAGE'}" class="badge bg-success">Gói vắc xin</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="info-group">
+                        <label>Trạng thái:</label>
+                        <p>
+                          <span th:if="${appointment.status.name() == 'SCHEDULED'}" class="badge bg-warning">Đã đặt lịch</span>
+                          <span th:if="${appointment.status.name() == 'COMPLETED'}" class="badge bg-success">Hoàn thành</span>
+                          <span th:if="${appointment.status.name() == 'CANCELLED'}" class="badge bg-danger">Đã hủy</span>
+                          <span th:if="${appointment.status.name() == 'RESCHEDULED'}" class="badge bg-info">Đã đổi lịch</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="col-md-6" th:if="${appointment.type.name() == 'VACCINE'}">
+                      <div class="info-group">
+                        <label>Vắc xin:</label>
+                        <p th:text="${appointment.vaccine.name}"></p>
+                      </div>
+                    </div>
+                    <div class="col-md-6" th:if="${appointment.type.name() == 'PACKAGE'}">
+                      <div class="info-group">
+                        <label>Gói vắc xin:</label>
+                        <p th:text="${appointment.vaccinePackage.name}"></p>
+                      </div>
+                    </div>
+                    <div class="col-md-6" th:if="${appointment.appointmentDate != null}">
+                      <div class="info-group">
+                        <label>Ngày hẹn:</label>
+                        <p th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}"></p>
+                      </div>
+                    </div>
+                    <div class="col-md-6" th:if="${appointment.appointmentTime != null}">
+                      <div class="info-group">
+                        <label>Giờ hẹn:</label>
+                        <p th:text="${appointment.appointmentTime}"></p>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="info-group">
+                        <label>Ghi chú:</label>
+                        <p th:text="${appointment.notes != null && !appointment.notes.isEmpty() ? appointment.notes : 'Không có ghi chú'}"></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Thông báo đặc biệt cho gói tiêm -->
+                  <div class="package-note-important" th:if="${appointment.type.name() == 'PACKAGE' && appointment.appointmentDate == null}">
+                    <div class="d-flex align-items-start">
+                      <i class="bi bi-exclamation-triangle-fill text-warning me-3 fs-4"></i>
+                      <div>
+                        <h5 class="mb-2">Lịch tiêm theo gói cần được sắp xếp</h5>
+                        <p class="mb-1">Đây là đặt lịch tiêm theo gói. <strong>Lịch tiêm cho gói tiêm sẽ do nhân viên y tế sắp xếp và thông báo cho khách hàng sau.</strong></p>
+                        <p class="mb-0 text-danger">Vui lòng sử dụng biểu mẫu bên cạnh để cập nhật lịch tiêm cho khách hàng.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="action-buttons">
+                    <a th:href="@{/admin/appointments/edit/{id}(id=${appointment.id})}" class="btn btn-primary">
+                      <i class="bi bi-pencil"></i> Chỉnh sửa
+                    </a>
+                    <a th:href="@{/admin/appointments}" class="btn btn-outline-secondary">
+                      <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                      <i class="bi bi-trash"></i> Hủy lịch hẹn
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Biểu mẫu cập nhật lịch hẹn -->
+            <div class="col-md-4">
+              <div class="card" th:if="${appointment.type.name() == 'PACKAGE' && (appointment.appointmentDate == null || appointment.status.name() == 'SCHEDULED')}">
+                <div class="card-header bg-warning text-dark">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-calendar-plus"></i> Cập nhật lịch hẹn tiêm gói
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-info mb-3">
+                    <i class="bi bi-info-circle-fill me-2"></i> Sắp xếp lịch tiêm cho khách hàng
+                  </div>
+                  <form th:action="@{/admin/appointments/save}" method="post">
+                    <input type="hidden" name="id" th:value="${appointment.id}" />
+                    <input type="hidden" name="childId" th:value="${appointment.child.id}" />
+                    <input type="hidden" name="packageId" th:if="${appointment.type.name() == 'PACKAGE'}" th:value="${appointment.vaccinePackage.id}" />
+                    <input type="hidden" name="vaccineId" th:if="${appointment.type.name() == 'VACCINE'}" th:value="${appointment.vaccine.id}" />
+
+                    <div class="mb-3">
+                      <label for="appointmentDate" class="form-label">Ngày hẹn</label>
+                      <input type="date" class="form-control" id="appointmentDate" name="appointmentDate" th:value="${appointment.appointmentDate}" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="appointmentTime" class="form-label">Giờ hẹn</label>
+                      <input type="time" class="form-control" id="appointmentTime" name="appointmentTime" th:value="${appointment.appointmentTime}" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="notes" class="form-label">Ghi chú thêm</label>
+                      <textarea class="form-control" id="notes" name="notes" rows="3" th:text="${appointment.notes}"></textarea>
+                      <small class="form-text text-muted">Thông tin này sẽ được hiển thị cho khách hàng.</small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="status" class="form-label">Trạng thái</label>
+                      <select class="form-select" id="status" name="status" required>
+                        <option value="SCHEDULED" th:selected="${appointment.status.name() == 'SCHEDULED'}">Đã đặt lịch</option>
+                        <option value="COMPLETED" th:selected="${appointment.status.name() == 'COMPLETED'}">Hoàn thành</option>
+                        <option value="CANCELLED" th:selected="${appointment.status.name() == 'CANCELLED'}">Đã hủy</option>
+                        <option value="RESCHEDULED" th:selected="${appointment.status.name() == 'RESCHEDULED'}">Đã đổi lịch</option>
+                      </select>
+                    </div>
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="sendNotification" name="sendNotification" value="true" checked>
+                      <label class="form-check-label" for="sendNotification">
+                        Gửi thông báo cho khách hàng
+                      </label>
+                    </div>
+                    <div class="d-grid">
+                      <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-save"></i> Lưu và thông báo
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Thông tin thanh toán -->
+              <div class="card mt-3">
+                <div class="card-header">
+                  <h5 class="card-title mb-0">
+                    <i class="bi bi-credit-card"></i> Thông tin thanh toán
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <!-- Hiển thị thông tin thanh toán nếu có -->
+                  <div class="text-center">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <p class="mt-2">Đang tải thông tin thanh toán...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
+      <strong>
+        Copyright &copy; 2024&nbsp;
+        <a href="#" class="text-decoration-none">Your Company</a>.
+      </strong>
+      All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Modal Xác nhận hủy lịch hẹn -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Xác nhận hủy lịch hẹn</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Bạn có chắc chắn muốn hủy lịch hẹn này không?</p>
+          <p class="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <form th:action="@{/admin/appointments/delete/{id}(id=${appointment.id})}" method="post">
+            <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script th:src="@{/dist/js/adminlte.js}"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Tải thông tin thanh toán nếu cần
+      // loadPaymentInfo();
+      
+      // Set min date for appointment date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('appointmentDate').min = today;
+      
+      // Thêm sự kiện alert khi lưu form cập nhật lịch hẹn cho gói tiêm
+      $('form[action*="appointments/save"]').on('submit', function() {
+        if ($('#sendNotification').is(':checked')) {
+          // Chỉ hiển thị thông báo nếu tùy chọn gửi thông báo được chọn
+          alert('Hệ thống sẽ tự động gửi thông báo đến khách hàng về lịch hẹn tiêm vừa được cập nhật.');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

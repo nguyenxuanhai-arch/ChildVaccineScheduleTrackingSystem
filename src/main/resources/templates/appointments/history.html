@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch sử đặt lịch | Vaccines for children</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  
+  <style>
+    .rating-stars {
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .rating-stars .star {
+      color: #ccc;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    .rating-stars .star.active {
+      color: #FFD700;
+    }
+    .appointment-card {
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .appointment-card:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    .appointment-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    .appointment-date {
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    .appointment-time {
+      color: #6c757d;
+    }
+    .appointment-type {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+    }
+    .appointment-type.vaccine {
+      background-color: #e6f7ff;
+      color: #0d6efd;
+    }
+    .appointment-type.package {
+      background-color: #fff9e6;
+      color: #f59f00;
+    }
+    .rating-display {
+      font-size: 1.5rem;
+    }
+    .rating-star {
+      padding: 0 5px;
+    }
+    .text-warning {
+      color: #FFD700 !important;
+    }
+    .text-muted {
+      color: #ccc !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="~{master/_header :: header}"></div>
+
+  <!-- Main Content -->
+  <main class="container my-5">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="mb-4">Lịch sử đặt lịch</h1>
+        
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs mb-4" id="appointmentHistoryTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" th:classappend="${activeTab == null || activeTab == 'all'} ? 'active' : ''" 
+                    id="all-appointments-tab" data-bs-toggle="tab" data-bs-target="#all-appointments" 
+                    type="button" role="tab" aria-selected="${activeTab == null || activeTab == 'all'}">Tất cả</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" th:classappend="${activeTab == 'scheduled'} ? 'active' : ''" 
+                    id="scheduled-appointments-tab" data-bs-toggle="tab" data-bs-target="#scheduled-appointments" 
+                    type="button" role="tab" aria-selected="${activeTab == 'scheduled'}">Đã đặt lịch</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" th:classappend="${activeTab == 'completed'} ? 'active' : ''" 
+                    id="completed-appointments-tab" data-bs-toggle="tab" data-bs-target="#completed-appointments" 
+                    type="button" role="tab" aria-selected="${activeTab == 'completed'}">Hoàn thành</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" th:classappend="${activeTab == 'cancelled'} ? 'active' : ''" 
+                    id="cancelled-appointments-tab" data-bs-toggle="tab" data-bs-target="#cancelled-appointments" 
+                    type="button" role="tab" aria-selected="${activeTab == 'cancelled'}">Đã hủy</button>
+          </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content" id="appointmentHistoryTabContent">
+          <!-- All Appointments Tab -->
+          <div class="tab-pane fade" th:classappend="${activeTab == null || activeTab == 'all'} ? 'show active' : ''" 
+               id="all-appointments" role="tabpanel" aria-labelledby="all-appointments-tab">
+            <div id="all-appointments-list">
+              <!-- Hiển thị tất cả cuộc hẹn -->
+              <div th:if="${allAppointments == null || allAppointments.isEmpty()}" class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i> Không có lịch đặt nào.
+              </div>
+              
+              <div th:each="appointment : ${allAppointments.content}" class="card appointment-card">
+                <div class="card-body position-relative">
+                  <!-- Trạng thái -->
+                  <span th:if="${appointment.status.name() == 'SCHEDULED'}" class="badge bg-primary appointment-status">Đã đặt lịch</span>
+                  <span th:if="${appointment.status.name() == 'COMPLETED'}" class="badge bg-success appointment-status">Hoàn thành</span>
+                  <span th:if="${appointment.status.name() == 'CANCELLED'}" class="badge bg-danger appointment-status">Đã hủy</span>
+                  <span th:if="${appointment.status.name() == 'RESCHEDULED'}" class="badge bg-warning appointment-status">Đã đổi lịch</span>
+                  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <!-- Loại lịch hẹn -->
+                      <div th:class="'appointment-type ' + ${appointment.type.name().toLowerCase()}">
+                        <span th:if="${appointment.type.name() == 'VACCINE'}">Tiêm lẻ</span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE'}">Tiêm gói</span>
+                      </div>
+                      
+                      <!-- Ngày giờ hẹn -->
+                      <p class="appointment-date mb-0">Ngày: <span th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'dd/MM/yyyy') : 'N/A'}"></span></p>
+                      <p class="appointment-time mb-0">Thời gian: <span th:text="${appointment.appointmentTime != null ? appointment.appointmentTime : 'N/A'}"></span></p>
+                    </div>
+                    
+                    <div class="col-md-5">
+                      <!-- Thông tin trẻ và dịch vụ -->
+                      <p class="mb-1"><strong>Trẻ:</strong> <span th:text="${appointment.child != null ? appointment.child.name : 'N/A'}"></span></p>
+                      
+                      <p class="mb-1"><strong>Dịch vụ:</strong> 
+                        <span th:if="${appointment.type.name() == 'VACCINE' && appointment.vaccine != null}" th:text="${appointment.vaccine.name}"></span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE' && appointment.vaccinePackage != null}" th:text="${appointment.vaccinePackage.name}"></span>
+                      </p>
+                      
+                      <!-- Ngày tạo -->
+                      <p class="mb-0"><small class="text-muted">Đặt lịch: <span th:text="${appointment.createAt != null ? #temporals.format(appointment.createAt, 'dd/MM/yyyy') : 'N/A'}"></span></small></p>
+                    </div>
+                    
+                    <div class="col-md-3 text-end">
+                      <!-- Nút xem chi tiết lịch hẹn -->
+                      <a th:href="@{/appointments/view/{id}(id=${appointment.id})}" class="btn btn-sm btn-outline-primary mt-2 mb-2">
+                        <i class="bi bi-eye me-1"></i> Xem chi tiết
+                      </a>
+                      
+                      <!-- Nút đánh giá cho lịch hẹn đã hoàn thành -->
+                      <div th:if="${appointment.status.name() == 'COMPLETED'}">
+                        <!-- Kiểm tra xem lịch hẹn đã được đánh giá chưa -->
+                        <button th:if="${!ratedAppointmentIds.contains(appointment.id)}" 
+                                class="btn btn-sm btn-outline-success rate-btn mt-2"
+                                th:attr="data-appointment-id=${appointment.id}">
+                          <i class="bi bi-star-fill me-1"></i> Đánh giá
+                        </button>
+                        
+                        <!-- Nếu đã đánh giá, hiển thị nút xem đánh giá -->
+                        <a th:if="${ratedAppointmentIds.contains(appointment.id)}" 
+                           th:href="@{/feedback/view/{id}(id=${appointment.id})}"
+                           class="btn btn-sm btn-outline-info mt-2">
+                          <i class="bi bi-eye me-1"></i> Xem đánh giá
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phân trang -->
+              <div th:if="${allAppointments != null && !allAppointments.isEmpty()}" class="d-flex justify-content-center mt-4">
+                <nav aria-label="Điều hướng phân trang">
+                  <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                      <a class="page-link" th:href="@{/appointments/history(page=${currentPage - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                        th:classappend="${currentPage == i ? 'active' : ''}">
+                      <a class="page-link" th:href="@{/appointments/history(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                      <a class="page-link" th:href="@{/appointments/history(page=${currentPage + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Scheduled Appointments Tab -->
+          <div class="tab-pane fade" th:classappend="${activeTab == 'scheduled'} ? 'show active' : ''" 
+               id="scheduled-appointments" role="tabpanel" aria-labelledby="scheduled-appointments-tab">
+            <div id="scheduled-appointments-list">
+              <!-- Hiển thị lịch đã đặt -->
+              <div th:if="${scheduledAppointments == null || scheduledAppointments.isEmpty()}" class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i> Không có lịch đã đặt.
+              </div>
+              
+              <div th:each="appointment : ${scheduledAppointments.content}" class="card appointment-card">
+                <div class="card-body position-relative">
+                  <span class="badge bg-primary appointment-status">Đã đặt lịch</span>
+                  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div th:class="'appointment-type ' + ${appointment.type.name().toLowerCase()}">
+                        <span th:if="${appointment.type.name() == 'VACCINE'}">Tiêm lẻ</span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE'}">Tiêm gói</span>
+                      </div>
+                      <p class="appointment-date mb-0">Ngày: <span th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'dd/MM/yyyy') : 'N/A'}"></span></p>
+                      <p class="appointment-time mb-0">Thời gian: <span th:text="${appointment.appointmentTime != null ? appointment.appointmentTime : 'N/A'}"></span></p>
+                    </div>
+                    <div class="col-md-5">
+                      <p class="mb-1"><strong>Trẻ:</strong> <span th:text="${appointment.child != null ? appointment.child.name : 'N/A'}"></span></p>
+                      <p class="mb-1"><strong>Dịch vụ:</strong> 
+                        <span th:if="${appointment.type.name() == 'VACCINE' && appointment.vaccine != null}" th:text="${appointment.vaccine.name}"></span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE' && appointment.vaccinePackage != null}" th:text="${appointment.vaccinePackage.name}"></span>
+                      </p>
+                      <p class="mb-0"><small class="text-muted">Đặt lịch: <span th:text="${appointment.createAt != null ? #temporals.format(appointment.createAt, 'dd/MM/yyyy') : 'N/A'}"></span></small></p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                      <!-- Nút xem chi tiết lịch hẹn -->
+                      <a th:href="@{/appointments/view/{id}(id=${appointment.id})}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="bi bi-eye me-1"></i> Xem chi tiết
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phân trang cho scheduled -->
+              <div th:if="${scheduledAppointments != null && !scheduledAppointments.isEmpty()}" class="d-flex justify-content-center mt-4">
+                <div th:if="${activeTab == 'scheduled' && scheduledAppointments.totalPages > 1}">
+                  <nav aria-label="Điều hướng phân trang lịch đã đặt">
+                    <ul class="pagination">
+                      <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='scheduled', type='scheduled', page=${currentPage - 1})}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                          th:classappend="${currentPage == i ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='scheduled', type='scheduled', page=${i})}" th:text="${i + 1}"></a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='scheduled', type='scheduled', page=${currentPage + 1})}" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div th:if="${activeTab != 'scheduled' && scheduledAppointments.totalPages > 1}">
+                  <a class="btn btn-outline-primary" th:href="@{/appointments/history(tab='scheduled', type='scheduled', page=0)}">
+                    Xem tất cả lịch đã đặt
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Completed Appointments Tab -->
+          <div class="tab-pane fade" th:classappend="${activeTab == 'completed'} ? 'show active' : ''" 
+               id="completed-appointments" role="tabpanel" aria-labelledby="completed-appointments-tab">
+            <div id="completed-appointments-list">
+              <!-- Hiển thị lịch đã hoàn thành -->
+              <div th:if="${completedAppointments == null || completedAppointments.isEmpty()}" class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i> Không có lịch đã hoàn thành.
+              </div>
+              
+              <div th:each="appointment : ${completedAppointments.content}" class="card appointment-card">
+                <div class="card-body position-relative">
+                  <span class="badge bg-success appointment-status">Hoàn thành</span>
+                  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div th:class="'appointment-type ' + ${appointment.type.name().toLowerCase()}">
+                        <span th:if="${appointment.type.name() == 'VACCINE'}">Tiêm lẻ</span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE'}">Tiêm gói</span>
+                      </div>
+                      <p class="appointment-date mb-0">Ngày: <span th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'dd/MM/yyyy') : 'N/A'}"></span></p>
+                      <p class="appointment-time mb-0">Thời gian: <span th:text="${appointment.appointmentTime != null ? appointment.appointmentTime : 'N/A'}"></span></p>
+                    </div>
+                    <div class="col-md-5">
+                      <p class="mb-1"><strong>Trẻ:</strong> <span th:text="${appointment.child != null ? appointment.child.name : 'N/A'}"></span></p>
+                      <p class="mb-1"><strong>Dịch vụ:</strong> 
+                        <span th:if="${appointment.type.name() == 'VACCINE' && appointment.vaccine != null}" th:text="${appointment.vaccine.name}"></span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE' && appointment.vaccinePackage != null}" th:text="${appointment.vaccinePackage.name}"></span>
+                      </p>
+                      <p class="mb-0"><small class="text-muted">Đặt lịch: <span th:text="${appointment.createAt != null ? #temporals.format(appointment.createAt, 'dd/MM/yyyy') : 'N/A'}"></span></small></p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                      <!-- Nút xem chi tiết lịch hẹn -->
+                      <a th:href="@{/appointments/view/{id}(id=${appointment.id})}" class="btn btn-sm btn-outline-primary mt-2 mb-2">
+                        <i class="bi bi-eye me-1"></i> Xem chi tiết
+                      </a>
+                      
+                      <!-- Kiểm tra xem lịch hẹn đã được đánh giá chưa -->
+                      <button th:if="${!ratedAppointmentIds.contains(appointment.id)}" 
+                              class="btn btn-sm btn-outline-success rate-btn mt-2"
+                              th:attr="data-appointment-id=${appointment.id}">
+                        <i class="bi bi-star-fill me-1"></i> Đánh giá
+                      </button>
+                      
+                      <!-- Nếu đã đánh giá, hiển thị nút xem đánh giá -->
+                      <a th:if="${ratedAppointmentIds.contains(appointment.id)}" 
+                         th:href="@{/feedback/view/{id}(id=${appointment.id})}"
+                         class="btn btn-sm btn-outline-info mt-2">
+                        <i class="bi bi-eye me-1"></i> Xem đánh giá
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phân trang cho completed -->
+              <div th:if="${completedAppointments != null && !completedAppointments.isEmpty()}" class="d-flex justify-content-center mt-4">
+                <div th:if="${activeTab == 'completed' && completedAppointments.totalPages > 1}">
+                  <nav aria-label="Điều hướng phân trang lịch hoàn thành">
+                    <ul class="pagination">
+                      <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='completed', type='completed', page=${currentPage - 1})}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                          th:classappend="${currentPage == i ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='completed', type='completed', page=${i})}" th:text="${i + 1}"></a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='completed', type='completed', page=${currentPage + 1})}" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div th:if="${activeTab != 'completed' && completedAppointments.totalPages > 1}">
+                  <a class="btn btn-outline-primary" th:href="@{/appointments/history(tab='completed', type='completed', page=0)}">
+                    Xem tất cả lịch đã hoàn thành
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cancelled Appointments Tab -->
+          <div class="tab-pane fade" th:classappend="${activeTab == 'cancelled'} ? 'show active' : ''" 
+               id="cancelled-appointments" role="tabpanel" aria-labelledby="cancelled-appointments-tab">
+            <div id="cancelled-appointments-list">
+              <!-- Hiển thị lịch đã hủy -->
+              <div th:if="${cancelledAppointments == null || cancelledAppointments.isEmpty()}" class="alert alert-info">
+                <i class="bi bi-info-circle-fill me-2"></i> Không có lịch đã hủy.
+              </div>
+              
+              <div th:each="appointment : ${cancelledAppointments.content}" class="card appointment-card">
+                <div class="card-body position-relative">
+                  <span class="badge bg-danger appointment-status">Đã hủy</span>
+                  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div th:class="'appointment-type ' + ${appointment.type.name().toLowerCase()}">
+                        <span th:if="${appointment.type.name() == 'VACCINE'}">Tiêm lẻ</span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE'}">Tiêm gói</span>
+                      </div>
+                      <p class="appointment-date mb-0">Ngày: <span th:text="${appointment.appointmentDate != null ? #temporals.format(appointment.appointmentDate, 'dd/MM/yyyy') : 'N/A'}"></span></p>
+                      <p class="appointment-time mb-0">Thời gian: <span th:text="${appointment.appointmentTime != null ? appointment.appointmentTime : 'N/A'}"></span></p>
+                    </div>
+                    <div class="col-md-5">
+                      <p class="mb-1"><strong>Trẻ:</strong> <span th:text="${appointment.child != null ? appointment.child.name : 'N/A'}"></span></p>
+                      <p class="mb-1"><strong>Dịch vụ:</strong> 
+                        <span th:if="${appointment.type.name() == 'VACCINE' && appointment.vaccine != null}" th:text="${appointment.vaccine.name}"></span>
+                        <span th:if="${appointment.type.name() == 'PACKAGE' && appointment.vaccinePackage != null}" th:text="${appointment.vaccinePackage.name}"></span>
+                      </p>
+                      <p class="mb-0"><small class="text-muted">Đặt lịch: <span th:text="${appointment.createAt != null ? #temporals.format(appointment.createAt, 'dd/MM/yyyy') : 'N/A'}"></span></small></p>
+                    </div>
+                    <div class="col-md-3 text-end">
+                      <!-- Nút xem chi tiết lịch hẹn -->
+                      <a th:href="@{/appointments/view/{id}(id=${appointment.id})}" class="btn btn-sm btn-outline-primary mt-2">
+                        <i class="bi bi-eye me-1"></i> Xem chi tiết
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Phân trang cho cancelled -->
+              <div th:if="${cancelledAppointments != null && !cancelledAppointments.isEmpty()}" class="d-flex justify-content-center mt-4">
+                <div th:if="${activeTab == 'cancelled' && cancelledAppointments.totalPages > 1}">
+                  <nav aria-label="Điều hướng phân trang lịch đã hủy">
+                    <ul class="pagination">
+                      <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='cancelled', type='cancelled', page=${currentPage - 1})}" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                          th:classappend="${currentPage == i ? 'active' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='cancelled', type='cancelled', page=${i})}" th:text="${i + 1}"></a>
+                      </li>
+                      <li class="page-item" th:classappend="${currentPage >= totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{/appointments/history(tab='cancelled', type='cancelled', page=${currentPage + 1})}" aria-label="Next">
+                          <span aria-hidden="true">&raquo;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+                <div th:if="${activeTab != 'cancelled' && cancelledAppointments.totalPages > 1}">
+                  <a class="btn btn-outline-primary" th:href="@{/appointments/history(tab='cancelled', type='cancelled', page=0)}">
+                    Xem tất cả lịch đã hủy
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal đánh giá -->
+  <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ratingModalLabel">Đánh giá dịch vụ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="feedbackForm">
+            <input type="hidden" id="appointmentId" name="appointmentId">
+            <div class="mb-3">
+              <label class="form-label">Đánh giá của bạn</label>
+              <div class="rating-stars mb-2">
+                <span class="star" data-value="1"><i class="bi bi-star"></i></span>
+                <span class="star" data-value="2"><i class="bi bi-star"></i></span>
+                <span class="star" data-value="3"><i class="bi bi-star"></i></span>
+                <span class="star" data-value="4"><i class="bi bi-star"></i></span>
+                <span class="star" data-value="5"><i class="bi bi-star"></i></span>
+              </div>
+              <input type="hidden" id="rating" name="rating" value="0">
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Nhận xét</label>
+              <textarea class="form-control" id="message" name="message" rows="3" placeholder="Chia sẻ cảm nhận của bạn về dịch vụ"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" id="submitFeedback">Gửi đánh giá</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div th:replace="~{master/_footer :: footer}"></div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- JavaScript cho chức năng đánh giá -->
+  <script>
+    $(document).ready(function() {
+      console.log('Document ready');
+      
+      // Kiểm tra số lượng nút đánh giá trên trang
+      console.log('Number of rating buttons:', $('.rate-btn').length);
+      
+      // Liệt kê ID của các nút đánh giá
+      $('.rate-btn').each(function() {
+        console.log('Rating button found:', $(this).data('appointment-id'));
+      });
+      
+      // Xử lý khi nhấn vào rating stars
+      $('.rating-stars .star').on('click', function() {
+        var value = $(this).data('value');
+        $('#rating').val(value);
+        
+        // Cập nhật UI sao
+        $('.rating-stars .star').each(function() {
+          if ($(this).data('value') <= value) {
+            $(this).addClass('active').find('i').removeClass('bi-star').addClass('bi-star-fill');
+          } else {
+            $(this).removeClass('active').find('i').removeClass('bi-star-fill').addClass('bi-star');
+          }
+        });
+      });
+      
+      // Xử lý khi hover rating stars
+      $('.rating-stars .star').on('mouseenter', function() {
+        var value = $(this).data('value');
+        
+        $('.rating-stars .star').each(function() {
+          if ($(this).data('value') <= value) {
+            $(this).find('i').removeClass('bi-star').addClass('bi-star-fill');
+          } else {
+            $(this).find('i').removeClass('bi-star-fill').addClass('bi-star');
+          }
+        });
+      }).on('mouseleave', function() {
+        var currentRating = $('#rating').val();
+        
+        $('.rating-stars .star').each(function() {
+          if ($(this).data('value') <= currentRating) {
+            $(this).find('i').removeClass('bi-star').addClass('bi-star-fill');
+          } else {
+            $(this).find('i').removeClass('bi-star-fill').addClass('bi-star');
+          }
+        });
+      });
+      
+      // Mở modal đánh giá khi click vào nút đánh giá
+      $('.rate-btn').click(function() {
+        var appointmentId = $(this).data('appointment-id');
+        console.log('Click on rate button for appointment ID:', appointmentId);
+        openRatingModal(appointmentId);
+      });
+      
+      // Xử lý khi gửi đánh giá
+      $('#submitFeedback').click(function() {
+        var appointmentId = $('#appointmentId').val();
+        var rating = $('#rating').val();
+        var message = $('#message').val();
+        
+        console.log('Submitting feedback:', {
+          appointmentId: appointmentId,
+          rating: rating,
+          message: message
+        });
+        
+        if (rating === '0') {
+          alert('Vui lòng chọn số sao đánh giá');
+          return;
+        }
+        
+        // Gửi đánh giá lên server
+        $.ajax({
+          url: '/feedback',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            appointmentId: appointmentId,
+            rating: parseInt(rating),
+            message: message
+          }),
+          success: function(response) {
+            $('#ratingModal').modal('hide');
+            
+            // Hiển thị thông báo thành công
+            alert('Cảm ơn bạn đã gửi đánh giá!');
+            
+            // Reset form
+            resetRatingForm();
+            
+            // Tải lại trang sau khi đánh giá
+            window.location.reload();
+          },
+          error: function(error) {
+            // Hiển thị thông báo lỗi
+            var errorMessage = error.responseJSON && error.responseJSON.message 
+              ? error.responseJSON.message 
+              : 'Không thể gửi đánh giá. Vui lòng thử lại sau.';
+            alert(errorMessage);
+            console.error('Error submitting feedback:', error);
+          }
+        });
+      });
+    });
+  </script>
+  
+  <script>
+    // Mở modal đánh giá - đã di chuyển ra ngoài
+    function openRatingModal(appointmentId) {
+      console.log('Opening rating modal for appointmentId:', appointmentId);
+      // Reset form trước khi hiển thị
+      resetRatingForm();
+      
+      // Thiết lập ID lịch hẹn
+      $('#appointmentId').val(appointmentId);
+      
+      // Hiển thị modal ngay lập tức, không gọi API kiểm tra
+      $('#ratingModal').modal('show');
+    }
+    
+    // Reset form đánh giá - đã di chuyển ra ngoài
+    function resetRatingForm() {
+      $('#rating').val(0);
+      $('#message').val('');
+      
+      // Reset UI sao
+      $('.rating-stars .star').removeClass('active')
+        .find('i').removeClass('bi-star-fill').addClass('bi-star');
+    }
+  </script>
+  
+  <script>
+    // Vô hiệu hóa lỗi từ profile.js khi không tìm thấy phần tử
+    window.addEventListener('DOMContentLoaded', function() {
+      // Mảng các phần tử cần kiểm tra
+      var profileElements = [
+        'username', 'email', 'fullName', 'phone', 'address',
+        'editProfileBtn', 'saveProfileBtn', 'cancelEditBtn'
+      ];
+      
+      // Đối với mỗi phần tử, thêm kiểm tra null
+      profileElements.forEach(function(elementId) {
+        var element = document.getElementById(elementId);
+        if (!element) {
+          console.log('Element not found in this page:', elementId);
+        }
+      });
+    });
+  </script>
+  <script th:src="@{/js/auth/profile.js}"></script>
+  <script th:src="@{/js/main.js}"></script>
+</body>
+</html> 

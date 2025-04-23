@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết đánh giá | Vaccines for children</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  
+  <style>
+    .rating-display {
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .rating-star {
+      color: #ccc;
+      padding: 0 5px;
+    }
+    .rating-star.active {
+      color: #FFD700;
+    }
+    .feedback-card {
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .feedback-message {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      font-style: italic;
+    }
+    .appointment-info {
+      border-left: 3px solid #0d6efd;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .user-info .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 1rem;
+      background-color: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-info .user-details {
+      flex-grow: 1;
+    }
+    .avatar i {
+      font-size: 2rem;
+      color: #adb5bd;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="~{master/_header :: header}"></div>
+
+  <!-- Main Content -->
+  <main class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/appointments/history}">Lịch sử đặt lịch</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chi tiết đánh giá</li>
+          </ol>
+        </nav>
+        
+        <div class="text-center mb-4">
+          <h1 class="h2">Chi tiết đánh giá</h1>
+          <p class="text-muted">Đánh giá cho lịch hẹn <span th:text="${feedback.appointment != null ? '#' + feedback.appointment.id : ''}"></span></p>
+        </div>
+        
+        <!-- Hiển thị thông báo lỗi nếu có -->
+        <div th:if="${error}" class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <span th:text="${error}"></span>
+        </div>
+        
+        <!-- Chi tiết đánh giá -->
+        <div th:if="${feedback}" class="feedback-card">
+          <!-- Thông tin người dùng -->
+          <div class="user-info">
+            <div class="avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <div class="user-details">
+              <h5 th:text="${feedback.user != null ? feedback.user.name : 'Khách hàng'}">Khách hàng</h5>
+              <p class="text-muted mb-0" th:text="${feedback.createdAt != null ? #temporals.format(feedback.createdAt, 'dd/MM/yyyy HH:mm') : ''}"></p>
+            </div>
+            <div class="rating-summary">
+              <span class="badge bg-warning text-dark fs-5" th:text="${feedback.rating + '/5'}">5/5</span>
+            </div>
+          </div>
+          
+          <!-- Hiển thị sao đánh giá -->
+          <div class="rating-display">
+            <i th:each="i : ${#numbers.sequence(1, 5)}" 
+               th:class="${i <= feedback.rating ? 'bi bi-star-fill rating-star active' : 'bi bi-star rating-star'}"></i>
+          </div>
+          
+          <!-- Nội dung đánh giá -->
+          <h5>Nhận xét:</h5>
+          <div class="feedback-message">
+            <p th:text="${feedback.message}" class="mb-0">Nội dung đánh giá sẽ hiển thị ở đây.</p>
+          </div>
+          
+          <!-- Thông tin lịch hẹn -->
+          <div class="appointment-info" th:if="${feedback.appointment != null}">
+            <h5>Thông tin lịch hẹn:</h5>
+            <p><strong>Ngày hẹn:</strong> <span th:text="${feedback.appointment.appointmentDate != null ? #temporals.format(feedback.appointment.appointmentDate, 'dd/MM/yyyy') : 'N/A'}"></span></p>
+            <p><strong>Giờ hẹn:</strong> <span th:text="${feedback.appointment.appointmentTime != null ? feedback.appointment.appointmentTime : 'N/A'}"></span></p>
+            <p th:if="${feedback.appointment.child != null}"><strong>Trẻ:</strong> <span th:text="${feedback.appointment.child.name}"></span></p>
+            <p th:if="${feedback.appointment.type != null && feedback.appointment.type.name() == 'VACCINE' && feedback.appointment.vaccine != null}">
+              <strong>Dịch vụ:</strong> <span th:text="${feedback.appointment.vaccine.name}"></span>
+            </p>
+            <p th:if="${feedback.appointment.type != null && feedback.appointment.type.name() == 'PACKAGE' && feedback.appointment.vaccinePackage != null}">
+              <strong>Dịch vụ:</strong> <span th:text="${feedback.appointment.vaccinePackage.name}"></span>
+            </p>
+          </div>
+          
+          <!-- Nút quay lại -->
+          <div class="text-center mt-4">
+            <a th:href="@{/appointments/history}" class="btn btn-primary">
+              <i class="bi bi-arrow-left me-2"></i> Quay lại lịch sử
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div th:replace="~{master/_footer :: footer}"></div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html> 

@@ -16,6 +16,10 @@ public class Feedback {
     @ManyToOne
     @JoinColumn(name = "user_username", nullable = false)
     private User user;
+    
+    @OneToOne
+    @JoinColumn(name = "appointment_id", unique = true)
+    private Appointment appointment;
 
     private String message;
     private int rating;

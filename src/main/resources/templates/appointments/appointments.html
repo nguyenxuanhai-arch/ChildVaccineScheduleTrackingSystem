@@ -601,32 +601,6 @@
                 ></select>
               </div>
 
-              <div class="col-md-6">
-                <label for="packageAppointmentDate" class="form-label"
-                  >Ngày tiêm:</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  id="packageAppointmentDate"
-                  name="appointmentDate"
-                  required
-                />
-              </div>
-
-              <div class="col-md-6">
-                <label for="packageAppointmentTime" class="form-label"
-                  >Giờ tiêm:</label
-                >
-                <input
-                  type="time"
-                  class="form-control"
-                  id="packageAppointmentTime"
-                  name="appointmentTime"
-                  required
-                />
-              </div>
-
               <div class="col-12">
                 <label for="packageNotes" class="form-label">Ghi chú:</label>
                 <textarea
@@ -635,6 +609,9 @@
                   name="notes"
                   rows="2"
                 ></textarea>
+                <small class="form-text text-muted">
+                  Lưu ý: Lịch tiêm cho gói tiêm sẽ do nhân viên y tế sắp xếp và thông báo cho bạn sau.
+                </small>
               </div>
 
               <div class="col-12 mt-3">
@@ -668,7 +645,6 @@
         // Set min date for appointment to today
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("vaccineAppointmentDate").min = today;
-        document.getElementById("packageAppointmentDate").min = today;
       });
 
       // Hàm format giới tính
@@ -1404,24 +1380,12 @@
           const packageSelect = document.querySelector(`input[name="packageSelection"]:checked`);
           const packageCard = packageSelect ? packageSelect.closest(".package-card") : null;
           const amount = packageCard ? parseFloat(packageCard.querySelector(".package-price").textContent.replace(/[^\d]/g, '')) : 0;
-          const appointmentDate = document.getElementById("packageAppointmentDate").value;
-          const appointmentTime = document.getElementById("packageAppointmentTime").value;
           const notes = document.getElementById("packageNotes").value;
           const packageMessage = document.getElementById("packageMessage");
 
           // Validate inputs
           if (!childId) {
             packageMessage.innerHTML = '<div class="alert alert-danger">❌ Vui lòng chọn bé</div>';
-            return;
-          }
-
-          if (!appointmentDate) {
-            packageMessage.innerHTML = '<div class="alert alert-danger">❌ Vui lòng chọn ngày tiêm</div>';
-            return;
-          }
-
-          if (!appointmentTime) {
-            packageMessage.innerHTML = '<div class="alert alert-danger">❌ Vui lòng chọn giờ tiêm</div>';
             return;
           }
 
@@ -1433,8 +1397,6 @@
           const data = {
             childId: childId,
             packageId: packageId,
-            appointmentDate: appointmentDate,
-            appointmentTime: appointmentTime,
             notes: notes,
             type: "PACKAGE",
             amount: amount
@@ -1504,288 +1466,6 @@
               `;
             });
         });
-
-      // Xử lý form đặt lịch theo gói
-      const packageAppointmentForm = document.getElementById("packageAppointmentForm");
-      if (packageAppointmentForm) {
-        packageAppointmentForm.addEventListener("submit", function(e) {
-          e.preventDefault();
-          
-          // Kiểm tra token
-          const token = localStorage.getItem("token");
-          if (!token) {
-            window.location.href = "/auth/login";
-            return;
-          }
-          
-          // Lấy giá trị từ form
-          const packageId = document.getElementById("packageId").value;
-          const appointmentDate = document.getElementById("packageAppointmentDate").value;
-          const timeSlot = document.getElementById("packageTimeSlot").value;
-          const notes = document.getElementById("packageNotes").value || "";
-          
-          // Hiển thị đang xử lý
-          const messageDiv = document.getElementById("packageMessage");
-          messageDiv.innerHTML = `
-            <div class="alert alert-info">
-              <div class="d-flex align-items-center">
-                <div class="spinner-border spinner-border-sm me-2" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-                <span>Đang xử lý đặt lịch...</span>
-              </div>
-            </div>
-          `;
-          
-          // Cuộn đến thông báo
-          messageDiv.scrollIntoView({ behavior: "smooth" });
-          
-          // Chuẩn bị dữ liệu
-          const appointmentData = {
-            packageId: packageId,
-            appointmentDate: appointmentDate,
-            timeSlot: timeSlot,
-            notes: notes
-          };
-          
-          console.log("Booking package appointment:", appointmentData);
-          
-          // Gọi API đặt lịch
-          axios.post("/appointments/book-package", appointmentData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json"
-            },
-            timeout: 10000
-          })
-          .then((response) => {
-            console.log("Package appointment booking response:", response.data);
-            
-            if (response.data && response.data.success) {
-              const appointmentId = response.data.appointment?.id;
-              const amount = response.data.appointment?.totalAmount || 0;
-              
-              // Hiển thị tùy chọn thanh toán cho gói
-              showPackagePaymentOptions(appointmentId, amount);
-              
-              // Làm mới danh sách lịch tiêm
-              loadAppointments();
-              
-              // Reset form
-              packageAppointmentForm.reset();
-            } else {
-              throw new Error(response.data?.message || "Không thể đặt lịch");
-            }
-          })
-          .catch((error) => {
-            console.error("Error booking package appointment:", error.response?.data || error.message);
-            
-            let errorMessage = "Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.";
-            
-            if (error.response?.status === 401) {
-              errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
-              setTimeout(() => {
-                window.location.href = "/auth/login";
-              }, 1500);
-            } else if (error.response?.status === 400) {
-              errorMessage = "Dữ liệu không hợp lệ";
-              if (error.response.data?.message) {
-                errorMessage = error.response.data.message;
-              }
-            } else if (error.response?.status === 404) {
-              errorMessage = "Không tìm thấy thông tin yêu cầu";
-            } else if (error.response?.data?.message) {
-              errorMessage = error.response.data.message;
-            } else if (error.message) {
-              errorMessage = error.message;
-            }
-            
-            packageAppointmentMessage.innerHTML = `
-              <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle-fill"></i> ${errorMessage}
-              </div>
-            `;
-          });
-        });
-      }
-
-      // Hiển thị tùy chọn thanh toán cho gói
-      function showPackagePaymentOptions(appointmentId, amount) {
-        if (!appointmentId) {
-          console.error("Missing appointment ID for payment");
-          return;
-        }
-        
-        // Lấy div hiển thị thông báo
-        const messageDiv = document.getElementById("packageMessage");
-        
-        // Tạo nội dung thông báo thành công và tùy chọn thanh toán
-        messageDiv.innerHTML = `
-          <div class="alert alert-success mb-4">
-            <h5 class="alert-heading"><i class="bi bi-check-circle-fill"></i> Đặt lịch thành công!</h5>
-            <p>Lịch tiêm đã được đặt. Vui lòng chọn phương thức thanh toán.</p>
-            <hr>
-            <div class="payment-options">
-              <h6>Phương thức thanh toán:</h6>
-              <div class="d-flex flex-wrap gap-2 mt-3">
-                <button class="btn btn-outline-primary" onclick="handlePackageBankTransfer(${appointmentId}, ${amount})">
-                  <i class="bi bi-bank"></i> Chuyển khoản ngân hàng
-                </button>
-                <button class="btn btn-outline-success" onclick="handlePackageCashPayment(${appointmentId}, ${amount})">
-                  <i class="bi bi-cash"></i> Thanh toán tiền mặt
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-        
-        // Cuộn đến thông báo
-        messageDiv.scrollIntoView({ behavior: "smooth" });
-      }
-      
-      // Xử lý thanh toán chuyển khoản cho gói
-      function handlePackageBankTransfer(appointmentId, amount) {
-        // Kiểm tra token
-        const token = localStorage.getItem("token");
-        if (!token) {
-          window.location.href = "/auth/login";
-          return;
-        }
-        
-        // Lấy div hiển thị thông báo
-        const messageDiv = document.getElementById("packageMessage");
-        
-        // Hiển thị thông tin chuyển khoản
-        messageDiv.innerHTML = `
-          <div class="alert alert-info mb-4">
-            <h5 class="alert-heading"><i class="bi bi-bank"></i> Thông tin chuyển khoản</h5>
-            <p>Vui lòng chuyển khoản theo thông tin dưới đây:</p>
-            
-            <div class="table-responsive mt-3 mb-3">
-              <table class="table table-bordered">
-                <tr>
-                  <th>Ngân hàng</th>
-                  <td>Vietcombank</td>
-                </tr>
-                <tr>
-                  <th>Số tài khoản</th>
-                  <td>0123456789</td>
-                </tr>
-                <tr>
-                  <th>Chủ tài khoản</th>
-                  <td>TRUNG TÂM Y TẾ TIÊM CHỦNG</td>
-                </tr>
-                <tr>
-                  <th>Số tiền</th>
-                  <td>${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</td>
-                </tr>
-                <tr>
-                  <th>Nội dung</th>
-                  <td>TTTC ${appointmentId}</td>
-                </tr>
-              </table>
-            </div>
-            
-            <p>Sau khi chuyển khoản, vui lòng nhập mã giao dịch và xác nhận bên dưới:</p>
-            
-            <div class="mt-3">
-              <form id="packageBankTransferForm" class="row g-3">
-                <div class="col-md-8">
-                  <input type="text" class="form-control" id="packageTransactionId" placeholder="Nhập mã giao dịch" required>
-                </div>
-                <div class="col-md-4">
-                  <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-check-lg"></i> Xác nhận đã chuyển khoản
-                  </button>
-                </div>
-              </form>
-            </div>
-            
-            <div class="mt-3">
-              <button class="btn btn-outline-secondary" onclick="showPackagePaymentOptions(${appointmentId}, ${amount})">
-                <i class="bi bi-arrow-left"></i> Quay lại
-              </button>
-            </div>
-          </div>
-        `;
-        
-        // Xử lý form xác nhận chuyển khoản
-        const bankTransferForm = document.getElementById("packageBankTransferForm");
-        bankTransferForm.addEventListener("submit", function(e) {
-          e.preventDefault();
-          
-          const transactionId = document.getElementById("packageTransactionId").value;
-          if (!transactionId) {
-            alert("Vui lòng nhập mã giao dịch");
-            return;
-          }
-          
-          // Tạo dữ liệu thanh toán
-          const paymentData = {
-            appointmentId: appointmentId,
-            amount: amount,
-            method: "BANK_TRANSFER",
-            transactionId: transactionId,
-            status: "PENDING"
-          };
-          
-          // Gọi API tạo thanh toán
-          createPackagePayment(paymentData, messageDiv);
-        });
-      }
-      
-      // Xử lý thanh toán tiền mặt cho gói
-      function handlePackageCashPayment(appointmentId, amount) {
-        // Kiểm tra token
-        const token = localStorage.getItem("token");
-        if (!token) {
-          window.location.href = "/auth/login";
-          return;
-        }
-        
-        // Lấy div hiển thị thông báo
-        const messageDiv = document.getElementById("packageMessage");
-        
-        // Hiển thị thông tin thanh toán tiền mặt
-        messageDiv.innerHTML = `
-          <div class="alert alert-info mb-4">
-            <h5 class="alert-heading"><i class="bi bi-cash"></i> Thanh toán tiền mặt</h5>
-            <p>Bạn đã chọn phương thức thanh toán bằng tiền mặt.</p>
-            <hr>
-            <div class="mt-3 mb-3">
-              <p><strong>Thông tin thanh toán:</strong></p>
-              <ul>
-                <li>Số tiền: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</li>
-                <li>Mã lịch hẹn: #${appointmentId}</li>
-                <li>Vui lòng mang theo tiền mặt khi đến tiêm tại trung tâm.</li>
-              </ul>
-            </div>
-            
-            <div class="mt-3">
-              <button class="btn btn-success" id="confirmPackageCashPayment">
-                <i class="bi bi-check-lg"></i> Xác nhận
-              </button>
-              <button class="btn btn-outline-secondary ms-2" onclick="showPackagePaymentOptions(${appointmentId}, ${amount})">
-                <i class="bi bi-arrow-left"></i> Quay lại
-              </button>
-            </div>
-          </div>
-        `;
-        
-        // Xử lý nút xác nhận thanh toán tiền mặt
-        document.getElementById("confirmPackageCashPayment").addEventListener("click", function() {
-          // Tạo dữ liệu thanh toán
-          const paymentData = {
-            appointmentId: appointmentId,
-            amount: amount,
-            method: "CASH",
-            status: "PENDING"
-          };
-          
-          // Gọi API tạo thanh toán
-          createPackagePayment(paymentData, messageDiv);
-        });
-      }
     </script>
   </body>
 </html>

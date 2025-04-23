@@ -1,11 +1,15 @@
 package edu.uth.childvaccinesystem.services;
 
+import edu.uth.childvaccinesystem.dtos.request.FeedbackRequest;
+import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.entities.User;
+import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import edu.uth.childvaccinesystem.repositories.FeedbackRepository;
 import edu.uth.childvaccinesystem.repositories.UserRepository; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,47 +22,69 @@ public class FeedbackService {
     @Autowired
     private UserRepository userRepository;  // Inject the UserRepository
 
-    public List<Feedback> getAllFeedback() {
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+
+    public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
     }
 
-    public Optional<Feedback> getFeedbackById(Long id) {
-        return feedbackRepository.findById(id);
+    public List<Feedback> getAllFeedback() {
+        return getAllFeedbacks();
+    }
+
+    public Feedback getFeedbackById(Long id) {
+        return feedbackRepository.findById(id).orElse(null);
     }
 
     public String saveFeedback(Feedback feedback) {
         // Check if the User exists
         if (feedback.getUser() == null) {
-            return "User cannot be null";
+            return "No user provided for feedback";
         }
-
-        // If the User ID is null, we need to check if the User exists, if not, save it
-        Optional<User> userOptional = userRepository.findById(feedback.getUser().getId());
-        if (userOptional.isEmpty()) {
-            return "User does not exist in the database";
-        }
-
-        // Check for message validity
-        if (feedback.getMessage() == null || feedback.getMessage().isEmpty()) {
-            return "Feedback message cannot be empty";
-        }
-
-        // Check if the same feedback already exists for this user and message
+        
+        // Check for duplicate feedback
         if (feedbackRepository.existsByUserAndMessage(feedback.getUser(), feedback.getMessage())) {
-            return "Feedback already exists for this user and message";
+            return "Duplicate feedback detected";
         }
-
-        // Save the feedback
+        
         feedbackRepository.save(feedback);
         return "Feedback saved successfully";
     }
 
+    public Feedback saveFeedback(FeedbackRequest request) {
+        Appointment appointment = appointmentRepository.findById(request.getAppointmentId())
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
+        
+        // Kiểm tra xem đã đánh giá chưa
+        Optional<Feedback> existingFeedback = feedbackRepository.findByAppointmentId(request.getAppointmentId());
+        if (existingFeedback.isPresent()) {
+            throw new RuntimeException("Lịch hẹn này đã được đánh giá");
+        }
+        
+        // Lấy user từ appointment
+        User user = appointment.getChild().getParent();
+        
+        Feedback feedback = new Feedback();
+        feedback.setUser(user);
+        feedback.setAppointment(appointment);
+        feedback.setRating(request.getRating());
+        feedback.setMessage(request.getMessage());
+        feedback.setCreatedAt(LocalDateTime.now());
+        
+        return feedbackRepository.save(feedback);
+    }
+
+    public Feedback getFeedbackByAppointmentId(Long appointmentId) {
+        return feedbackRepository.findByAppointmentId(appointmentId)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy đánh giá cho lịch hẹn này"));
+    }
+
     public String deleteFeedback(Long id) {
-        if (feedbackRepository.existsById(id)) {
-            feedbackRepository.deleteById(id);
-            return "Feedback deleted successfully";
-        } else {
+        if (!feedbackRepository.existsById(id)) {
             return "Feedback not found";
         }
+        feedbackRepository.deleteById(id);
+        return "Feedback deleted successfully";
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.services.AppointmentService;
 import java.time.LocalDateTime;
