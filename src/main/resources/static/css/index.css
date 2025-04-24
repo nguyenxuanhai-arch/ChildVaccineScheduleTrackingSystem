@@ -183,16 +183,141 @@
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     font-size: 20px;
-    opacity: 1;
+    opacity: 1;.slick-prev:hover, .slick-next:hover {
+    background-color: var(--primary-dark);
 }
 
-.slick-prev:before {
-    content: '\f104';
-}
+    .slick-dots li button:before {
+        font-size: 12px;
+        color: var(--primary-color);
+    }
 
-.slick-next:before {
-    content: '\f105';
-}
+    .slick-dots li.slick-active button:before {
+        color: var(--primary-color);
+    }
+
+    .cta-section {
+        padding: 80px 0;
+        background-color: var(--bg-light);
+        border-radius: 15px;
+        margin-bottom: 60px;
+    }
+
+    .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .cta-content h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-color);
+    }
+
+    .cta-content p {
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+        color: var(--text-muted);
+    }
+
+    .cta-buttons .btn {
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 30px;
+        margin: 0 10px;
+        transition: all 0.3s ease;
+    }
+
+    .cta-buttons .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    }
+
+    .cta-buttons .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+    }
+
+    .cta-buttons .btn-outline-primary {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .cta-buttons .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+        color: var(--text-color);
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 15px;
+    }
+
+    .section-title h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: var(--primary-color);
+    }
+
+    .section-title p {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* New Vaccine Schedule Section */
+    .schedule-section {
+        padding: 80px 0;
+        background-color: var(--bg-light);
+        margin-bottom: 60px;
+    }
+
+    .schedule-card {
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+    }
+
+    .schedule-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .schedule-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    
 
 
 
