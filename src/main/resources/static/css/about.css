@@ -239,4 +239,100 @@
 
 .covid-card:hover .covid-img img {
     transform: scale(1.1);
+}
+
+.covid-content {
+    padding: 25px;
+}
+
+.covid-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    position: relative;
+    padding-left: 28px;
+}
+
+.covid-title i {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    color: var(--primary-color);
+}
+
+.covid-text {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.covid-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    color: var(--primary-color);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.covid-badge:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.covid-stats {
+    margin-top: 50px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 15px;
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.stat-icon.success {
+    color: #28a745;
+}
+
+.stat-icon.warning {
+    color: #ffc107;
+}
+
+.stat-icon.danger {
+    color: #dc3545;
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.stat-title {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 
