@@ -6,36 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        .card {
-            background-color: var(--card-bg);
-            border-color: var(--border-color);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-        .card-body {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .form-control {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-color: var(--border-color);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-        .form-control:focus {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-        label {
-            color: var(--text-color);
-            transition: color 0.3s ease;
-        }
-        .custom-control-label {
-            color: var(--text-color);
-            transition: color 0.3s ease;
-        }
-    </style>
+    
 </head>
 <body>
     <div th:replace="master/_header :: header"></div>

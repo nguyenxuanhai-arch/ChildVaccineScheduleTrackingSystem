@@ -1,0 +1,294 @@
+/* Style for content */
+.content {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+/* Title */
+.content h1 {
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Search box */
+.search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#searchInput {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px 40px 10px 30px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #009879;
+    cursor: pointer;
+}
+
+.clear-btn:hover {
+    color: #dc3545;
+}
+
+/* View toggle */
+.view-toggle {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-toggle {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px 16px;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-toggle.active {
+    background-color: #009879;
+    color: #fff;
+}
+
+/* Card container */
+#vaccine-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Card style */
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.3s ease;
+    background-color: #fff;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    background-color: #f2f2f2;
+}
+
+/* Card Body */
+.card-body {
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.pagination button,
+.pagination a {
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 6px;
+    background-color: #009879;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.pagination button:hover,
+.pagination a:hover {
+    background-color: #007f6b;
+}
+
+.pagination .active {
+    background-color: #006f5f;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    #searchInput {
+        width: 100%;
+    }
+
+    .card-img-top {
+        height: 150px;
+    }
+
+    .view-toggle {
+        justify-content: center;
+    }
+}
+
+        .pricing-header {
+            padding-top: 3rem;
+            padding-bottom: 1.5rem;
+            text-align: center;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .package-card {
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s ease;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .package-featured {
+            border: 2px solid #28a745;
+        }
+        .package-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        .badge-featured {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+        }
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .tab-content {
+            padding-top: 2rem;
+        }
+        .age-filter {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .vaccine-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .vaccine-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Dark mode compatibility */
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .card-body {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .card-title, h1, h2, h3, h4, h5, h6, .lead {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+            transition: color 0.3s ease;
+        }
+        .form-control {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .form-control:focus {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        label {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .table {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .table td, .table th {
+            border-color: var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .nav-tabs {
+            border-color: var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+        .nav-tabs .nav-link {
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border-color: var(--border-color) var(--border-color) var(--card-bg);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
