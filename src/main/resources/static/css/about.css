@@ -1,0 +1,242 @@
+.about-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1920&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 120px 0;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.mission-card {
+    border-radius: 15px;
+    padding: 35px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.mission-card h2 {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.mission-card h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+}
+
+.team-member {
+    text-align: center;
+    margin-bottom: 40px;
+    transition: all 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-10px);
+}
+
+.team-member img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover img {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.value-card {
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.value-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.value-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.value-card:hover .value-icon {
+    transform: scale(1.2);
+}
+
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    width: 45%;
+}
+
+.timeline-item:nth-child(odd) {
+    margin-left: auto;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+}
+
+.timeline-item:nth-child(odd)::before {
+    left: -60px;
+}
+
+.timeline-item:nth-child(even)::before {
+    right: -60px;
+}
+
+.timeline-content {
+    padding: 25px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-year {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    padding-bottom: 15px;
+    color: var(--text-color);
+}
+
+.section-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--primary-color);
+}
+
+.contact-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.contact-card {
+    text-align: center;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.contact-card:hover .contact-icon {
+    transform: scale(1.2);
+}
+
+/* COVID-19 Section Styles */
+.covid-section {
+    background-color: var(--bg-light);
+    padding: 80px 0;
+    margin-bottom: 60px;
+    border-radius: 15px;
+}
+
+.covid-card {
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    background-color: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
+
+.covid-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.covid-img {
+    height: 200px;
+    overflow: hidden;
+}
+
+.covid-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.covid-card:hover .covid-img img {
+    transform: scale(1.1);
+
