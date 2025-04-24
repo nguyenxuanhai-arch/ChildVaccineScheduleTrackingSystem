@@ -1,0 +1,78 @@
+.feedback-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.feedback-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.rating-box {
+    display: inline-flex;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.star-rating {
+    color: #FFD700;
+}
+.rating-progress {
+    height: 10px;
+    margin-bottom: 15px;
+}
+.rating-progress .progress-bar {
+    border-radius: 5px;
+}
+.rating-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.badge-rating {
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-left: 8px;
+}
+.badge-rating-5 {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+.badge-rating-4 {
+    background-color: rgba(23, 162, 184, 0.15);
+    color: #17a2b8;
+}
+.badge-rating-3 {
+    background-color: rgba(0, 123, 255, 0.15);
+    color: #0d6efd;
+}
+.badge-rating-2 {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+.badge-rating-1 {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+.feedback-unread {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #dc3545;
+}
+.feedback-important {
+    color: #dc3545;
+}
+.action-bar {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
