@@ -1,0 +1,62 @@
+.appointment-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.appointment-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+.appointment-body {
+    padding: 1.5rem;
+}
+.info-group {
+    margin-bottom: 1rem;
+}
+.info-group label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+.info-group p {
+    margin-bottom: 0.5rem;
+}
+.badge-custom {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.package-note {
+    padding: 1rem;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+.package-note-important {
+    padding: 1.25rem;
+    background-color: #ffecb5;
+    border: 1px solid #ffc107;
+    border-left: 6px solid #ffc107;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2);
+}
+.child-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+.schedule-form {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
