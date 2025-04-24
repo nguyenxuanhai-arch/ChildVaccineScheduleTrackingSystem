@@ -317,7 +317,132 @@
         font-size: 1.2rem;
     }
 
-    
+    .schedule-content {
+        padding: 20px;
+    }
+
+    .schedule-item {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .schedule-item:last-child {
+        border-bottom: none;
+    }
+
+    .schedule-age {
+        font-weight: 600;
+        color: var(--text-color);
+    }
+
+    .schedule-vaccines {
+        color: var(--text-muted);
+    }
+
+    .schedule-note {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        padding: 15px;
+        background-color: rgba(var(--primary-color-rgb), 0.05);
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .vaccine-info-graphic {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .vaccine-info-graphic img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .info-box {
+        background-color: var(--card-bg);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+    }
+
+    .info-box-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .info-box h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: var(--text-color);
+    }
+
+    .info-box p {
+        color: var(--text-muted);
+    }
+
+    /* Dark mode enhancements */
+    html[data-theme='dark'] .schedule-header {
+        background-color: var(--primary-dark);
+    }
+
+    html[data-theme='dark'] .schedule-note {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    html[data-theme='dark'] .counter-section {
+        background: linear-gradient(rgba(0, 70, 140, 0.9), rgba(0, 70, 140, 0.9)),
+        url('https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?q=80&w=1920&auto=format&fit=crop');
+    }
+
+    @media (max-width: 767px) {
+        .hero-section {
+            padding: 100px 0;
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-buttons .btn {
+            margin-bottom: 15px;
+        }
+
+        .counter-box {
+            margin-bottom: 30px;
+        }
+
+        .cta-content h2 {
+            font-size: 2rem;
+        }
+
+        .cta-buttons .btn {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .schedule-card {
+            margin-bottom: 20px;
+        }
+    }
+}
+
+.slick-prev:before {
+    content: '\f104';
+}
+
+.slick-next:before {
+    content: '\f105';
+}
 
 
 
