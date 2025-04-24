@@ -1,0 +1,87 @@
+.star-rating {
+    color: #FFD700;
+}
+.feedback-card {
+    border-radius: 8px;
+    overflow: hidden;
+}
+.feedback-info-item {
+    padding: 10px 0;
+    display: flex;
+    border-bottom: 1px solid #e9ecef;
+}
+.feedback-info-label {
+    font-weight: bold;
+    min-width: 150px;
+}
+.feedback-message {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border-left: 5px solid #0d6efd;
+    font-style: italic;
+}
+.badge-rating {
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.badge-rating-5 {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+.badge-rating-4 {
+    background-color: rgba(23, 162, 184, 0.15);
+    color: #17a2b8;
+}
+.badge-rating-3 {
+    background-color: rgba(0, 123, 255, 0.15);
+    color: #0d6efd;
+}
+.badge-rating-2 {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+.badge-rating-1 {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+.appointment-box {
+    background-color: #f0f8ff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    border: 1px solid #cfe2ff;
+}
+.appointment-box h5 {
+    margin-bottom: 15px;
+    color: #0d6efd;
+}
+.admin-reply {
+    background-color: #f0f8ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border-left: 5px solid #28a745;
+}
+.admin-reply-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #495057;
+}
+.status-badge {
+    border-radius: 30px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-left: 10px;
+}
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
