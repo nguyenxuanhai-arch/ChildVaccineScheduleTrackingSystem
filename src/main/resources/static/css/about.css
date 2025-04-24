@@ -335,4 +335,48 @@
     letter-spacing: 1px;
 }
 
+/* Dark mode enhancements */
+html[data-theme='dark'] .covid-badge {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-theme='dark'] .timeline::before {
+    background: var(--primary-color);
+}
+
+html[data-theme='dark'] .timeline-item::before {
+    background: var(--primary-color);
+}
+
+html[data-theme='dark'] .stat-icon.success {
+    color: #5dd879;
+}
+
+html[data-theme='dark'] .stat-icon.warning {
+    color: #ffda6a;
+}
+
+html[data-theme='dark'] .stat-icon.danger {
+    color: #f77;
+}
+
+@media (max-width: 767px) {
+    .timeline::before {
+        left: 30px;
+    }
+
+    .timeline-item {
+        width: 90%;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+
+    .timeline-item::before {
+        left: -45px !important;
+    }
+
+    .covid-stats .col-md-4 {
+        margin-bottom: 20px;
+    }
+}
 
