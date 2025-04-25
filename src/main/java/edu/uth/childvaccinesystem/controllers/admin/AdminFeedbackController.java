@@ -1,8 +1,10 @@
 package edu.uth.childvaccinesystem.controllers.admin;
 
+import edu.uth.childvaccinesystem.dtos.response.FeedbackResponse;
 import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.services.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/feedbacks")
@@ -76,9 +81,20 @@ public class AdminFeedbackController {
             Feedback feedback = feedbackService.getFeedbackById(id);
             
             if (feedback != null) {
-                model.addAttribute("feedback", feedback);
-                model.addAttribute("appointment", feedback.getAppointment());
-                model.addAttribute("user", feedback.getUser());
+                FeedbackResponse feedbackResponse = new FeedbackResponse();
+                feedbackResponse.setId(feedback.getId());
+                if (feedback.getUser() != null) {
+                    feedbackResponse.setUsername(feedback.getUser().getUsername());
+                    feedbackResponse.setName(feedback.getUser().getName());
+                }
+                if (feedback.getAppointment() != null) {
+                    feedbackResponse.setAppointmentId(feedback.getAppointment().getId());
+                }
+                feedbackResponse.setMessage(feedback.getMessage());
+                feedbackResponse.setRating(feedback.getRating());
+                feedbackResponse.setCreatedAt(feedback.getCreatedAt());
+                
+                model.addAttribute("feedback", feedbackResponse);
                 return "admin/feedbacks/feedback-details";
             } else {
                 // Handle case when feedback is not found
@@ -110,12 +126,43 @@ public class AdminFeedbackController {
     
     @GetMapping("/data")
     @ResponseBody
-    public List<Feedback> getAllFeedbacksData() {
+    public ResponseEntity<Map<String, Object>> getAllFeedbacksData() {
+        Map<String, Object> response = new HashMap<>();
         try {
-            return feedbackService.getAllFeedback();
+            List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
+            
+            // Convert to DTOs
+            List<FeedbackResponse> feedbackResponses = feedbacks.stream()
+                .map(feedback -> {
+                    FeedbackResponse dto = new FeedbackResponse();
+                    dto.setId(feedback.getId());
+                    if (feedback.getUser() != null) {
+                        dto.setUsername(feedback.getUser().getUsername());
+                        dto.setName(feedback.getUser().getName());
+                    }
+                    if (feedback.getAppointment() != null) {
+                        dto.setAppointmentId(feedback.getAppointment().getId());
+                    }
+                    dto.setMessage(feedback.getMessage());
+                    dto.setRating(feedback.getRating());
+                    dto.setCreatedAt(feedback.getCreatedAt());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+            
+            response.put("data", feedbackResponses);
+            response.put("recordsTotal", feedbackResponses.size());
+            response.put("recordsFiltered", feedbackResponses.size());
+            response.put("draw", 1);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("Error getting feedback data: ", e);
-            return new ArrayList<>();
+            response.put("data", new ArrayList<>());
+            response.put("recordsTotal", 0);
+            response.put("recordsFiltered", 0);
+            response.put("draw", 1);
+            response.put("error", e.getMessage());
+            return ResponseEntity.ok(response);
         }
     }
 } 
