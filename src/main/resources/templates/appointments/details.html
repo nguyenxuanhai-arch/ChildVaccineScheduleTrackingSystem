@@ -118,7 +118,7 @@
               </div>
               <div class="appointment-info-item">
                 <span class="info-label">Mô tả:</span>
-                <span class="info-value" th:text="${appointment.vaccine.description != null ? appointment.vaccine.description : 'Không có mô tả'}"></span>
+                <span class="info-value" th:text="${'Nhà sản xuất: ' + (appointment.vaccine.manufacturer != null ? appointment.vaccine.manufacturer : 'Không có thông tin')}"></span>
               </div>
               <div class="appointment-info-item">
                 <span class="info-label">Giá tiền:</span>
