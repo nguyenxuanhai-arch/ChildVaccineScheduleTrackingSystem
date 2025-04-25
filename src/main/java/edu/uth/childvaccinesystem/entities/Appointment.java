@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,6 +45,9 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "package_id")
     private VaccinePackage vaccinePackage;
+
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Payment> payments = new HashSet<>();
     
     public enum AppointmentStatus {
         SCHEDULED,
