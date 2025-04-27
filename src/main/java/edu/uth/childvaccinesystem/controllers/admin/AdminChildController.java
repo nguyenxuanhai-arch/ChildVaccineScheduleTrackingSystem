@@ -38,35 +38,35 @@ public class AdminChildController {
             List<Child> children = childService.getAllChildren();
             model.addAttribute("children", children);
             
-            // Debug parent information
-            List<User> parents = userService.getUsersByRole("ROLE_PARENT");
-            model.addAttribute("debug_parent_count", parents.size());
+            // Count unique parents from children list
+            long parentCount = children.stream()
+                .filter(child -> child.getParent() != null)
+                .map(child -> child.getParent().getId())
+                .distinct()
+                .count();
             
+            model.addAttribute("debug_parent_count", parentCount);
+            
+            // Re-link parents if needed
             for (Child child : children) {
-                if (child.getParent() == null) {
-                    logger.info("Child {} - {} has NULL parent", child.getId(), child.getName());
-                    
-                    // If parentUsername exists but parent is null, try to re-link
-                    if (child.getParentUsername() != null && !child.getParentUsername().isEmpty()) {
-                        logger.info("Attempting to re-link parent with username: {}", child.getParentUsername());
-                        try {
-                            User parent = userService.getUserByUsername(child.getParentUsername());
+                if (child.getParent() == null && child.getParentUsername() != null && !child.getParentUsername().isEmpty()) {
+                    logger.info("Attempting to re-link parent with username: {}", child.getParentUsername());
+                    try {
+                        User parent = userService.getUserByUsername(child.getParentUsername());
+                        if (parent != null) {
                             child.setParent(parent);
                             childService.saveChild(child);
                             logger.info("Re-linked parent successfully");
-                        } catch (Exception ex) {
-                            logger.error("Error re-linking parent: {}", ex.getMessage());
                         }
+                    } catch (Exception ex) {
+                        logger.error("Error re-linking parent: {}", ex.getMessage());
                     }
-                } else {
-                    logger.debug("Child {} - {} has parent: {} ({})", 
-                               child.getId(), child.getName(), 
-                               child.getParent().getName(), child.getParent().getUsername());
                 }
             }
         } catch (Exception e) {
             model.addAttribute("error", "Cannot load children list: " + e.getMessage());
             model.addAttribute("children", List.of()); // Return empty list
+            model.addAttribute("debug_parent_count", 0);
         }
         return "admin/children/children";
     }
@@ -214,4 +214,4 @@ public class AdminChildController {
         }
         return "redirect:/admin/children";
     }
-} 
+}

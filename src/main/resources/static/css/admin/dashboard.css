@@ -1,23 +1,58 @@
+/* Report Styles */
+.nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 2px solid #0d6efd;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    border-color: transparent;
+    color: #0d6efd;
+}
+
+#reportForm .form-label {
+    font-weight: 500;
+}
+
+#reportForm .form-select,
+#reportForm .form-control {
+    border-radius: 0.375rem;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+    cursor: pointer;
+}
+
+.btn-tool {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    background: transparent;
+    border: none;
+    color: #6c757d;
+}
+
+.btn-tool:hover {
+    color: #0d6efd;
+}
 
 .card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: 0.3s;
-}
-
-.card:hover {
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.card-title {
-    color: #333;
-    font-weight: bold;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
 }

@@ -1,7 +1,6 @@
-
-    $(document).ready(function() {
-      // Khởi tạo DataTable
-      const notificationTable = $('#notificationsTable').DataTable({
+$(document).ready(function() {
+    // Khởi tạo DataTable
+    const notificationTable = $('#notificationsTable').DataTable({
         "ajax": {
           "url": "/admin/notifications/data",
           "dataSrc": ""
@@ -108,56 +107,139 @@
         }
       });
 
-      // Filter button click
-      $('.filter-btn').on('click', function() {
-        $('.filter-btn').removeClass('active');
-        $(this).addClass('active');
-        
-        const filter = $(this).data('filter');
-        if (filter === 'all') {
-          notificationTable.column(1).search('').draw();
-        } else {
-          notificationTable.column(1).search(filter).draw();
-        }
-      });
+    // Load danh sách người dùng
+    function loadUsers() {
+        $.ajax({
+            url: '/admin/notifications/users',
+            method: 'GET',
+            success: function(users) {
+                const userSelect = $('#userId');
+                userSelect.empty();
+                userSelect.append('<option value="">Chọn người dùng...</option>');
+                users.forEach(user => {
+                    const displayName = user.name ? `${user.name} (${user.username})` : user.username;
+                    userSelect.append(`<option value="${user.id}">${displayName}</option>`);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading users:', error);
+                Swal.fire('Lỗi!', 'Không thể tải danh sách người dùng', 'error');
+            }
+        });
+    }
 
-      // Filter link click
-      $('.filter-link').on('click', function(e) {
-        e.preventDefault();
-        const filter = $(this).data('filter');
-        $('.filter-btn').removeClass('active');
-        $('.filter-btn[data-filter="' + filter + '"]').addClass('active');
-        notificationTable.column(1).search(filter).draw();
-      });
-
-      // Hiển thị/ẩn các trường tùy chọn trong modal
-      $('#notificationRecipients').on('change', function() {
+    // Xử lý radio buttons người nhận
+    $('input[name="recipientType"]').change(function() {
         if ($(this).val() === 'specific') {
-          $('#recipientsSpecificGroup').removeClass('d-none');
+            $('#userSelect').removeClass('d-none');
+            $('#userId').prop('required', true);
         } else {
-          $('#recipientsSpecificGroup').addClass('d-none');
+            $('#userSelect').addClass('d-none');
+            $('#userId').prop('required', false);
         }
-      });
+    });
 
-      $('#notificationSchedule').on('change', function() {
-        if ($(this).val() === 'later') {
-          $('#scheduleTimeGroup').removeClass('d-none');
-        } else {
-          $('#scheduleTimeGroup').addClass('d-none');
-        }
-      });
-
-      // Template buttons
-      $('.template-btn').on('click', function() {
+    // Xử lý nút template trên trang chính
+    $('.template-card .template-btn').click(function() {
         const type = $(this).data('type');
         const title = $(this).data('title');
         const template = $(this).data('template');
         
+        // Mở modal và điền thông tin
         $('#createNotificationModal').modal('show');
         $('#notificationType').val(type);
         $('#notificationTitle').val(title);
         $('#notificationContent').val(template);
-      });
+    });
+
+    // Load users when modal opens
+    $('#createNotificationModal').on('show.bs.modal', function() {
+        loadUsers();
+    });
+
+    // Reset form when modal closes
+    $('#createNotificationModal').on('hidden.bs.modal', function() {
+        $('#createNotificationForm')[0].reset();
+        $('#userSelect').addClass('d-none');
+        $('#userId').prop('required', false);
+    });
+
+    // Xử lý nút Lưu & Gửi
+    $('#saveNotification').click(function() {
+        const form = $('#createNotificationForm')[0];
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const type = $('#notificationType').val();
+        const title = $('#notificationTitle').val();
+        const message = $('#notificationContent').val();
+        const recipientType = $('input[name="recipientType"]:checked').val();
+        const sendEmail = $('#sendEmailCheckbox').is(':checked');
+
+        $(this).prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang gửi...');
+
+        if (recipientType === 'all') {
+            // Gửi cho tất cả người dùng
+            $.ajax({
+                url: '/admin/notifications/send-to-all',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    type: type,
+                    title: title,
+                    message: message,
+                    sendEmail: sendEmail
+                }),
+                success: function(response) {
+                    Swal.fire('Thành công!', response.message, 'success');
+                    $('#createNotificationModal').modal('hide');
+                    notificationTable.ajax.reload();
+                },
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'Đã xảy ra lỗi khi gửi thông báo';
+                    Swal.fire('Lỗi!', errorMsg, 'error');
+                },
+                complete: function() {
+                    $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
+                }
+            });
+        } else {
+            // Gửi cho người dùng cụ thể
+            const userId = $('#userId').val();
+            if (!userId) {
+                Swal.fire('Lỗi!', 'Vui lòng chọn người dùng.', 'error');
+                $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
+                return;
+            }
+            
+            $.ajax({
+                url: '/admin/notifications/send',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    userId: userId,
+                    type: type,
+                    title: title,
+                    message: message,
+                    sendEmail: sendEmail
+                }),
+                success: function(response) {
+                    Swal.fire('Thành công!', response.message, 'success');
+                    $('#createNotificationModal').modal('hide');
+                    notificationTable.ajax.reload();
+                },
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'Đã xảy ra lỗi khi gửi thông báo';
+                    Swal.fire('Lỗi!', errorMsg, 'error');
+                },
+                complete: function() {
+                    $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
+                }
+            });
+        }
+    });
 
       // Delete notification
       $(document).on('click', '.delete-btn', function() {
@@ -239,85 +321,42 @@
         });
       });
 
-      // Send notification
-      $('#saveNotification').on('click', function() {
-        // Validate form
-        const form = document.getElementById('createNotificationForm');
-        if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-        }
+      // Filter button click
+      $('.filter-btn').on('click', function() {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
         
-        const type = $('#notificationType').val();
-        const title = $('#notificationTitle').val();
-        const message = $('#notificationContent').val();
-        const recipientType = $('#notificationRecipients').val();
-        
-        // Show loading state
-        $(this).prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang gửi...');
-        
-        if (recipientType === 'all') {
-          // Send to all users
-          $.ajax({
-            url: '/admin/notifications/send-to-all',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              type: type,
-              title: title,
-              message: message
-            }),
-            success: function(response) {
-              Swal.fire('Thành công!', response.message, 'success');
-              $('#createNotificationModal').modal('hide');
-              notificationTable.ajax.reload();
-              form.reset();
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            },
-            error: function(error) {
-              let errorMsg = 'Không thể gửi thông báo.';
-              if (error.responseJSON && error.responseJSON.message) {
-                errorMsg = error.responseJSON.message;
-              }
-              Swal.fire('Lỗi!', errorMsg, 'error');
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            }
-          });
+        const filter = $(this).data('filter');
+        if (filter === 'all') {
+          notificationTable.column(1).search('').draw();
         } else {
-          // Send to specific user
-          const userId = $('#userId').val();
-          if (!userId) {
-            Swal.fire('Lỗi!', 'Vui lòng chọn người dùng.', 'error');
-            $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            return;
-          }
-          
-          $.ajax({
-            url: '/admin/notifications/send',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              userId: userId,
-              type: type,
-              title: title,
-              message: message
-            }),
-            success: function(response) {
-              Swal.fire('Thành công!', response.message, 'success');
-              $('#createNotificationModal').modal('hide');
-              notificationTable.ajax.reload();
-              form.reset();
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            },
-            error: function(error) {
-              let errorMsg = 'Không thể gửi thông báo.';
-              if (error.responseJSON && error.responseJSON.message) {
-                errorMsg = error.responseJSON.message;
-              }
-              Swal.fire('Lỗi!', errorMsg, 'error');
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            }
-          });
+          notificationTable.column(1).search(filter).draw();
+        }
+      });
+
+      // Filter link click
+      $('.filter-link').on('click', function(e) {
+        e.preventDefault();
+        const filter = $(this).data('filter');
+        $('.filter-btn').removeClass('active');
+        $('.filter-btn[data-filter="' + filter + '"]').addClass('active');
+        notificationTable.column(1).search(filter).draw();
+      });
+
+      // Hiển thị/ẩn các trường tùy chọn trong modal
+      $('#notificationRecipients').on('change', function() {
+        if ($(this).val() === 'specific') {
+          $('#recipientsSpecificGroup').removeClass('d-none');
+        } else {
+          $('#recipientsSpecificGroup').addClass('d-none');
+        }
+      });
+
+      $('#notificationSchedule').on('change', function() {
+        if ($(this).val() === 'later') {
+          $('#scheduleTimeGroup').removeClass('d-none');
+        } else {
+          $('#scheduleTimeGroup').addClass('d-none');
         }
       });
     });

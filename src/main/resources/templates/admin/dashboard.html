@@ -267,217 +267,407 @@
         <!--end::App Content Header-->
        
         <div class="app-content">
-          <!--begin::Container-->
-        <!--begin::App Content-->
-        <div class="app-content">
-          <!--begin::Container-->
           <div class="container-fluid">
-            <!--begin::Row-->
-            <div class="row">
-              <!--begin::Col - User Registrations -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-primary">
-                  <div class="inner">
-                    <h3 th:text="${userCount}">0</h3>
-                    <p>Total Users</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-people-fill"></i>
-                  </div>
-                  <a th:href="@{/admin/users}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" 
+                        data-bs-target="#overview" type="button" role="tab" 
+                        aria-controls="overview" aria-selected="true">
+                  <i class="bi bi-speedometer2 me-2"></i>Overview
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" 
+                        data-bs-target="#reports" type="button" role="tab" 
+                        aria-controls="reports" aria-selected="false">
+                  <i class="bi bi-file-earmark-text me-2"></i>Reports
+                </button>
+              </li>
+            </ul>
 
-              <!--begin::Col - Children -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-success">
-                  <div class="inner">
-                    <h3 th:text="${totalChildren}">0</h3>
-                    <p>Total Children</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-person-badge"></i>
-                  </div>
-                  <a th:href="@{/admin/children}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
+            <!-- Tab Content -->
+            <div class="tab-content" id="dashboardTabsContent">
+              <!-- Overview Tab -->
+              <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                <!-- Hidden div to store data -->
+                <div id="dashboardData" style="display: none;"
+                     th:data-total-users="${totalUsers}"
+                     th:data-total-vaccines="${totalVaccines}"
+                     th:data-total-appointments="${totalAppointments}"
+                     th:data-total-revenue="${totalRevenue}"
+                     th:data-today-appointments="${todayAppointments}"
+                     th:data-pending-appointments="${pendingAppointments}"
+                     th:data-pending-payments="${pendingPayments}">
                 </div>
-              </div>
-              <!--end::Col-->
 
-              <!--begin::Col - Vaccines -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-info">
-                  <div class="inner">
-                    <h3 th:text="${totalVaccines}">0</h3>
-                    <p>Total Vaccines</p>
+                <!-- Statistics Cards -->
+                <div class="row">
+                    <!--begin::Col - User Registrations -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-primary">
+                        <div class="inner">
+                          <h3 th:text="${userCount}">0</h3>
+                          <p>Total Users</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-people-fill"></i>
+                        </div>
+                        <a th:href="@{/admin/users}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Children -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-success">
+                        <div class="inner">
+                          <h3 th:text="${totalChildren}">0</h3>
+                          <p>Total Children</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-person-badge"></i>
+                        </div>
+                        <a th:href="@{/admin/children}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Vaccines -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-info">
+                        <div class="inner">
+                          <h3 th:text="${totalVaccines}">0</h3>
+                          <p>Total Vaccines</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-shield-plus"></i>
+                        </div>
+                        <a th:href="@{/admin/vaccines}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Appointments -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-warning">
+                        <div class="inner">
+                          <h3 th:text="${totalAppointments}">0</h3>
+                          <p>Total Appointments</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <a th:href="@{/admin/appointments}" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
                   </div>
-                  <div class="icon">
-                    <i class="bi bi-shield-plus"></i>
+                  <!--end::Row-->
+
+                  <!--begin::Row-->
+                  <div class="row">
+                    <!--begin::Col - Today's Appointments -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-danger">
+                        <div class="inner">
+                          <h3 th:text="${todayAppointments}">0</h3>
+                          <p>Today's Appointments</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-calendar-day"></i>
+                        </div>
+                        <a th:href="@{/admin/appointments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Pending Appointments -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-secondary">
+                        <div class="inner">
+                          <h3 th:text="${pendingAppointments}">0</h3>
+                          <p>Pending Appointments</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <a th:href="@{/admin/appointments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Total Payments -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-primary">
+                        <div class="inner">
+                          <h3 th:text="${totalPayments}">0</h3>
+                          <p>Total Payments</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-cash-stack"></i>
+                        </div>
+                        <a th:href="@{/admin/payments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Total Revenue -->
+                    <div class="col-lg-3 col-md-6 col-12">
+                      <div class="small-box text-bg-success">
+                        <div class="inner">
+                          <h3 th:text="${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'COMMA')}">0</h3>
+                          <p>Total Revenue (VND)</p>
+                        </div>
+                        <div class="icon">
+                          <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <a th:href="@{/admin/payments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                          More info <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
+                      </div>
+                    </div>
+                    <!--end::Col-->
                   </div>
-                  <a th:href="@{/admin/vaccines}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
+                  <!--end::Row-->
+
+                  <!--begin::Row-->
+                  <div class="row">
+                    <!--begin::Col - Quick Links -->
+                    <div class="col-lg-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">Quick Links</h3>
+                        </div>
+                        <div class="card-body">
+                          <div class="list-group">
+                            <a th:href="@{/admin/users}" class="list-group-item list-group-item-action">
+                              <i class="bi bi-people-fill me-2"></i>Manage Users
+                            </a>
+                            <a th:href="@{/admin/children}" class="list-group-item list-group-item-action">
+                              <i class="bi bi-person-badge me-2"></i>Manage Children
+                            </a>
+                            <a th:href="@{/admin/vaccines}" class="list-group-item list-group-item-action">
+                              <i class="bi bi-shield-plus me-2"></i>Manage Vaccines
+                            </a>
+                            <a th:href="@{/admin/appointments}" class="list-group-item list-group-item-action">
+                              <i class="bi bi-calendar-check me-2"></i>Manage Appointments
+                            </a>
+                            <a th:href="@{/admin/payments}" class="list-group-item list-group-item-action">
+                              <i class="bi bi-cash-stack me-2"></i>Manage Payments
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+
+                    <!--begin::Col - Recent Activity -->
+                    <div class="col-lg-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="card-body">
+                          <div class="list-group">
+                            <div class="list-group-item">
+                              <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Today's Appointments</h5>
+                                <small th:text="${todayAppointments}">0</small>
+                              </div>
+                              <p class="mb-1">Number of appointments scheduled for today</p>
+                            </div>
+                            <div class="list-group-item">
+                              <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Pending Payments</h5>
+                                <small th:text="${pendingPayments}">0</small>
+                              </div>
+                              <p class="mb-1">Number of payments waiting to be processed</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--end::Col-->
+                  </div>
+                  <!--end::Row-->
+
+                  <!-- Charts -->
+                  <div class="row mt-4">
+                    <!-- Appointment Trend Chart -->
+                    <div class="col-lg-8 col-md-12">
+                      <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">Appointment Trends</h3>
+                        </div>
+                        <div class="card-body">
+                          <div id="appointmentTrendChart"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Payment Status Chart -->
+                    <div class="col-lg-4 col-md-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h3 class="card-title">Payment Status Distribution</h3>
+                        </div>
+                        <div class="card-body">
+                          <div id="paymentStatusChart"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+
+              <!-- Reports Tab -->
+              <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                <!-- Report Generation Section -->
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Generate Report</h3>
+                      </div>
+                      <div class="card-body">
+                        <form id="reportForm">
+                          <div class="mb-3">
+                            <label for="reportType" class="form-label">Report Type</label>
+                            <select class="form-select" id="reportType" required>
+                              <option value="">Select Report Type</option>
+                              <option value="appointments">Appointments Report</option>
+                              <option value="vaccines">Vaccines Report</option>
+                              <option value="payments">Financial Report</option>
+                              <option value="users">Users Report</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label for="dateRange" class="form-label">Date Range</label>
+                            <select class="form-select" id="dateRange" required>
+                              <option value="today">Today</option>
+                              <option value="week">This Week</option>
+                              <option value="month">This Month</option>
+                              <option value="quarter">This Quarter</option>
+                              <option value="year">This Year</option>
+                              <option value="custom">Custom Range</option>
+                            </select>
+                          </div>
+                          <div class="mb-3 d-none" id="customDateRange">
+                            <div class="row">
+                              <div class="col-6">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="startDate">
+                              </div>
+                              <div class="col-6">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="endDate">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label for="format" class="form-label">Export Format</label>
+                            <select class="form-select" id="format" required>
+                              <option value="pdf">PDF</option>
+                              <option value="excel">Excel</option>
+                              <option value="csv">CSV</option>
+                            </select>
+                          </div>
+                          <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-file-earmark-arrow-down me-2"></i>Generate Report
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-8">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Recent Reports</h3>
+                      </div>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Report Name</th>
+                                <th>Type</th>
+                                <th>Generated Date</th>
+                                <th>Format</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>Monthly Appointments Report</td>
+                                <td><span class="badge bg-info">Appointments</span></td>
+                                <td>2025-04-01</td>
+                                <td>PDF</td>
+                                <td>
+                                  <button class="btn btn-sm btn-primary">
+                                    <i class="bi bi-download"></i>
+                                  </button>
+                                  <button class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                  </button>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Q1 Financial Report</td>
+                                <td><span class="badge bg-success">Financial</span></td>
+                                <td>2025-04-01</td>
+                                <td>Excel</td>
+                                <td>
+                                  <button class="btn btn-sm btn-primary">
+                                    <i class="bi bi-download"></i>
+                                  </button>
+                                  <button class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <!--end::Col-->
 
-              <!--begin::Col - Appointments -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-warning">
-                  <div class="inner">
-                    <h3 th:text="${totalAppointments}">0</h3>
-                    <p>Total Appointments</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-calendar-check"></i>
-                  </div>
-                  <a th:href="@{/admin/appointments}" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Row-->
-
-            <!--begin::Row-->
-            <div class="row">
-              <!--begin::Col - Today's Appointments -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-danger">
-                  <div class="inner">
-                    <h3 th:text="${todayAppointments}">0</h3>
-                    <p>Today's Appointments</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-calendar-day"></i>
-                  </div>
-                  <a th:href="@{/admin/appointments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
-
-              <!--begin::Col - Pending Appointments -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-secondary">
-                  <div class="inner">
-                    <h3 th:text="${pendingAppointments}">0</h3>
-                    <p>Pending Appointments</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-hourglass-split"></i>
-                  </div>
-                  <a th:href="@{/admin/appointments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
-
-              <!--begin::Col - Total Payments -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-primary">
-                  <div class="inner">
-                    <h3 th:text="${totalPayments}">0</h3>
-                    <p>Total Payments</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-cash-stack"></i>
-                  </div>
-                  <a th:href="@{/admin/payments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
-
-              <!--begin::Col - Total Revenue -->
-              <div class="col-lg-3 col-md-6 col-12">
-                <div class="small-box text-bg-success">
-                  <div class="inner">
-                    <h3 th:text="${#numbers.formatDecimal(totalRevenue, 0, 'POINT', 0, 'COMMA')}">0</h3>
-                    <p>Total Revenue (VND)</p>
-                  </div>
-                  <div class="icon">
-                    <i class="bi bi-currency-dollar"></i>
-                  </div>
-                  <a th:href="@{/admin/payments}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-arrow-right-circle-fill"></i>
-                  </a>
-                </div>
-              </div>
-              <!--end::Col-->
-            </div>
-            <!--end::Row-->
-
-            <!--begin::Row-->
-            <div class="row">
-              <!--begin::Col - Quick Links -->
-              <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">Quick Links</h3>
-                  </div>
-                  <div class="card-body">
-                    <div class="list-group">
-                      <a th:href="@{/admin/users}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-people-fill me-2"></i>Manage Users
-                      </a>
-                      <a th:href="@{/admin/children}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-person-badge me-2"></i>Manage Children
-                      </a>
-                      <a th:href="@{/admin/vaccines}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-shield-plus me-2"></i>Manage Vaccines
-                      </a>
-                      <a th:href="@{/admin/appointments}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-calendar-check me-2"></i>Manage Appointments
-                      </a>
-                      <a th:href="@{/admin/payments}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-cash-stack me-2"></i>Manage Payments
-                      </a>
+                <!-- Additional Report Charts -->
+                <div class="row mt-4">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Revenue Trends</h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
+                            <i class="bi bi-minus"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div id="revenueTrendChart"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <!--end::Col-->
-
-              <!--begin::Col - Recent Activity -->
-              <div class="col-lg-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h3 class="card-title">Recent Activity</h3>
-                  </div>
-                  <div class="card-body">
-                    <div class="list-group">
-                      <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h5 class="mb-1">Today's Appointments</h5>
-                          <small th:text="${todayAppointments}">0</small>
-                        </div>
-                        <p class="mb-1">Number of appointments scheduled for today</p>
-                      </div>
-                      <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h5 class="mb-1">Pending Payments</h5>
-                          <small th:text="${pendingPayments}">0</small>
-                        </div>
-                        <p class="mb-1">Number of payments waiting to be processed</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--end::Col-->
             </div>
-            <!--end::Row-->
           </div>
-          <!--end::Container-->
         </div>
         <!--end::App Content-->
 
