@@ -49,6 +49,7 @@ public class VaccinePackage {
     private LocalDateTime updatedAt;
     
     public enum PackageType {
+        INDIVIDUAL("Tiêm lẻ"),
         PACKAGE("Trọn gói"),
         CUSTOM("Cá thể hóa");
         
