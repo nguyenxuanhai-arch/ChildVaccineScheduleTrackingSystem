@@ -235,14 +235,6 @@
                       ></span>
                     </small>
                   </p>
-                  <a
-                    th:href="@{/vaccine-detail/{id}(id=${package.id})}"
-                    class="btn btn-outline-primary btn-block"
-                    >Xem chi tiết</a
-                  >
-                  <a href="#" class="btn btn-success btn-block"
-                    >Đặt lịch tiêm</a
-                  >
                 </div>
               </div>
             </div>
@@ -350,12 +342,6 @@
                         ></span>
                       </small>
                     </p>
-                    <a href="#" class="btn btn-outline-primary btn-block"
-                      >Xem chi tiết</a
-                    >
-                    <a href="#" class="btn btn-success btn-block"
-                      >Đặt lịch tiêm</a
-                    >
                   </div>
                 </div>
               </div>
@@ -394,7 +380,7 @@
                           150,000
                         </td>
                         <td>
-                          <a href="#" class="btn btn-sm btn-primary"
+                          <a href="/appointments" class="btn btn-sm btn-primary"
                             >Đặt lịch</a
                           >
                         </td>
@@ -465,12 +451,6 @@
                         ></span>
                       </small>
                     </p>
-                    <a href="#" class="btn btn-outline-primary btn-block"
-                      >Xem chi tiết</a
-                    >
-                    <a href="#" class="btn btn-success btn-block"
-                      >Đặt lịch tiêm</a
-                    >
                   </div>
                 </div>
               </div>
@@ -531,12 +511,6 @@
                       >
                         2,000,000 VNĐ
                       </p>
-                      <p class="card-text" th:text="${package.description}">
-                        Mô tả gói tiêm chủng
-                      </p>
-                      <a href="#" class="btn btn-outline-primary btn-block"
-                        >Xem chi tiết</a
-                      >
                     </div>
                   </div>
                 </div>
