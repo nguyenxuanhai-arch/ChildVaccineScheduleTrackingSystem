@@ -1,0 +1,32 @@
+.error-container {
+    text-align: center;
+    padding: 5rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.error-icon {
+    font-size: 80px;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.error-message {
+    font-size: 24px;
+    margin: 1rem 0;
+    color: var(--text-color);
+}
+
+.error-details {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: monospace;
+    text-align: left;
+}
+
+.error-actions {
+    margin-top: 2rem;
+}
