@@ -3,16 +3,16 @@
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Admin - User Management</title>
+    <title>Quản lý người dùng</title>
     <!-- Changed Title -->
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="Admin - User Management" />
+    <meta name="title" content="Quản lý người dùng" />
     <meta name="author" content="Your Name/Company" />
     <!-- Changed Author -->
     <meta
       name="description"
-      content="Admin dashboard for Child Vaccine Schedule Tracking System - User Management."
+      content="Quản lý người dùng hệ thống tiêm chủng trẻ em"
     />
     <!-- Changed Description -->
     <!--end::Primary Meta Tags-->
@@ -47,6 +47,28 @@
 
     <!-- Optional: Add CSS for DataTables if you plan to use it -->
     <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> -->
+    <style>
+      .action-buttons .btn {
+        margin-right: 5px;
+      }
+      .role-badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.85em;
+      }
+      .role-admin {
+        background-color: #dc3545;
+        color: white;
+      }
+      .role-staff {
+        background-color: #0dcaf0;
+        color: white;
+      }
+      .role-user {
+        background-color: #198754;
+        color: white;
+      }
+    </style>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -199,7 +221,7 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-sm-6">
-                <h3 class="mb-0">User Management</h3>
+                <h3 class="mb-0">Quản lý người dùng</h3>
                 <!-- Changed Header Title -->
               </div>
               <div class="col-sm-6">
@@ -208,7 +230,7 @@
                     <a th:href="@{/admin}">Home</a>
                   </li>
                   <li class="breadcrumb-item active" aria-current="page">
-                    User Management
+                    Quản lý người dùng
                   </li>
                 </ol>
               </div>
@@ -226,14 +248,14 @@
                 <!--begin::Card-->
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">User List</h3>
+                    <h3 class="card-title">Danh sách người dùng</h3>
                     <div class="card-tools">
                       <!-- Nút tạo người dùng mới -->
                       <a
                         th:href="@{/admin/users/new}"
                         class="btn btn-primary btn-sm"
                       >
-                        <i class="bi bi-plus-lg"></i> Add New User
+                        <i class="bi bi-plus-lg"></i> Thêm người dùng
                       </a>
                     </div>
                   </div>
@@ -268,57 +290,60 @@
                     </div>
 
                     <!-- User Table -->
-                    <table
-                      id="userTable"
-                      class="table table-bordered table-striped"
-                    >
-                      <thead>
-                        <tr>
-                          <th>ID</th>
-                          <th>Username</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr th:each="user : ${users}">
-                          <td th:text="${user.id}"></td>
-                          <td th:text="${user.username}"></td>
-                          <td th:text="${user.email}"></td>
-                          <td th:text="${user.role}"></td>
-                          <td>
-                            <!-- Nút sửa -->
-                            <a
-                              th:href="@{/admin/users/edit/{id}(id=${user.id})}"
-                              >Edit</a
-                            >
-                            <!-- Nút xóa -->
-                            <form
-                              th:action="@{/admin/users/delete/{id}(id=${user.id})}"
-                              method="post"
-                              style="display: inline"
-                            >
-                              <button type="submit">Delete</button>
-                            </form>
-                          </td>
-                        </tr>
-                        <!-- Display message if no users found -->
-                        <tr th:if="${#lists.isEmpty(users)}">
-                          <td colspan="4" class="text-center">
-                            No users found.
-                          </td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>ID</th>
-                          <th>Username</th>
-                          <th>Role</th>
-                          <th>Actions</th>
-                        </tr>
-                      </tfoot>
-                    </table>
+                    <div class="table-responsive">
+                      <table
+                        id="userTable"
+                        class="table table-bordered table-striped"
+                      >
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr th:each="user : ${users}">
+                            <td th:text="${user.id}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.name}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td>
+                              <span th:if="${user.role == 'ADMIN'}" class="role-badge role-admin">Admin</span>
+                              <span th:if="${user.role == 'STAFF'}" class="role-badge role-staff">Nhân viên</span>
+                              <span th:if="${user.role == 'USER'}" class="role-badge role-user">Người dùng</span>
+                            </td>
+                            <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="action-buttons">
+                              <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" 
+                                 class="btn btn-info btn-sm">
+                                <i class="bi bi-pencil"></i>
+                              </a>
+                              <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" 
+                                    method="post" 
+                                    style="display: inline"
+                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </form>
+                            </td>
+                          </tr>
+                          <!-- Display message if no users found -->
+                          <tr th:if="${#lists.isEmpty(users)}">
+                            <td colspan="8" class="text-center">
+                              Không tìm thấy người dùng nào.
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <!-- /.card-body -->
                   <!-- Optional: Add Pagination Controls -->
@@ -378,99 +403,7 @@
     <!-- Make sure the path is correct -->
     <script th:src="@{/dist/js/adminlte.js}"></script>
     <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
-    <script>
-      const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
-      document.addEventListener("DOMContentLoaded", function () {
-        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-        if (
-          sidebarWrapper &&
-          typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
-        ) {
-          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-            scrollbars: {
-              theme: "os-theme-light", // Or 'os-theme-dark'
-              autoHide: "leave",
-              clickScroll: true,
-            },
-          });
-        }
-      });
-    </script>
-    <!--end::OverlayScrollbars Configure-->
-
-    <!-- Optional: Add JS for DataTables -->
-    <!-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script> -->
-    <!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
-    <!-- <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> -->
-    <!-- <script>
-      $(document).ready(function() {
-        $('#userTable').DataTable(); // Initialize DataTables
-      });
-    </script> -->
-
-    <!-- Custom Scripts -->
-    <script>
-      // Logout function (same as dashboard)
-      function logout() {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = /*[[@{/logout}]]*/ "/logout";
-        // Add CSRF token if needed
-        document.body.appendChild(form);
-        form.submit();
-      }
-      const signOutButton = document.getElementById("signOutBtn");
-      if (signOutButton) {
-        signOutButton.addEventListener("click", function (e) {
-          e.preventDefault();
-          logout();
-        });
-      }
-
-      // Sidebar active state (simple version, might need refinement)
-      document.addEventListener("DOMContentLoaded", () => {
-        const currentPath = window.location.pathname;
-        const sidebarLinks = document.querySelectorAll(
-          ".sidebar-menu .nav-link"
-        );
-
-        sidebarLinks.forEach((link) => {
-          const linkPath = link.getAttribute("href");
-          // Remove active from all links first
-          link.classList.remove("active");
-          if (link.closest(".nav-item")) {
-            link.closest(".nav-item").classList.remove("menu-open"); // Close treeviews
-          }
-
-          // Add active to the matching link
-          if (
-            linkPath &&
-            currentPath.startsWith(linkPath) &&
-            linkPath !== "#"
-          ) {
-            link.classList.add("active");
-            // Optional: Open parent treeview if it exists
-            const parentTreeview = link.closest(".nav-item.has-treeview"); // Adjust selector if needed
-            if (parentTreeview) {
-              parentTreeview.classList.add("menu-open");
-              const parentLink = parentTreeview.querySelector(".nav-link");
-              if (parentLink) parentLink.classList.add("active");
-            }
-          }
-        });
-
-        // Ensure Dashboard is active if on dashboard page specifically
-        if (currentPath === /*[[@{/admin/dashboard}]]*/ "/admin/dashboard") {
-          const dashboardLink = document.querySelector(
-            '.sidebar-menu a[href="' +
-              /*[[@{/admin/dashboard}]]*/ "/admin/dashboard" +
-              '"]'
-          );
-          if (dashboardLink) dashboardLink.classList.add("active");
-        }
-      });
-    </script>
-    <!--end::Script-->
+    <script src="/js/admin/users/users.js"></script>
   </body>
   <!--end::Body-->
 </html>

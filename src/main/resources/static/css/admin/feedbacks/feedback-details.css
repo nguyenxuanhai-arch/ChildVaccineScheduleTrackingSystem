@@ -21,6 +21,9 @@
     margin-top: 20px;
     border-left: 5px solid #0d6efd;
     font-style: italic;
+    min-height: 100px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 .badge-rating {
     display: inline-block;
@@ -84,4 +87,34 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+}
+.rating-display .fa-star {
+    font-size: 1.2rem;
+    margin-right: 2px;
+}
+.form-group label {
+    color: #4e73df;
+    margin-bottom: 0.5rem;
+}
+.form-group p {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #f8f9fc;
+    border-radius: 0.35rem;
+}
+.card {
+    margin-bottom: 2rem;
+}
+.btn-primary {
+    margin-bottom: 1rem;
+}
+@media (max-width: 576px) {
+    .d-sm-flex {
+        flex-direction: column;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        margin-top: 1rem;
+    }
 }

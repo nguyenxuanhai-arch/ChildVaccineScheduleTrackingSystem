@@ -1,785 +1,410 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Admin - Quản lý Thông báo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="author" content="Vaccines for children" />
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
-  <!-- OverlayScrollbars -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
-  <!-- AdminLTE -->
-  <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
-  <link rel="stylesheet" th:href="@{/dist/css/notifications.css}" />
-
-  <!-- DataTables -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-  <!-- SweetAlert2 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Admin - Quản lý Thông báo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="title" content="Admin - Quản lý Thông báo" />
+    <meta name="author" content="Vaccines for children" />
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous" />
+    <!-- OverlayScrollbars -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css" integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg=" crossorigin="anonymous" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous" />
+    <!-- AdminLTE -->
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.css}" />
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
+
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-  <div class="app-wrapper">
-    <!-- Header -->
-    <nav class="app-header navbar navbar-expand bg-body">
-      <div class="container-fluid">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
-              <i class="bi bi-list"></i>
-            </a>
-          </li>
-          <li class="nav-item d-none d-md-block">
-            <a th:href="@{/admin/dashboard}" class="nav-link">Home</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-lte-toggle="fullscreen">
-              <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-              <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-    <!-- Sidebar -->
-    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-      <div class="sidebar-brand">
-        <a th:href="@{/admin}" class="brand-link">
-          <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
-          <span class="brand-text fw-light">Vaccine Tracker</span>
-        </a>
-      </div>
-      <div class="sidebar-wrapper">
-        <nav class="mt-2">
-          <!--begin::Sidebar Menu-->
-          <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-            <!-- Dashboard -->
-            <li class="nav-item">
-              <a th:href="@{/admin}" class="nav-link">
-                <i class="nav-icon bi bi-speedometer"></i>
-                <p>Dashboard</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Rating, Feedback -->
-            <li class="nav-item">
-              <a th:href="@{/admin/feedbacks}" class="nav-link active">
-                <i class="nav-icon bi bi-star-half"></i>
-                <p>Quản lí Rating, Feedback</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Hồ sơ trẻ em -->
-            <li class="nav-item">
-              <a th:href="@{/admin/children}" class="nav-link">
-                <i class="nav-icon bi bi-person-badge"></i>
-                <p>Quản lí Hồ sơ trẻ em</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Người dùng -->
-            <li class="nav-item">
-              <a th:href="@{/admin/users}" class="nav-link">
-                <i class="nav-icon bi bi-people-fill"></i>
-                <p>Quản lí Người dùng</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Vaccine -->
-            <li class="nav-item">
-              <a th:href="@{/admin/vaccines}" class="nav-link">
-                <i class="nav-icon bi bi-shield-plus"></i>
-                <p>Quản lí Vaccine</p>
-              </a>
-            </li>
-            
-            <!-- Quản lí Gói Vaccine -->
-            <li class="nav-item">
-              <a th:href="@{/admin/packages}" class="nav-link">
-                <i class="nav-icon bi bi-box-seam"></i>
-                <p>Quản lí Gói Vaccine</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Thanh toán -->
-            <li class="nav-item">
-              <a th:href="@{/admin/payments}" class="nav-link">
-                <i class="nav-icon bi bi-credit-card"></i>
-                <p>Quản lí Thanh toán</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Đặt lịch vaccine -->
-            <li class="nav-item">
-              <a th:href="@{/admin/appointments}" class="nav-link">
-                <i class="nav-icon bi bi-calendar-check"></i>
-                <p>Quản lí Đặt lịch vaccine</p>
-              </a>
-            </li>
-
-            <!-- Quản lí Thông báo -->
-            <li class="nav-item">
-              <a th:href="@{/admin/notifications}" class="nav-link">
-                <i class="nav-icon bi bi-bell"></i>
-                <p>Quản lí Thông báo</p>
-              </a>
-            </li>
-          </ul>
-          <!--end::Sidebar Menu-->
+    <div class="app-wrapper">
+        <!-- Header -->
+        <nav class="app-header navbar navbar-expand bg-body">
+            <div class="container-fluid">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                            <i class="bi bi-list"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-md-block">
+                        <a th:href="@{/admin}" class="nav-link">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                            <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                            <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </nav>
-      </div>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="app-main">
-      <div class="app-content-header">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-sm-6">
-              <h3 class="mb-0">Quản lý Thông báo</h3>
-            </div>
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item">
-                  <a th:href="@{/admin}">Home</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                  Quản lý Thông báo
-                </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="app-content">
-        <div class="container-fluid">
-          <!-- Hiển thị thông báo lỗi nếu có -->
-          <div th:if="${error}" class="alert alert-danger" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <span th:text="${error}">Đã xảy ra lỗi</span>
-          </div>
-
-          <!-- Thống kê tổng quan -->
-          <div class="row">
-            <div class="col-lg-3 col-6">
-              <div class="small-box bg-info notification-card">
-                <div class="inner">
-                  <h3 th:text="${totalNotifications}">150</h3>
-                  <p>Tổng số thông báo</p>
-                </div>
-                <div class="icon">
-                  <i class="bi bi-bell-fill"></i>
-                </div>
-                <a href="#" class="small-box-footer">
-                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
+        <!-- Sidebar -->
+        <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+            <div class="sidebar-brand">
+                <a th:href="@{/admin}" class="brand-link">
+                    <img th:src="@{/dist/assets/img/AdminLTELogo.png}" alt="App Logo" class="brand-image opacity-75 shadow" />
+                    <span class="brand-text fw-light">Vaccine Tracker</span>
                 </a>
-              </div>
             </div>
-            <div class="col-lg-3 col-6">
-              <div class="small-box bg-success notification-card">
-                <div class="inner">
-                  <h3 th:text="${vaccineNotifications}">53</h3>
-                  <p>Thông báo tiêm lẻ</p>
-                </div>
-                <div class="icon">
-                  <i class="bi bi-syringe"></i>
-                </div>
-                <a href="#notification-tab" data-filter="VACCINE" class="small-box-footer filter-link">
-                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
-                </a>
-              </div>
-            </div>
-            <div class="col-lg-3 col-6">
-              <div class="small-box bg-warning notification-card">
-                <div class="inner">
-                  <h3 th:text="${packageNotifications}">44</h3>
-                  <p>Thông báo tiêm gói</p>
-                </div>
-                <div class="icon">
-                  <i class="bi bi-box-seam"></i>
-                </div>
-                <a href="#notification-tab" data-filter="PACKAGE" class="small-box-footer filter-link">
-                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
-                </a>
-              </div>
-            </div>
-            <div class="col-lg-3 col-6">
-              <div class="small-box bg-danger notification-card">
-                <div class="inner">
-                  <h3 th:text="${unreadNotifications}">8</h3>
-                  <p>Thông báo chưa đọc</p>
-                </div>
-                <div class="icon">
-                  <i class="bi bi-exclamation-triangle-fill"></i>
-                </div>
-                <a href="#notification-tab" class="small-box-footer">
-                  Chi tiết <i class="bi bi-arrow-right-circle-fill"></i>
-                </a>
-              </div>
-            </div>
-          </div>
+            <div class="sidebar-wrapper">
+                <nav class="mt-2">
+                    <!--begin::Sidebar Menu-->
+                    <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin}" class="nav-link">
+                                <i class="nav-icon bi bi-speedometer"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
 
-          <!-- Bộ lọc và công cụ -->
-          <div class="row mb-3">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Bộ lọc thông báo</h3>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-8">
-                      <div class="btn-group mb-3">
-                        <button type="button" class="btn btn-outline-primary filter-btn active" data-filter="all">Tất cả</button>
-                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="VACCINE">Tiêm lẻ</button>
-                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="PACKAGE">Tiêm gói</button>
-                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="PAYMENT">Thanh toán</button>
-                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="SYSTEM">Hệ thống</button>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="input-group mb-3">
-                        <input type="text" id="searchNotifications" class="form-control" placeholder="Tìm kiếm thông báo...">
-                        <button class="btn btn-outline-secondary" type="button">
-                          <i class="bi bi-search"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                        <!-- Quản lí Rating, Feedback -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/feedbacks}" class="nav-link">
+                                <i class="nav-icon bi bi-star-half"></i>
+                                <p>Quản lí Rating, Feedback</p>
+                            </a>
+                        </li>
 
-          <!-- Danh sách thông báo -->
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                  <h3 class="card-title">Danh sách thông báo</h3>
-                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createNotificationModal">
-                    <i class="bi bi-plus-circle"></i> Tạo thông báo mới
-                  </button>
-                </div>
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table id="notificationsTable" class="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th width="5%">ID</th>
-                          <th width="15%">Loại</th>
-                          <th width="15%">Người nhận</th>
-                          <th width="20%">Tiêu đề</th>
-                          <th width="25%">Nội dung</th>
-                          <th width="10%">Thời gian</th>
-                          <th width="5%">Status</th>
-                          <th width="10%">Thao tác</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- Dữ liệu sẽ được tải bằng Ajax/DataTables -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                        <!-- Quản lí Hồ sơ trẻ em -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/children}" class="nav-link">
+                                <i class="nav-icon bi bi-person-badge"></i>
+                                <p>Quản lí Hồ sơ trẻ em</p>
+                            </a>
+                        </li>
 
-          <!-- Mẫu thông báo -->
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Mẫu thông báo</h3>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu thông báo lịch tiêm lẻ</h5>
-                        <p>Xin thông báo lịch tiêm vắc-xin [Tên vắc-xin] cho bé [Tên bé] vào ngày [Ngày] lúc [Giờ]. Vui lòng đến đúng giờ và mang theo sổ tiêm chủng.</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="VACCINE" data-title="Nhắc nhở lịch tiêm vắc-xin" data-template="Xin thông báo lịch tiêm vắc-xin [Tên vắc-xin] cho bé [Tên bé] vào ngày [Ngày] lúc [Giờ]. Vui lòng đến đúng giờ và mang theo sổ tiêm chủng.">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu thông báo lịch tiêm gói</h5>
-                        <p>Thông báo lịch tiêm gói [Tên gói] cho bé [Tên bé] đã được xếp vào ngày [Ngày] lúc [Giờ]. Vui lòng đến đúng giờ và mang theo sổ tiêm chủng.</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="PACKAGE" data-title="Lịch hẹn tiêm gói vắc-xin" data-template="Thông báo lịch tiêm gói [Tên gói] cho bé [Tên bé] đã được xếp vào ngày [Ngày] lúc [Giờ]. Vui lòng đến đúng giờ và mang theo sổ tiêm chủng.">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu xác nhận thanh toán</h5>
-                        <p>Xác nhận thanh toán thành công cho lịch hẹn tiêm vắc-xin ngày [Ngày]. Số tiền: [Số tiền]</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="PAYMENT" data-title="Xác nhận thanh toán" data-template="Xác nhận thanh toán thành công cho lịch hẹn tiêm vắc-xin ngày [Ngày]. Số tiền: [Số tiền]">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu nhắc lịch hẹn</h5>
-                        <p>Nhắc nhở: Bé [Tên bé] có lịch tiêm vắc-xin vào ngày mai ([Ngày]) lúc [Giờ]. Vui lòng đến đúng giờ.</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="VACCINE" data-title="Nhắc nhở lịch hẹn ngày mai" data-template="Nhắc nhở: Bé [Tên bé] có lịch tiêm vắc-xin vào ngày mai ([Ngày]) lúc [Giờ]. Vui lòng đến đúng giờ.">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mt-3">
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu thông báo nhắc nhở tái khám</h5>
-                        <p>Nhắc nhở: Bé [Tên bé] có lịch tái khám sau khi tiêm vắc-xin vào ngày [Ngày] lúc [Giờ]. Vui lòng đưa bé đến đúng hẹn.</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="SYSTEM" data-title="Nhắc nhở lịch tái khám" data-template="Nhắc nhở: Bé [Tên bé] có lịch tái khám sau khi tiêm vắc-xin vào ngày [Ngày] lúc [Giờ]. Vui lòng đưa bé đến đúng hẹn.">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="notification-template">
-                        <h5>Mẫu thông báo cập nhật trạng thái</h5>
-                        <p>Thông báo: Trạng thái lịch hẹn tiêm vắc-xin của bé [Tên bé] vào ngày [Ngày] đã được cập nhật thành [Trạng thái mới].</p>
-                        <button class="btn btn-sm btn-primary template-btn" data-type="SYSTEM" data-title="Cập nhật trạng thái lịch hẹn" data-template="Thông báo: Trạng thái lịch hẹn tiêm vắc-xin của bé [Tên bé] vào ngày [Ngày] đã được cập nhật thành [Trạng thái mới].">
-                          <i class="bi bi-clipboard-check"></i> Sử dụng mẫu
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                        <!-- Quản lí Người dùng -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/users}" class="nav-link">
+                                <i class="nav-icon bi bi-people-fill"></i>
+                                <p>Quản lí Người dùng</p>
+                            </a>
+                        </li>
+
+                        <!-- Quản lí Vaccine -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/vaccines}" class="nav-link">
+                                <i class="nav-icon bi bi-shield-plus"></i>
+                                <p>Quản lí Vaccine</p>
+                            </a>
+                        </li>
+
+                        <!-- Quản lí Gói Vaccine -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/packages}" class="nav-link">
+                                <i class="nav-icon bi bi-box-seam"></i>
+                                <p>Quản lí Gói Vaccine</p>
+                            </a>
+                        </li>
+
+                        <!-- Quản lí Thanh toán -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/payments}" class="nav-link">
+                                <i class="nav-icon bi bi-credit-card"></i>
+                                <p>Quản lí Thanh toán</p>
+                            </a>
+                        </li>
+
+                        <!-- Quản lí Đặt lịch vaccine -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/appointments}" class="nav-link">
+                                <i class="nav-icon bi bi-calendar-check"></i>
+                                <p>Quản lí Đặt lịch vaccine</p>
+                            </a>
+                        </li>
+
+                        <!-- Quản lí Thông báo -->
+                        <li class="nav-item">
+                            <a th:href="@{/admin/notifications}" class="nav-link active">
+                                <i class="nav-icon bi bi-bell"></i>
+                                <p>Quản lí Thông báo</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <!--end::Sidebar Menu-->
+                </nav>
             </div>
-          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Quản lí Thông báo</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item">
+                                    <a th:href="@{/admin}">Home</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Quản lí Thông báo
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="container-fluid">
+                    <!-- Templates Grid -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Mẫu thông báo</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Vaccine Template -->
+                                        <div class="col-md-3">
+                                            <div class="card template-card mb-0">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="bi bi-shield-plus text-success fs-2"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-3">
+                                                            <h6 class="mb-0">Nhắc lịch tiêm vaccine</h6>
+                                                            <span class="badge bg-success">Tiêm lẻ</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="card-text small text-muted">Thông báo nhắc lịch tiêm vaccine sắp đến</p>
+                                                    <button class="btn btn-outline-success w-100 template-btn" 
+                                                        data-type="VACCINE" 
+                                                        data-title="Nhắc lịch tiêm vaccine"
+                                                        data-template="Xin nhắc lịch tiêm vaccine sắp đến. Vui lòng kiểm tra lịch hẹn của bạn.">
+                                                        Sử dụng mẫu này
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Package Template -->
+                                        <div class="col-md-3">
+                                            <div class="card template-card mb-0">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="bi bi-box-seam text-warning fs-2"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-3">
+                                                            <h6 class="mb-0">Cập nhật gói vaccine</h6>
+                                                            <span class="badge bg-warning">Tiêm gói</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="card-text small text-muted">Thông báo về cập nhật gói vaccine</p>
+                                                    <button class="btn btn-outline-warning w-100 template-btn"
+                                                        data-type="PACKAGE" 
+                                                        data-title="Thông báo về gói vaccine"
+                                                        data-template="Gói vaccine của bạn đã được cập nhật. Vui lòng kiểm tra thông tin chi tiết.">
+                                                        Sử dụng mẫu này
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Template -->
+                                        <div class="col-md-3">
+                                            <div class="card template-card mb-0">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="bi bi-credit-card text-info fs-2"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-3">
+                                                            <h6 class="mb-0">Nhắc thanh toán</h6>
+                                                            <span class="badge bg-info">Thanh toán</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="card-text small text-muted">Thông báo nhắc thanh toán phí dịch vụ</p>
+                                                    <button class="btn btn-outline-info w-100 template-btn"
+                                                        data-type="PAYMENT" 
+                                                        data-title="Nhắc thanh toán"
+                                                        data-template="Vui lòng thanh toán phí dịch vụ trước khi đến lịch hẹn.">
+                                                        Sử dụng mẫu này
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- System Template -->
+                                        <div class="col-md-3">
+                                            <div class="card template-card mb-0">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="flex-shrink-0">
+                                                            <i class="bi bi-gear text-secondary fs-2"></i>
+                                                        </div>
+                                                        <div class="flex-grow-1 ms-3">
+                                                            <h6 class="mb-0">Bảo trì hệ thống</h6>
+                                                            <span class="badge bg-secondary">Hệ thống</span>
+                                                        </div>
+                                                    </div>
+                                                    <p class="card-text small text-muted">Thông báo về bảo trì hệ thống</p>
+                                                    <button class="btn btn-outline-secondary w-100 template-btn"
+                                                        data-type="SYSTEM" 
+                                                        data-title="Thông báo bảo trì hệ thống"
+                                                        data-template="Hệ thống sẽ được bảo trì định kỳ. Mong quý khách thông cảm cho sự bất tiện này.">
+                                                        Sử dụng mẫu này
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DataTable Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Danh sách thông báo</h5>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createNotificationModal">
+                                    <i class="bi bi-plus"></i> Tạo thông báo mới
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Filter buttons -->
+                            <div class="mb-3">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-primary filter-btn active" data-filter="all">
+                                        Tất cả
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success filter-btn" data-filter="VACCINE">
+                                        Tiêm lẻ
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning filter-btn" data-filter="PACKAGE">
+                                        Tiêm gói
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info filter-btn" data-filter="PAYMENT">
+                                        Thanh toán
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="SYSTEM">
+                                        Hệ thống
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- DataTable -->
+                            <table id="notificationsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Loại</th>
+                                        <th>Người nhận</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Nội dung</th>
+                                        <th>Thời gian</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal tạo thông báo mới -->
+        <div class="modal fade" id="createNotificationModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tạo thông báo mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createNotificationForm">
+                            <div class="mb-3">
+                                <label class="form-label">Loại thông báo</label>
+                                <select class="form-select" id="notificationType" required>
+                                    <option value="VACCINE">Tiêm lẻ</option>
+                                    <option value="PACKAGE">Tiêm gói</option>
+                                    <option value="PAYMENT">Thanh toán</option>
+                                    <option value="SYSTEM">Hệ thống</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Người nhận</label>
+                                <div class="d-flex gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipientType" id="allUsers" value="all" checked>
+                                        <label class="form-check-label" for="allUsers">
+                                            Tất cả người dùng
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipientType" id="specificUser" value="specific">
+                                        <label class="form-check-label" for="specificUser">
+                                            Người dùng cụ thể
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="userSelect" class="mb-3 d-none">
+                                <label class="form-label">Chọn người dùng</label>
+                                <select class="form-select" id="userId">
+                                    <option value="">Chọn người dùng...</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Tiêu đề</label>
+                                <input type="text" class="form-control" id="notificationTitle" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung</label>
+                                <textarea class="form-control" id="notificationContent" rows="3" required></textarea>
+                            </div>
+
+                            <!-- Checkbox gửi email -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="sendEmailCheckbox">
+                                <label class="form-check-label" for="sendEmailCheckbox">
+                                    Gửi thông báo qua email
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" id="saveNotification">Lưu & Gửi</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </main>
-
-    <footer class="app-footer">
-      <div class="float-end d-none d-sm-inline">Vaccine Tracking System</div>
-      <strong>
-        Copyright &copy; 2024&nbsp;
-        <a href="#" class="text-decoration-none">Vaccines for children</a>.
-      </strong>
-      All rights reserved.
-    </footer>
-  </div>
-
-  <!-- Modal tạo thông báo mới -->
-  <div class="modal fade" id="createNotificationModal" tabindex="-1" aria-labelledby="createNotificationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="createNotificationModalLabel">Tạo thông báo mới</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="createNotificationForm">
-            <div class="mb-3">
-              <label for="notificationType" class="form-label">Loại thông báo</label>
-              <select class="form-select" id="notificationType" required>
-                <option value="">-- Chọn loại thông báo --</option>
-                <option value="VACCINE">Tiêm lẻ</option>
-                <option value="PACKAGE">Tiêm gói</option>
-                <option value="PAYMENT">Thanh toán</option>
-                <option value="SYSTEM">Hệ thống</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="notificationTitle" class="form-label">Tiêu đề</label>
-              <input type="text" class="form-control" id="notificationTitle" required>
-            </div>
-            <div class="mb-3">
-              <label for="notificationContent" class="form-label">Nội dung</label>
-              <textarea class="form-control" id="notificationContent" rows="4" required></textarea>
-            </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="notificationRecipients" class="form-label">Đối tượng nhận</label>
-                  <select class="form-select" id="notificationRecipients">
-                    <option value="all">Tất cả người dùng</option>
-                    <option value="specific">Chọn người dùng cụ thể</option>
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label for="notificationSchedule" class="form-label">Lịch gửi</label>
-                  <select class="form-select" id="notificationSchedule">
-                    <option value="now">Gửi ngay</option>
-                    <option value="later">Hẹn giờ</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 d-none" id="recipientsSpecificGroup">
-              <label class="form-label">Chọn người nhận</label>
-              <select class="form-select" id="userId">
-                <option value="">-- Chọn người dùng --</option>
-                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
-              </select>
-            </div>
-            <div class="mb-3 d-none" id="scheduleTimeGroup">
-              <label for="scheduleTime" class="form-label">Thời gian gửi</label>
-              <input type="datetime-local" class="form-control" id="scheduleTime">
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-          <button type="button" class="btn btn-primary" id="saveNotification">Lưu & Gửi</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
-  <script th:src="@{/dist/js/adminlte.js}"></script>
-  
-  <script>
-    $(document).ready(function() {
-      // Khởi tạo DataTable
-      const notificationTable = $('#notificationsTable').DataTable({
-        "ajax": {
-          "url": "/admin/notifications/data",
-          "dataSrc": ""
-        },
-        "columns": [
-          { "data": "id" },
-          { 
-            "data": "type",
-            "render": function(data) {
-              let badge = '';
-              switch(data) {
-                case 'VACCINE':
-                  badge = '<span class="badge bg-success">Tiêm lẻ</span>';
-                  break;
-                case 'PACKAGE':
-                  badge = '<span class="badge bg-warning">Tiêm gói</span>';
-                  break;
-                case 'PAYMENT':
-                  badge = '<span class="badge bg-primary">Thanh toán</span>';
-                  break;
-                default:
-                  badge = '<span class="badge bg-secondary">Hệ thống</span>';
-              }
-              return badge;
-            }
-          },
-          { 
-            "data": "userId",
-            "render": function(data) {
-              return data ? data : '<em>Tất cả</em>';
-            }
-          },
-          { 
-            "data": "title",
-            "render": function(data) {
-              return data || '<em>Không có tiêu đề</em>';
-            }
-          },
-          { 
-            "data": "message",
-            "render": function(data) {
-              if (!data) return '<em>Không có nội dung</em>';
-              // Limit the message length in the table
-              return data.length > 50 ? data.substring(0, 50) + '...' : data;
-            }
-          },
-          { 
-            "data": "sentAt",
-            "render": function(data) {
-              if (!data) return '<em>N/A</em>';
-              try {
-                const date = new Date(data);
-                return date.toLocaleString('vi-VN');
-              } catch (e) {
-                console.error('Error formatting date:', e);
-                return '<em>Không hợp lệ</em>';
-              }
-            }
-          },
-          {
-            "data": "status",
-            "render": function(data) {
-              return data ? 
-                '<span class="badge bg-success">Đã đọc</span>' : 
-                '<span class="badge bg-danger">Chưa đọc</span>';
-            }
-          },
-          {
-            "data": "id",
-            "render": function(data) {
-              return `
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-info view-btn" data-id="${data}">
-                    <i class="bi bi-eye"></i>
-                  </button>
-                  <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${data}">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              `;
-            }
-          }
-        ],
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-        "language": {
-          "search": "Tìm kiếm:",
-          "lengthMenu": "Hiển thị _MENU_ mục",
-          "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-          "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
-          "infoFiltered": "(được lọc từ _MAX_ mục)",
-          "paginate": {
-            "first": "Đầu",
-            "last": "Cuối",
-            "next": "Tiếp",
-            "previous": "Trước"
-          },
-          "emptyTable": "Không có dữ liệu"
-        }
-      });
-
-      // Filter button click
-      $('.filter-btn').on('click', function() {
-        $('.filter-btn').removeClass('active');
-        $(this).addClass('active');
-        
-        const filter = $(this).data('filter');
-        if (filter === 'all') {
-          notificationTable.column(1).search('').draw();
-        } else {
-          notificationTable.column(1).search(filter).draw();
-        }
-      });
-
-      // Filter link click
-      $('.filter-link').on('click', function(e) {
-        e.preventDefault();
-        const filter = $(this).data('filter');
-        $('.filter-btn').removeClass('active');
-        $('.filter-btn[data-filter="' + filter + '"]').addClass('active');
-        notificationTable.column(1).search(filter).draw();
-      });
-
-      // Hiển thị/ẩn các trường tùy chọn trong modal
-      $('#notificationRecipients').on('change', function() {
-        if ($(this).val() === 'specific') {
-          $('#recipientsSpecificGroup').removeClass('d-none');
-        } else {
-          $('#recipientsSpecificGroup').addClass('d-none');
-        }
-      });
-
-      $('#notificationSchedule').on('change', function() {
-        if ($(this).val() === 'later') {
-          $('#scheduleTimeGroup').removeClass('d-none');
-        } else {
-          $('#scheduleTimeGroup').addClass('d-none');
-        }
-      });
-
-      // Template buttons
-      $('.template-btn').on('click', function() {
-        const type = $(this).data('type');
-        const title = $(this).data('title');
-        const template = $(this).data('template');
-        
-        $('#createNotificationModal').modal('show');
-        $('#notificationType').val(type);
-        $('#notificationTitle').val(title);
-        $('#notificationContent').val(template);
-      });
-
-      // Delete notification
-      $(document).on('click', '.delete-btn', function() {
-        const id = $(this).data('id');
-        
-        Swal.fire({
-          title: 'Xác nhận xóa?',
-          text: 'Bạn có chắc chắn muốn xóa thông báo này không?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Xóa',
-          cancelButtonText: 'Hủy'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $.ajax({
-              url: '/admin/notifications/' + id,
-              type: 'DELETE',
-              success: function(response) {
-                Swal.fire('Đã xóa!', response.message, 'success');
-                notificationTable.ajax.reload();
-              },
-              error: function(error) {
-                Swal.fire('Lỗi!', 'Không thể xóa thông báo.', 'error');
-              }
-            });
-          }
-        });
-      });
-
-      // View notification
-      $(document).on('click', '.view-btn', function() {
-        const row = notificationTable.row($(this).closest('tr')).data();
-        
-        let statusBadge = row.status ? 
-          '<span class="badge bg-success">Đã đọc</span>' : 
-          '<span class="badge bg-danger">Chưa đọc</span>';
-        
-        let typeBadge = '';
-        switch(row.type) {
-          case 'VACCINE':
-            typeBadge = '<span class="badge bg-success">Tiêm lẻ</span>';
-            break;
-          case 'PACKAGE':
-            typeBadge = '<span class="badge bg-warning">Tiêm gói</span>';
-            break;
-          case 'PAYMENT':
-            typeBadge = '<span class="badge bg-primary">Thanh toán</span>';
-            break;
-          default:
-            typeBadge = '<span class="badge bg-secondary">Hệ thống</span>';
-        }
-        
-        // Format date properly
-        let formattedDate = 'N/A';
-        if (row.sentAt) {
-          try {
-            const date = new Date(row.sentAt);
-            formattedDate = date.toLocaleString('vi-VN');
-          } catch (e) {
-            console.error('Error formatting date:', e);
-          }
-        }
-        
-        Swal.fire({
-          title: row.title || 'Thông báo',
-          html: `
-            <div class="text-start">
-              <p><strong>Loại:</strong> ${typeBadge}</p>
-              <p><strong>Người nhận ID:</strong> ${row.userId || 'N/A'}</p>
-              <p><strong>Nội dung:</strong> ${row.message || 'Không có nội dung'}</p>
-              <p><strong>Thời gian gửi:</strong> ${formattedDate}</p>
-              <p><strong>Trạng thái:</strong> ${statusBadge}</p>
-            </div>
-          `,
-          icon: 'info',
-          confirmButtonText: 'Đóng'
-        });
-      });
-
-      // Send notification
-      $('#saveNotification').on('click', function() {
-        // Validate form
-        const form = document.getElementById('createNotificationForm');
-        if (!form.checkValidity()) {
-          form.reportValidity();
-          return;
-        }
-        
-        const type = $('#notificationType').val();
-        const title = $('#notificationTitle').val();
-        const message = $('#notificationContent').val();
-        const recipientType = $('#notificationRecipients').val();
-        
-        // Show loading state
-        $(this).prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang gửi...');
-        
-        if (recipientType === 'all') {
-          // Send to all users
-          $.ajax({
-            url: '/admin/notifications/send-to-all',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              type: type,
-              title: title,
-              message: message
-            }),
-            success: function(response) {
-              Swal.fire('Thành công!', response.message, 'success');
-              $('#createNotificationModal').modal('hide');
-              notificationTable.ajax.reload();
-              form.reset();
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            },
-            error: function(error) {
-              let errorMsg = 'Không thể gửi thông báo.';
-              if (error.responseJSON && error.responseJSON.message) {
-                errorMsg = error.responseJSON.message;
-              }
-              Swal.fire('Lỗi!', errorMsg, 'error');
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            }
-          });
-        } else {
-          // Send to specific user
-          const userId = $('#userId').val();
-          if (!userId) {
-            Swal.fire('Lỗi!', 'Vui lòng chọn người dùng.', 'error');
-            $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            return;
-          }
-          
-          $.ajax({
-            url: '/admin/notifications/send',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              userId: userId,
-              type: type,
-              title: title,
-              message: message
-            }),
-            success: function(response) {
-              Swal.fire('Thành công!', response.message, 'success');
-              $('#createNotificationModal').modal('hide');
-              notificationTable.ajax.reload();
-              form.reset();
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            },
-            error: function(error) {
-              let errorMsg = 'Không thể gửi thông báo.';
-              if (error.responseJSON && error.responseJSON.message) {
-                errorMsg = error.responseJSON.message;
-              }
-              Swal.fire('Lỗi!', errorMsg, 'error');
-              $('#saveNotification').prop('disabled', false).html('Lưu & Gửi');
-            }
-          });
-        }
-      });
-    });
-  </script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script th:src="@{/dist/js/adminlte.js}"></script>
+    <script th:src="@{/js/admin/notifications/notifications.js}"></script>
 </body>
 </html>

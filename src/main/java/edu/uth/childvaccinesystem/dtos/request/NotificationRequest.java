@@ -10,4 +10,5 @@ public class NotificationRequest {
     private String message;
     private String title;
     private String type;
+    private Boolean sendEmail; // Thêm lựa chọn gửi email
 }

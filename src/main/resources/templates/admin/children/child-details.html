@@ -336,35 +336,8 @@
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-  <script th:src="@{/dist/js/adminlte.js}"></script>
+  <script src="/js/admin/children/child-details.js"></script>
   
-  <script>
-    $(document).ready(function() {
-        // Khởi tạo DataTable
-        $('#appointmentsTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "search": "Tìm kiếm:",
-                "lengthMenu": "Hiển thị _MENU_ mục",
-                "info": "Hiển thị _START_ đến _END_ của _TOTAL_ mục",
-                "infoEmpty": "Hiển thị 0 đến 0 của 0 mục",
-                "infoFiltered": "(được lọc từ _MAX_ mục)",
-                "paginate": {
-                    "first": "Đầu",
-                    "last": "Cuối",
-                    "next": "Tiếp",
-                    "previous": "Trước"
-                },
-                "emptyTable": "Không có dữ liệu"
-            }
-        });
-    });
-  </script>
+  
 </body>
-</html> 
+</html>

@@ -191,6 +191,18 @@ public class AdminPaymentController {
         Map<String, Object> response = new HashMap<>();
         
         try {
+            if (id == null) {
+                response.put("success", false);
+                response.put("message", "Invalid payment ID");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
+            if (status == null || status.trim().isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Invalid payment status");
+                return ResponseEntity.badRequest().body(response);
+            }
+            
             Payment payment = paymentService.updatePaymentStatus(id, status, null);
             
             if (payment != null) {
@@ -201,13 +213,13 @@ public class AdminPaymentController {
                 return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
-                response.put("message", "Payment information not found");
+                response.put("message", "Payment not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
         } catch (Exception e) {
             logger.error("Error updating payment status: ", e);
             response.put("success", false);
-            response.put("message", "Error updating status: " + e.getMessage());
+            response.put("message", "Error updating payment status: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

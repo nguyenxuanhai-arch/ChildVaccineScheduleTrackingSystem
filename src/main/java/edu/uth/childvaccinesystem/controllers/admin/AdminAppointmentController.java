@@ -167,4 +167,21 @@ public class AdminAppointmentController {
         }
         return "redirect:/admin/appointments";
     }
+
+    @PostMapping("/update-status")
+    public String updateAppointmentStatus(
+        @RequestParam Long appointmentId,
+        @RequestParam String status,
+        RedirectAttributes redirectAttributes) {
+        try {
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+            appointment.setStatus(Appointment.AppointmentStatus.valueOf(status));
+            appointmentService.saveAppointment(appointment);
+            redirectAttributes.addFlashAttribute("message", "Appointment status updated successfully");
+        } catch (Exception e) {
+            logger.error("Error updating appointment status: ", e);
+            redirectAttributes.addFlashAttribute("error", "Error updating appointment status: " + e.getMessage());
+        }
+        return "redirect:/admin/appointments";
+    }
 } 

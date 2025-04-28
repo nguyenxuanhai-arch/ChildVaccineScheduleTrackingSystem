@@ -1,5 +1,7 @@
 <!-- Header Fragment -->
 <div th:fragment="header">
+  <!-- Thêm Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
   <nav class="navbar navbar-expand-lg navbar-light bg-light custom-navbar">
     <!-- Logo + brand -->
     <div class="container">
@@ -44,12 +46,12 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" th:href="@{/vaccine-list}"
-              >📖 Danh sách vaccine</a
+              >📖 Bảng giá</a
             >
           </li>
           <li class="nav-item" sec:authorize="isAuthenticated()">
             <a class="nav-link" th:href="@{/appointments}"
-              >Đặt lịch tiêm vaccine</a
+              >Đặt lịch tiêm</a
             >
           </li>
         </ul>
@@ -64,14 +66,13 @@
 
           <!-- Dropdown thông báo -->
           <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-            <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle position-relative" href="#" id="notificationDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-bell-fill"></i>
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+              <span class="notification-badge">
                 0
-                <span class="visually-hidden">thông báo chưa đọc</span>
               </span>
             </a>
-            <div class="dropdown-menu dropdown-menu-end notification-dropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
               <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
                 <h6 class="dropdown-header m-0">Thông báo mới</h6>
                 <a href="#" id="markAllAsRead" class="text-decoration-none small">Đánh dấu đã đọc tất cả</a>
@@ -118,6 +119,7 @@
             <a
               class="nav-link dropdown-toggle d-flex align-items-center"
               href="#"
+              id="userDropdown"
               role="button"
               data-toggle="dropdown"
               aria-expanded="false"
@@ -157,8 +159,9 @@
     </div>
   </nav>
   
-  <!-- CSS cho dropdown thông báo -->
+  <!-- CSS cho dropdown thông báo và dark mode -->
   <style>
+    /* CSS cho dropdown thông báo */
     .notification-dropdown {
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       border-radius: 8px;
@@ -174,12 +177,82 @@
     .notification-dropdown .dropdown-item.unread {
       background-color: #f0f7ff;
     }
+    
+    /* CSS cho badge thông báo */
+    .notification-badge {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      transform: translate(25%, -25%);
+      display: inline-block;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      border-radius: 10px;
+      background-color: #dc3545;
+      color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* CSS cho Dark Mode */
+    body.dark-mode {
+      background-color: #212529;
+      color: #f8f9fa;
+    }
+    
+    body.dark-mode .navbar {
+      background-color: #343a40 !important;
+    }
+    
+    body.dark-mode .navbar-light .navbar-brand,
+    body.dark-mode .navbar-light .nav-link {
+      color: #f8f9fa;
+    }
+    
+    body.dark-mode .dropdown-menu {
+      background-color: #343a40;
+      color: #f8f9fa;
+      border-color: #495057;
+    }
+    
+    body.dark-mode .dropdown-item {
+      color: #f8f9fa;
+    }
+    
+    body.dark-mode .dropdown-item:hover {
+      background-color: #495057;
+    }
+    
+    body.dark-mode .notification-dropdown .dropdown-item.unread {
+      background-color: #2b3035;
+    }
+    
+    body.dark-mode .card,
+    body.dark-mode .modal-content {
+      background-color: #343a40;
+      color: #f8f9fa;
+      border-color: #495057;
+    }
+    
+    body.dark-mode .form-control,
+    body.dark-mode .form-select {
+      background-color: #495057;
+      border-color: #6c757d;
+      color: #f8f9fa;
+    }
   </style>
   
-  <!-- Scripts cho Dark Mode -->
+  <!-- Scripts cho Dark Mode và Dropdown -->
   <script>
     // Dark Mode Toggle
     document.addEventListener('DOMContentLoaded', function() {
+      // 1. Xử lý Dark Mode
       const darkModeToggle = document.getElementById('darkModeToggle');
       if (darkModeToggle) {
         darkModeToggle.addEventListener('click', function() {
@@ -187,14 +260,71 @@
           const isDarkMode = document.body.classList.contains('dark-mode');
           localStorage.setItem('darkMode', isDarkMode);
           this.innerHTML = isDarkMode ? '☀️' : '🌙';
+          
+          // Cập nhật các phần tử CSS tùy chỉnh cho dark mode
+          updateDarkModeStyles(isDarkMode);
         });
         
         // Kiểm tra chế độ tối khi trang tải
-        if (localStorage.getItem('darkMode') === 'true') {
+        const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (savedDarkMode) {
           document.body.classList.add('dark-mode');
           darkModeToggle.innerHTML = '☀️';
+          updateDarkModeStyles(true);
         }
       }
+      
+      // Hàm cập nhật các style theo dark mode
+      function updateDarkModeStyles(isDark) {
+        // Cập nhật các style tùy chỉnh dựa trên trạng thái dark mode
+        if (isDark) {
+          document.documentElement.style.setProperty('--bs-dropdown-bg', '#343a40');
+          document.documentElement.style.setProperty('--bs-dropdown-color', '#f8f9fa');
+          document.documentElement.style.setProperty('--bs-dropdown-link-hover-bg', '#495057');
+        } else {
+          document.documentElement.style.setProperty('--bs-dropdown-bg', '');
+          document.documentElement.style.setProperty('--bs-dropdown-color', '');
+          document.documentElement.style.setProperty('--bs-dropdown-link-hover-bg', '');
+        }
+      }
+      
+      // 2. Đảm bảo các dropdown hoạt động
+      function initDropdowns() {
+        // Kiểm tra jQuery và plugin dropdown có sẵn không
+        if (typeof $ !== 'undefined' && typeof $.fn.dropdown !== 'undefined') {
+          // Khởi tạo tất cả các dropdown
+          $('.dropdown-toggle').dropdown();
+          
+          // Đặc biệt xử lý cho notificationDropdown
+          $('#notificationDropdown').off('click.bs.dropdown').on('click.bs.dropdown', function() {
+            // Lấy ID hiện tại của người dùng
+            const currentUserId = getCurrentUserId();
+            if (currentUserId) {
+              fetchNotifications(currentUserId);
+            }
+          });
+          
+          // Đảm bảo dropdown sự kiện click hoạt động cho các dropdown khác
+          $('.dropdown-toggle:not(#notificationDropdown)').off('click.bs.dropdown').on('click.bs.dropdown', function(e) {
+            $(this).dropdown('toggle');
+            e.stopPropagation();
+            return false;
+          });
+        } else {
+          console.warn('jQuery hoặc dropdown plugin không được tìm thấy');
+        }
+      }
+      
+      // Thêm CSS cho animation quay icon khi đang tải
+      $('<style>.spinner { animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>').appendTo('head');
+      
+      // Khởi tạo lần đầu
+      initDropdowns();
+      
+      // Đảm bảo các dropdown vẫn hoạt động sau khi ajax hoàn thành hoặc page thay đổi
+      $(document).ajaxComplete(function() {
+        initDropdowns();
+      });
     });
   </script>
   
@@ -245,17 +375,32 @@
         });
       }
       
+      // Khởi tạo biến đếm lỗi
+      window.notificationErrorCount = 0;
+      
       // Lấy thông báo từ server
       function fetchNotifications(userId) {
-        // Thêm biến đếm thử lại và thời gian chờ
-        if (window.notificationErrorCount >= 3) {
-          console.log("Đã thử lấy thông báo nhiều lần thất bại, tạm dừng để tránh gửi quá nhiều request");
+        if (!userId) {
+          console.error('Không tìm thấy ID người dùng để lấy thông báo');
+          $('#notificationsList').html('<div class="dropdown-item text-center p-3"><p class="text-muted mb-0">Không thể tải thông báo</p></div>');
           return;
         }
         
+        // Hiển thị trạng thái đang tải
+        $('#notificationsList').html('<div class="dropdown-item text-center p-3"><p class="text-muted mb-0"><i class="bi bi-arrow-repeat spinner"></i> Đang tải thông báo...</p></div>');
+        
+        // Kiểm tra đếm lỗi
+        if (window.notificationErrorCount >= 3) {
+          console.log("Đã thử lấy thông báo nhiều lần thất bại, tạm dừng để tránh gửi quá nhiều request");
+          $('#notificationsList').html('<div class="dropdown-item text-center p-3"><p class="text-muted mb-0">Không thể tải thông báo</p></div>');
+          return;
+        }
+        
+        // Gọi API lấy thông báo
         $.ajax({
           url: '/notifications/' + userId,
           type: 'GET',
+          timeout: 10000,  // Timeout sau 10 giây
           success: function(notifications) {
             // Reset error count khi thành công
             window.notificationErrorCount = 0;

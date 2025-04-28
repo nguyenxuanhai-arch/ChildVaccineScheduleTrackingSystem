@@ -641,11 +641,40 @@
 
     <div th:replace="master/_footer :: footer"></div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
-    <script th:src="@{/js/main.js}"></script>
+   <!-- Scripts -->
+   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+   <script th:src="@{/js/main.js}"></script>
+   <script>
+       $(document).ready(function(){
+           $('.testimonial-slider').slick({
+               dots: true,
+               infinite: true,
+               speed: 300,
+               slidesToShow: 2,
+               slidesToScroll: 1,
+               autoplay: true,
+               autoplaySpeed: 5000,
+               responsive: [
+                   {
+                       breakpoint: 992,
+                       settings: {
+                           slidesToShow: 2
+                       }
+                   },
+                   {
+                       breakpoint: 768,
+                       settings: {
+                           slidesToShow: 1
+                       }
+                   }
+               ]
+           });
+       });
+   </script>
+   <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/auth/profile.js}"></script>
 </body>
 </html>

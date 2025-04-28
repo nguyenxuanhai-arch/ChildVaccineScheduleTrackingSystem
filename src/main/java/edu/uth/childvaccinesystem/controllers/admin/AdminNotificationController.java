@@ -135,11 +135,13 @@ public class AdminNotificationController {
                 return ResponseEntity.badRequest().body(response);
             }
             
+            logger.debug("Received sendEmail flag: {}", request.getSendEmail());
             String result = notificationService.sendNotification(
                     request.getUserId(),
                     request.getTitle(),
                     request.getMessage(),
-                    request.getType());
+                    request.getType(),
+                    request.getSendEmail());
             
             response.put("message", result);
             return ResponseEntity.ok(response);
@@ -188,11 +190,13 @@ public class AdminNotificationController {
             
             for (User user : users) {
                 try {
+                    logger.debug("Received sendEmail flag (to all): {}", request.getSendEmail());
                     notificationService.sendNotification(
                             user.getId(),
                             request.getTitle(),
                             request.getMessage(),
-                            request.getType());
+                            request.getType(),
+                            request.getSendEmail());
                     count++;
                 } catch (Exception e) {
                     logger.error("Error sending notification to user {}: {}", user.getId(), e.getMessage());
@@ -232,4 +236,27 @@ public class AdminNotificationController {
             return new ArrayList<>();
         }
     }
-} 
+
+    @GetMapping("/users")
+    @ResponseBody
+    public List<Map<String, Object>> getUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            List<Map<String, Object>> result = new ArrayList<>();
+            
+            for (User user : users) {
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("id", user.getId());
+                userMap.put("username", user.getUsername());
+                userMap.put("name", user.getName());
+                userMap.put("email", user.getEmail());
+                result.add(userMap);
+            }
+            
+            return result;
+        } catch (Exception e) {
+            logger.error("Error getting users: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+}

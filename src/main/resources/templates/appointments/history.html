@@ -5,13 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lịch sử đặt lịch | Vaccines for children</title>
   
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap CSS - Sử dụng version 4.6.0 như các trang khác -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
   <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
   <!-- Custom CSS -->
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/history.css}">
+  
+  <!-- jQuery - loaded first -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <!-- Bootstrap JS 4.6.0 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -27,22 +34,22 @@
         <ul class="nav nav-tabs mb-4" id="appointmentHistoryTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link" th:classappend="${activeTab == null || activeTab == 'all'} ? 'active' : ''" 
-                    id="all-appointments-tab" data-bs-toggle="tab" data-bs-target="#all-appointments" 
+                    id="all-appointments-tab" data-toggle="tab" data-target="#all-appointments" 
                     type="button" role="tab" aria-selected="${activeTab == null || activeTab == 'all'}">Tất cả</button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" th:classappend="${activeTab == 'scheduled'} ? 'active' : ''" 
-                    id="scheduled-appointments-tab" data-bs-toggle="tab" data-bs-target="#scheduled-appointments" 
+                    id="scheduled-appointments-tab" data-toggle="tab" data-target="#scheduled-appointments" 
                     type="button" role="tab" aria-selected="${activeTab == 'scheduled'}">Đã đặt lịch</button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" th:classappend="${activeTab == 'completed'} ? 'active' : ''" 
-                    id="completed-appointments-tab" data-bs-toggle="tab" data-bs-target="#completed-appointments" 
+                    id="completed-appointments-tab" data-toggle="tab" data-target="#completed-appointments" 
                     type="button" role="tab" aria-selected="${activeTab == 'completed'}">Hoàn thành</button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" th:classappend="${activeTab == 'cancelled'} ? 'active' : ''" 
-                    id="cancelled-appointments-tab" data-bs-toggle="tab" data-bs-target="#cancelled-appointments" 
+                    id="cancelled-appointments-tab" data-toggle="tab" data-target="#cancelled-appointments" 
                     type="button" role="tab" aria-selected="${activeTab == 'cancelled'}">Đã hủy</button>
           </li>
         </ul>
@@ -380,7 +387,9 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="ratingModalLabel">Đánh giá dịch vụ</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <form id="feedbackForm">
@@ -403,7 +412,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
           <button type="button" class="btn btn-primary" id="submitFeedback">Gửi đánh giá</button>
         </div>
       </div>
@@ -413,11 +422,6 @@
   <!-- Footer -->
   <div th:replace="~{master/_footer :: footer}"></div>
 
-  <!-- Bootstrap JS Bundle with Popper -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
   <!-- JavaScript cho chức năng đánh giá -->
   <script>
     $(document).ready(function() {
@@ -504,6 +508,7 @@
             message: message
           }),
           success: function(response) {
+            console.log('Success response:', response);
             $('#ratingModal').modal('hide');
             
             // Hiển thị thông báo thành công
@@ -515,11 +520,52 @@
             // Tải lại trang sau khi đánh giá
             window.location.reload();
           },
-          error: function(error) {
+          error: function(xhr, status, error) {
+            console.log('Error details:', { xhr: xhr, status: status, error: error });
+            
+            // Kiểm tra nếu có responseJSON và có trường success là true 
+            // (trường hợp thành công nhưng trả về lỗi HTTP)
+            if (xhr.responseJSON && xhr.responseJSON.success === true) {
+              // Đây là trường hợp thành công mặc dù bị bắt lỗi
+              $('#ratingModal').modal('hide');
+              alert('Cảm ơn bạn đã gửi đánh giá!');
+              resetRatingForm();
+              window.location.reload();
+              return;
+            }
+            
+            // Thử kiểm tra nội dung response
+            try {
+              var jsonResponse = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+              if (jsonResponse && jsonResponse.success === true) {
+                // Trường hợp thành công nhưng bị bắt lỗi HTTP
+                $('#ratingModal').modal('hide');
+                alert('Cảm ơn bạn đã gửi đánh giá!');
+                resetRatingForm();
+                window.location.reload();
+                return;
+              }
+            } catch (e) {
+              console.log('Lỗi khi phân tích JSON response:', e);
+            }
+            
             // Hiển thị thông báo lỗi
-            var errorMessage = error.responseJSON && error.responseJSON.message 
-              ? error.responseJSON.message 
+            var errorMessage = xhr.responseJSON && xhr.responseJSON.message 
+              ? xhr.responseJSON.message 
               : 'Không thể gửi đánh giá. Vui lòng thử lại sau.';
+              
+            // Kiểm tra nếu đánh giá vẫn được thêm vào cơ sở dữ liệu
+            if (errorMessage.includes("already exists") || 
+                errorMessage.includes("đã tồn tại") ||
+                status === "parsererror") {
+              // Đây là trường hợp thành công nhưng có lỗi phân tích JSON
+              $('#ratingModal').modal('hide');
+              alert('Cảm ơn bạn đã gửi đánh giá!');
+              resetRatingForm();
+              window.location.reload();
+              return;
+            }
+              
             alert(errorMessage);
             console.error('Error submitting feedback:', error);
           }
@@ -558,7 +604,7 @@
     window.addEventListener('DOMContentLoaded', function() {
       // Mảng các phần tử cần kiểm tra
       var profileElements = [
-        'username', 'email', 'fullName', 'phone', 'address',
+        'username', 'email', 'name', 'phone', 'address',
         'editProfileBtn', 'saveProfileBtn', 'cancelEditBtn'
       ];
       
