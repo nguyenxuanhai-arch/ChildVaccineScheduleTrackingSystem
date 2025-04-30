@@ -1,5 +1,5 @@
 # Sử dụng hình ảnh chính thức của OpenJDK 21
-FROM maven:3-openjdk-21-slim AS build
+FROM maven:3-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
