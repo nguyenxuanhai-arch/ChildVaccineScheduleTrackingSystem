@@ -2,21 +2,18 @@
 FROM maven:3-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Sao chép toàn bộ mã nguồn vào image
 COPY . .
 
-# Biên dịch và đóng gói ứng dụng, bỏ qua test để tăng tốc
+# Đóng gói và in log rõ ràng
 RUN mvn clean package -DskipTests
 
-# ----- Stage 2: Runtime với JDK nhẹ hơn -----
+# ----- Stage 2: Runtime -----
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-# Sao chép file .war đã được tạo ở stage build, đổi tên thành app.war
+# Sao chép file WAR (cập nhật tên chính xác)
 COPY --from=build /app/target/*.war /app/app.war
 
-# Mở cổng 8080
 EXPOSE 8080
 
-# Lệnh chạy ứng dụng
-ENTRYPOINT ["java", "-jar", "app.war"]
+ENTRYPOINT ["java", "-jar", "/app/app.war"]
