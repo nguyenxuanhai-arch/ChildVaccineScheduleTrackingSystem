@@ -12,8 +12,8 @@ RUN mvn clean package -DskipTests
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-# Sao chép file .war đã được tạo ở stage build
-COPY --from=build /app/target/*.war app.war
+# Sao chép file .war đã được tạo ở stage build, đổi tên thành app.war
+COPY --from=build /app/target/*.war /app/app.war
 
 # Mở cổng 8080
 EXPOSE 8080
