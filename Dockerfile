@@ -1,12 +1,22 @@
-# Sử dụng hình ảnh chính thức của OpenJDK 21
+# ----- Stage 1: Build ứng dụng với Maven -----
 FROM maven:3-eclipse-temurin-21 AS build
 WORKDIR /app
+
+# Sao chép toàn bộ mã nguồn vào image
 COPY . .
+
+# Biên dịch và đóng gói ứng dụng, bỏ qua test để tăng tốc
 RUN mvn clean package -DskipTests
 
-# Chuyển sang hình ảnh OpenJDK 21 để chạy ứng dụng
+# ----- Stage 2: Runtime với JDK nhẹ hơn -----
 FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/Demo-0.0.1-SNAPSHOT.war app.war
+
+# Sao chép file .war đã được tạo ở stage build
+COPY --from=build /app/target/*.war app.war
+
+# Mở cổng 8080
 EXPOSE 8080
+
+# Lệnh chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.war"]
