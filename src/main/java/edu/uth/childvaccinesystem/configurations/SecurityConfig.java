@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.core.Ordered;
-
+import org.springframework.core.annotation.Order;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +43,28 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/admin/**", "/process-admin-login")
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/admin/login", "/process-admin-login").permitAll()
+                .anyRequest().hasRole("ADMIN")
+            )
+            .formLogin(form -> form
+                .loginPage("/admin/login")
+                .loginProcessingUrl("/process-admin-login")
+                .defaultSuccessUrl("/admin", true)
+                .failureUrl("/admin/login?error=true")
+                .permitAll()
+            );
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
@@ -51,9 +72,7 @@ public class SecurityConfig {
                     "/", "/about", "/services", "/vaccine-list",
                     "/auth/login", "/auth/register", "/auth/logout", 
                     "/auths/login", "/auths/register",
-                    "/admin/login",
-                    "/css/**", "/js/**",
-                    "/favicon.ico", "/img/**", "/fonts/**", "/webjars/**",
+                    "/css/**", "/js/**", "/favicon.ico", "/img/**", "/fonts/**", "/webjars/**",
                     "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**"
                 ).permitAll()
 
@@ -61,13 +80,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/vaccine").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/vaccine/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/vaccine/**").hasRole("ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                
-                // Explicitly define access to profile and children-related endpoints
+
                 .requestMatchers("/auth/profile").authenticated()
                 .requestMatchers("/auth/profile/children").hasAnyRole("USER", "STAFF", "ADMIN")
                 .requestMatchers("/auth/profile/children/list").hasAnyRole("USER", "STAFF", "ADMIN")
-                .requestMatchers("/auth/profile/children/*/edit").hasAnyRole("USER", "STAFF", "ADMIN") 
+                .requestMatchers("/auth/profile/children/*/edit").hasAnyRole("USER", "STAFF", "ADMIN")
                 .requestMatchers("/auth/profile/children/*/update").hasAnyRole("USER", "STAFF", "ADMIN")
                 .requestMatchers("/auth/profile/children/*").hasAnyRole("USER", "STAFF", "ADMIN")
                 .requestMatchers("/auth/change-password").authenticated()
@@ -83,15 +100,6 @@ public class SecurityConfig {
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )
-            // Admin-specific form login
-            .formLogin(form -> form
-                .loginPage("/admin/login")
-                .loginProcessingUrl("/process-admin-login")
-                .defaultSuccessUrl("/admin", true)
-                .failureUrl("/admin/login?error=true")
-                .permitAll()
-            )
-
             .logout(logout -> logout
                 .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/")
