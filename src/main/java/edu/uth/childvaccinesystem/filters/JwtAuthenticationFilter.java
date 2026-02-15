@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
-import edu.uth.childvaccinesystem.services.UserService;
+import edu.uth.childvaccinesystem.services.impl.UserService;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 
 @Component  // Để Spring quản lý filter này

@@ -1,16 +1,17 @@
 package edu.uth.childvaccinesystem.dtos.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VaccineRequest {
     private String name;
     private String manufacturer;
     private String lotNumber;
     private String expirationDate;
     private Double price;
-    private MultipartFile image; // Hình ảnh vaccine
+    private MultipartFile image;
 }

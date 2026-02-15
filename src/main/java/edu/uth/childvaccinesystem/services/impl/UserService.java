@@ -1,31 +1,27 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import edu.uth.childvaccinesystem.dtos.RegisterDTO;
+import edu.uth.childvaccinesystem.dtos.request.RegisterRequest;
 import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.repositories.UserRepository;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,7 +30,7 @@ public class UserService implements UserDetailsService {
 
         String role = user.getRole();
         if (!role.startsWith("ROLE_")) {
-            role = "ROLE_" + role; // thêm prefix nếu thiếu
+            role = "ROLE_" + role;
         }
 
         return new org.springframework.security.core.userdetails.User(
@@ -43,16 +39,16 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public String registerUser(RegisterDTO registerDTO) {
-        if (userRepository.existsByUsername(registerDTO.getUsername())) {
+    public String registerUser(RegisterRequest registerRequest) {
+        if (userRepository.existsByUsername(registerRequest.getUsername())) {
             return "User already exists!";
         }
 
         try {
             User user = new User();
-            user.setUsername(registerDTO.getUsername());
-            user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
-            user.setRole(registerDTO.getRole());
+            user.setUsername(registerRequest.getUsername());
+            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            user.setRole(registerRequest.getRole());
             user.setCreatedAt(LocalDateTime.now());
 
             userRepository.save(user);

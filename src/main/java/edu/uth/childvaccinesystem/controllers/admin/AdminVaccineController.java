@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.controllers.admin;
 
 import edu.uth.childvaccinesystem.entities.Vaccine;
-import edu.uth.childvaccinesystem.services.VaccineService;
+import edu.uth.childvaccinesystem.services.impl.VaccineService;
 
 import edu.uth.childvaccinesystem.utils.AdminUtils;
 import org.springframework.beans.factory.annotation.Autowired;

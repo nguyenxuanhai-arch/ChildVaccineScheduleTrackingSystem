@@ -1,8 +1,8 @@
 package edu.uth.childvaccinesystem.controllers.admin;
 
-import edu.uth.childvaccinesystem.services.AppointmentService;
-import edu.uth.childvaccinesystem.services.PaymentService;
-import edu.uth.childvaccinesystem.services.VaccineService;
+import edu.uth.childvaccinesystem.services.impl.AppointmentService;
+import edu.uth.childvaccinesystem.services.impl.PaymentService;
+import edu.uth.childvaccinesystem.services.impl.VaccineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

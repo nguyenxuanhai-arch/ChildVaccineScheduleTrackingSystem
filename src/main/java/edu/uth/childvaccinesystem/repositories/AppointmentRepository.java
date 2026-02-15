@@ -13,7 +13,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByChildParentUsername(String username);
     List<Appointment> findByChildId(Long childId);
     
-    // Enhanced query with joins to prevent LazyInitializationException
     @Query("SELECT DISTINCT a FROM Appointment a " +
            "LEFT JOIN FETCH a.child c " +
            "LEFT JOIN FETCH a.vaccine v " +

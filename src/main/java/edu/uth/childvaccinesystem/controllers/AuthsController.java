@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.controllers.res;
+package edu.uth.childvaccinesystem.controllers;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import edu.uth.childvaccinesystem.dtos.RegisterDTO;
+import edu.uth.childvaccinesystem.dtos.request.RegisterRequest;
 import edu.uth.childvaccinesystem.dtos.request.LoginRequest;
 import edu.uth.childvaccinesystem.dtos.response.AuthResponse;
 import edu.uth.childvaccinesystem.dtos.response.UserProfileResponse;
-import edu.uth.childvaccinesystem.services.UserService;
+import edu.uth.childvaccinesystem.services.impl.UserService;
 import org.springframework.web.multipart.MultipartFile;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 import edu.uth.childvaccinesystem.entities.User;
@@ -42,7 +42,7 @@ public class AuthsController {
     private UserService userService;
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse httpResponse) {
     try {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -66,9 +66,6 @@ public class AuthsController {
         // Nếu bạn dùng frontend riêng thì giữ lại dòng này:
         return ResponseEntity.ok(new AuthResponse(token));
 
-        // Nếu login từ form thì có thể redirect:
-        // return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/dashboard").build();
-
     } catch (AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập");
     }
@@ -76,8 +73,8 @@ public class AuthsController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDTO registerDTO) {
-        String result = userService.registerUser(registerDTO);
+    public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
+        String result = userService.registerUser(registerRequest);
 
         if (result.equals("User already exists!")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);

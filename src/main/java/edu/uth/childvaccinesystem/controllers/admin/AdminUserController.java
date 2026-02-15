@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.controllers.admin;
 
 import edu.uth.childvaccinesystem.entities.User;
-import edu.uth.childvaccinesystem.services.UserService;
+import edu.uth.childvaccinesystem.services.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,11 +1,10 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import edu.uth.childvaccinesystem.entities.Notification;
 import edu.uth.childvaccinesystem.repositories.NotificationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.MailException;
 import org.slf4j.Logger;
@@ -15,21 +14,14 @@ import java.util.Optional;
 
 import edu.uth.childvaccinesystem.entities.User;
 
+@RequiredArgsConstructor
 @Service
 public class NotificationService {
-
     private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
+    private final NotificationRepository notificationRepository;
+    private final JavaMailSender mailSender;
+    private final UserService userService;
 
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Autowired
-    private UserService userService;
-
-    // Gửi thông báo
     public String sendNotification(Long userId, String message) {
         // Kiểm tra xem thông báo đã tồn tại chưa
         if (notificationRepository.existsByUserIdAndMessage(userId, message)) {
@@ -60,41 +52,28 @@ public class NotificationService {
         return "Notification sent successfully";
     }
     
-    // Gửi thông báo với tiêu đề và loại cụ thể
     public String sendNotification(Long userId, String title, String message, String type) {
-        // Kiểm tra xem thông báo đã tồn tại chưa
-        if (notificationRepository.existsByUserIdAndMessage(userId, message)) {
-            return "Notification already exists for this user and message";
-        }
-        
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setType(type);
-        notification.setStatus(false); // false = chưa đọc
+        notification.setStatus(false);
 
         notificationRepository.save(notification);
         return "Notification sent successfully";
     }
 
-    // Gửi thông báo với tiêu đề và loại cụ thể, có tùy chọn gửi email
     public String sendNotification(Long userId, String title, String message, String type, Boolean sendEmail) {
-        // Kiểm tra xem thông báo đã tồn tại chưa
-        if (notificationRepository.existsByUserIdAndMessage(userId, message)) {
-            return "Notification already exists for this user and message";
-        }
-        
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setTitle(title);
         notification.setMessage(message);
         notification.setType(type);
-        notification.setStatus(false); // false = chưa đọc
+        notification.setStatus(false);
 
         notificationRepository.save(notification);
 
-        // Gửi email nếu được chọn
         if (sendEmail != null && sendEmail) {
             logger.debug("[DEBUG] Sending email to userId {} with title '{}', message: {}", userId, title, message);
             try {
@@ -125,35 +104,24 @@ public class NotificationService {
         return "Notification sent successfully";
     }
 
-    // Lấy danh sách thông báo của một người dùng
     public List<Notification> getNotificationsByUser(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
     
-    // Đánh dấu một thông báo đã đọc
-    public boolean markNotificationAsRead(Long notificationId) {
+    public void markNotificationAsRead(Long notificationId) {
         Optional<Notification> notificationOpt = notificationRepository.findById(notificationId);
         if (notificationOpt.isPresent()) {
             Notification notification = notificationOpt.get();
             notification.setStatus(true); // true = đã đọc
             notificationRepository.save(notification);
-            return true;
         }
-        return false;
     }
     
-    // Đánh dấu tất cả thông báo của một người dùng là đã đọc
-    public int markAllNotificationsAsRead(Long userId) {
+    public void markAllNotificationsAsRead(Long userId) {
         List<Notification> unreadNotifications = notificationRepository.findByUserIdAndStatusFalse(userId);
         for (Notification notification : unreadNotifications) {
             notification.setStatus(true);
             notificationRepository.save(notification);
         }
-        return unreadNotifications.size();
-    }
-    
-    // Lấy số lượng thông báo chưa đọc của một người dùng
-    public int getUnreadNotificationCount(Long userId) {
-        return notificationRepository.countByUserIdAndStatusFalse(userId);
     }
 }

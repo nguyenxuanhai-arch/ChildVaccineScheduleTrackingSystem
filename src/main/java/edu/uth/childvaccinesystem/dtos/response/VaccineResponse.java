@@ -1,10 +1,11 @@
 package edu.uth.childvaccinesystem.dtos.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class VaccineResponse {
     private Long id;
     private String name;

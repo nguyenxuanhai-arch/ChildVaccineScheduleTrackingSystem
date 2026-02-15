@@ -1,16 +1,18 @@
 package edu.uth.childvaccinesystem.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "children")
 public class Child {
 
     @Id
@@ -23,7 +25,7 @@ public class Child {
     private LocalDate dob;
 
     @Column(name = "gender")
-    private String gender; // VD: "MALE" hoặc "FEMALE"
+    private String gender;
     
     @Column(name = "parent_username")
     private String parentUsername;
@@ -53,28 +55,9 @@ public class Child {
     private String notes;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id") // Thêm trường khóa ngoại để liên kết với User
+    @JoinColumn(name = "parent_id")
     private User parent;
 
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Appointment> appointments = new HashSet<>();
-
-    // Getter/Setter đã có từ @Getter @Setter, nhưng nếu bạn cần override hoặc bổ sung logic, có thể ghi rõ như dưới:
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public LocalDate getDob() { return dob; }
-    public void setDob(LocalDate dob) { this.dob = dob; }
-
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
-
-    public User getParent() { return parent; }
-    public void setParent(User parent) { this.parent = parent; }
-    
-    public String getParentUsername() { return parentUsername; }
-    public void setParentUsername(String parentUsername) { this.parentUsername = parentUsername; }
 }

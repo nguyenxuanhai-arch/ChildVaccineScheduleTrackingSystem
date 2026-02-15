@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.Payment;
-import edu.uth.childvaccinesystem.services.PaymentService;
+import edu.uth.childvaccinesystem.services.impl.PaymentService;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import edu.uth.childvaccinesystem.entities.Appointment;
-import edu.uth.childvaccinesystem.services.AppointmentService;
+import edu.uth.childvaccinesystem.services.impl.AppointmentService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -66,14 +66,14 @@ public class PaymentController {
         Long appointmentId = request.get("appointmentId");
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         
-        Payment payment = new Payment(
-            appointment,
-            calculateAmount(appointment),
-            "CASH",
-            "COMPLETED",
-            LocalDateTime.now(),
-            "Thanh toán tiền mặt"
-        );
+        Payment payment = Payment.builder()
+            .appointment(appointment)
+            .amount(calculateAmount(appointment))
+            .paymentMethod("CASH")
+            .status("COMPLETED")
+            .paymentDate(LocalDateTime.now())
+            .notes("Thanh toán tiền mặt thành công")
+            .build();
         
         paymentService.savePayment(payment);
         
@@ -89,14 +89,14 @@ public class PaymentController {
         Long appointmentId = request.get("appointmentId");
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         
-        Payment payment = new Payment(
-            appointment,
-            calculateAmount(appointment),
-            "BANK_TRANSFER",
-            "PENDING",
-            LocalDateTime.now(),
-            "Chờ xác nhận chuyển khoản"
-        );
+        Payment payment = Payment.builder()
+            .appointment(appointment)
+            .amount(calculateAmount(appointment))
+            .paymentMethod("BANK_TRANSFER")
+            .status("PENDING")
+            .paymentDate(LocalDateTime.now())
+            .notes("Đang chờ xác nhận chuyển khoản")
+            .build();
         
         paymentService.savePayment(payment);
         
@@ -143,14 +143,14 @@ public class PaymentController {
             }
 
             // Tạo payment
-            Payment payment = new Payment(
-                appointment,
-                amount,
-                paymentMethod,
-                "PENDING",
-                LocalDateTime.now(),
-                notes
-            );
+            Payment payment = Payment.builder()
+                    .appointment(appointment)
+                    .amount(amount)
+                    .paymentMethod(paymentMethod)
+                    .status("PENDING")
+                    .paymentDate(LocalDateTime.now())
+                    .notes(notes)
+                    .build();
 
             // Lưu payment
             Payment savedPayment = paymentService.savePayment(payment);

@@ -6,16 +6,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.entities.Feedback;
-
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     boolean existsByUserAndMessage(User user, String message);
 
-    List<Feedback> findByUserUsername(String username);
-    
     @Query("SELECT f FROM Feedback f WHERE f.appointment.id = :appointmentId")
     Optional<Feedback> findByAppointmentId(@Param("appointmentId") Long appointmentId);
 }

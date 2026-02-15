@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import edu.uth.childvaccinesystem.dtos.request.FeedbackRequest;
 import edu.uth.childvaccinesystem.entities.Appointment;
@@ -6,39 +6,31 @@ import edu.uth.childvaccinesystem.entities.Feedback;
 import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import edu.uth.childvaccinesystem.repositories.FeedbackRepository;
-import edu.uth.childvaccinesystem.repositories.UserRepository; 
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.uth.childvaccinesystem.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class FeedbackService {
-
-    @Autowired
-    private FeedbackRepository feedbackRepository;
-
-    @Autowired
-    private UserRepository userRepository;  // Inject the UserRepository
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
     }
-
     public List<Feedback> getAllFeedback() {
         return getAllFeedbacks();
     }
-
     public Feedback getFeedbackById(Long id) {
         return feedbackRepository.findById(id).orElse(null);
     }
 
     public String saveFeedback(Feedback feedback) {
-        // Check if the User exists
         if (feedback.getUser() == null) {
             return "No user provided for feedback";
         }
@@ -56,13 +48,11 @@ public class FeedbackService {
         Appointment appointment = appointmentRepository.findById(request.getAppointmentId())
             .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
         
-        // Kiểm tra xem đã đánh giá chưa
         Optional<Feedback> existingFeedback = feedbackRepository.findByAppointmentId(request.getAppointmentId());
         if (existingFeedback.isPresent()) {
             throw new RuntimeException("Lịch hẹn này đã được đánh giá");
         }
         
-        // Lấy user từ appointment
         User user = appointment.getChild().getParent();
         
         Feedback feedback = new Feedback();

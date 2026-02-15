@@ -3,13 +3,15 @@ package edu.uth.childvaccinesystem.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import lombok.Setter;
-import lombok.Getter;
 
-@Getter
-@Setter
+import lombok.*;
+
+@Data
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "vaccine")
+@Table(name = "vaccines")
 public class Vaccine {
 
     @Id
@@ -17,19 +19,16 @@ public class Vaccine {
     private Long id;
 
     private String name;
-
     private String manufacturer;
-
     private String lotNumber;
-
     private String expirationDate;
 
     @NotNull
-    private Double price; // Giá thành vaccine
+    private Double price;
 
     @Lob
     @Column(name = "image_base64", columnDefinition = "LONGTEXT")
-    private String imageBase64; // Hình ảnh vaccine dưới dạng Base64
+    private String imageBase64;
 
     @NotNull
     private LocalDateTime createdAt;
@@ -45,18 +44,6 @@ public class Vaccine {
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public Vaccine() {}
-
-    public Vaccine(String name, String manufacturer, String lotNumber, String expirationDate, Double price) {
-        this.name = name;
-        this.manufacturer = manufacturer;
-        this.lotNumber = lotNumber;
-        this.expirationDate = expirationDate;
-        this.price = price;
-        this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 }

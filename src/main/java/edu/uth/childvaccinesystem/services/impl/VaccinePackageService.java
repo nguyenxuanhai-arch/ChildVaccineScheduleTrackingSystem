@@ -1,28 +1,21 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import edu.uth.childvaccinesystem.entities.VaccinePackage;
 import edu.uth.childvaccinesystem.entities.VaccinePackage.PackageType;
 import edu.uth.childvaccinesystem.repositories.VaccinePackageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class VaccinePackageService {
-
-    @Autowired
-    private VaccinePackageRepository vaccinePackageRepository;
+    private final VaccinePackageRepository vaccinePackageRepository;
 
     public List<VaccinePackage> getAllPackages() {
         return vaccinePackageRepository.findAll();
-    }
-
-    public Page<VaccinePackage> getAllPackagesWithPagination(Pageable pageable) {
-        return vaccinePackageRepository.findAll(pageable);
     }
 
     public Optional<VaccinePackage> getPackageById(Long id) {
@@ -33,16 +26,8 @@ public class VaccinePackageService {
         return vaccinePackageRepository.findByType(type);
     }
 
-    public Page<VaccinePackage> getPackagesByType(PackageType type, Pageable pageable) {
-        return vaccinePackageRepository.findByType(type, pageable);
-    }
-
     public List<VaccinePackage> getFeaturedPackages() {
         return vaccinePackageRepository.findByFeaturedTrue();
-    }
-
-    public Page<VaccinePackage> searchPackages(String query, Pageable pageable) {
-        return vaccinePackageRepository.findByNameContainingIgnoreCase(query, pageable);
     }
 
     public List<VaccinePackage> getPackagesByAge(int ageInMonths) {

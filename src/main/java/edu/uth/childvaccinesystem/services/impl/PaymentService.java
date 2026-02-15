@@ -1,24 +1,20 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import edu.uth.childvaccinesystem.entities.Payment;
-import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.repositories.PaymentRepository;
 import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class PaymentService {
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    @Autowired
-    private AppointmentRepository appointmentRepository;
+    private final PaymentRepository paymentRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public List<Payment> getPaymentsByUsername(String username) {
         return paymentRepository.findByUsername(username);
@@ -64,14 +60,14 @@ public class PaymentService {
         var appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn"));
 
-        Payment payment = new Payment(
-            appointment,
-            amount,
-            paymentMethod,
-            "PENDING",
-            LocalDateTime.now(),
-            notes
-        );
+        Payment payment = Payment.builder()
+                .appointment(appointment)
+                .amount(amount)
+                .paymentMethod(paymentMethod)
+                .status("PENDING")
+                .paymentDate(LocalDateTime.now())
+                .notes(notes)
+                .build();
 
         return paymentRepository.save(payment);
     }

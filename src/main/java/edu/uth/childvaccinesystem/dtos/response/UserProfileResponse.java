@@ -1,12 +1,9 @@
 package edu.uth.childvaccinesystem.dtos.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Setter
-@Getter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfileResponse {
@@ -17,7 +14,4 @@ public class UserProfileResponse {
     private String address;
     private String role;
     private String data;
-    
-        // Constructor, getters, and setters
-
 }

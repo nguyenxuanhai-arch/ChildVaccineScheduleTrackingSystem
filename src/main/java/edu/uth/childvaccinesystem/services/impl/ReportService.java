@@ -1,8 +1,8 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
 import edu.uth.childvaccinesystem.entities.Report;
 import edu.uth.childvaccinesystem.repositories.ReportRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,16 +11,14 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class ReportService {
 
-    @Autowired
-    private ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
 
-    // Create
     @Transactional
     public String createReport(Report report) {
-        // Check if a report with the same childId and vaccineId already exists
         if (reportRepository.existsByChildIdAndVaccineId(report.getChildId(), report.getVaccineId())) {
             return "Report already exists for this child and vaccine";
         }
@@ -30,17 +28,14 @@ public class ReportService {
         return "Report created successfully";
     }
 
-    // Read All
     public List<Report> getAllReports() {
         return reportRepository.findAll();
     }
 
-    // Read One
     public Optional<Report> getReportById(Long id) {
         return reportRepository.findById(id);
     }
 
-    // Update
     @Transactional
     public String updateReport(Long id, Report reportDetails) {
         Optional<Report> report = reportRepository.findById(id);
@@ -55,10 +50,8 @@ public class ReportService {
         return "Report not found";
     }
 
-    // Delete
     @Transactional
-    public String deleteReport(Long id) {
+    public void deleteReport(Long id) {
         reportRepository.deleteById(id);
-        return "Report deleted successfully";
     }
 }

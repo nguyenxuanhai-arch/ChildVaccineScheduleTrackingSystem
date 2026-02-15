@@ -1,23 +1,16 @@
 package edu.uth.childvaccinesystem.dtos.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class AuthRequest {
-
+@AllArgsConstructor
+public class RegisterRequest {
     private String username;
     private String password;
-    public String  getUsername(){
-        return this.username;
-    }
-    public String  getPassword(){
-        return this.password;
-    }
-
+    private String role;
 }
-
-

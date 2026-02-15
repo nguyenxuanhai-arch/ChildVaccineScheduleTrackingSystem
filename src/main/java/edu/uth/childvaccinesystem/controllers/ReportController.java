@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.Report;
-import edu.uth.childvaccinesystem.services.ReportService;
+import edu.uth.childvaccinesystem.services.impl.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

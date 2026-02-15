@@ -1,6 +1,7 @@
-package edu.uth.childvaccinesystem.services;
+package edu.uth.childvaccinesystem.services.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.uth.childvaccinesystem.services.interfaces.AppointmentServiceInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.entities.Appointment.AppointmentStatus;
@@ -20,21 +21,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Service
-public class AppointmentService {
+public class AppointmentService implements AppointmentServiceInterface {
+    private final AppointmentRepository appointmentRepository;
+    private final ChildRepository childRepository;
+    private final VaccineRepository vaccineRepository;
+    private final VaccinePackageRepository vaccinePackageRepository;
 
-    @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private ChildRepository childRepository;
-
-    @Autowired
-    private VaccineRepository vaccineRepository;
-    
-    @Autowired
-    private VaccinePackageRepository vaccinePackageRepository;
-
+    @Override
     public Appointment bookAppointment(AppointmentRequest request) {
         Child child = childRepository.findById(request.getChildId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy trẻ em"));
@@ -42,19 +37,20 @@ public class AppointmentService {
         Vaccine vaccine = vaccineRepository.findById(request.getVaccineId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy vắc xin"));
 
-        Appointment appointment = new Appointment();
-        appointment.setChild(child);
-        appointment.setVaccine(vaccine);
-        appointment.setAppointmentDate(request.getAppointmentDate());
-        appointment.setAppointmentTime(request.getAppointmentTime());
-        appointment.setNotes(request.getNotes());
-        appointment.setStatus(AppointmentStatus.SCHEDULED);
-        appointment.setType(AppointmentType.VACCINE);
-        appointment.setCreateAt(LocalDate.now());
+        Appointment appointment = Appointment.builder()
+                .child(child)
+                .vaccine(vaccine)
+                .appointmentDate(request.getAppointmentDate())
+                .appointmentTime(request.getAppointmentTime())
+                .notes(request.getNotes())
+                .status(AppointmentStatus.SCHEDULED)
+                .type(AppointmentType.VACCINE)
+                .createAt(LocalDate.now())
+                .build();
 
         return appointmentRepository.save(appointment);
     }
-    
+
     public Appointment bookPackageAppointment(PackageAppointmentRequest request) {
         Child child = childRepository.findById(request.getChildId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy trẻ em"));
@@ -62,7 +58,6 @@ public class AppointmentService {
         VaccinePackage vaccinePackage = vaccinePackageRepository.findById(request.getPackageId())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy gói vắc xin"));
                 
-        // Check if package is suitable for child's age
         int childAgeInMonths = calculateAgeInMonths(child.getDob());
         if (childAgeInMonths < vaccinePackage.getAgeRangeStart() || childAgeInMonths > vaccinePackage.getAgeRangeEnd()) {
             throw new RuntimeException("Gói vắc xin không phù hợp với độ tuổi của trẻ");
@@ -71,20 +66,15 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setChild(child);
         appointment.setVaccinePackage(vaccinePackage);
-        
-        // Fix for "vaccine_id cannot be null" error
-        // Get a representative vaccine from the package to set as the default
+
         Set<Vaccine> packageVaccines = vaccinePackage.getVaccines();
         if (packageVaccines != null && !packageVaccines.isEmpty()) {
-            // Set the first vaccine from the package as the default
             appointment.setVaccine(packageVaccines.iterator().next());
         } else {
             // If no vaccines in the package (shouldn't happen in normal scenarios)
             throw new RuntimeException("Gói vắc xin không chứa vaccine nào");
         }
-        
-        // For package appointments, the date and time can be null
-        // The actual dates will be determined later by the medical staff
+
         appointment.setAppointmentDate(request.getAppointmentDate());
         appointment.setAppointmentTime(request.getAppointmentTime());
         appointment.setNotes(request.getNotes());
@@ -111,18 +101,14 @@ public class AppointmentService {
     public List<Appointment> getAppointmentsByUsername(String username) {
         return appointmentRepository.findByChildParentUsername(username);
     }
-    
+
     public List<Appointment> getAppointmentsByChildId(Long childId) {
         try {
-            System.out.println("Fetching appointments for child ID: " + childId);
-            // Use the enhanced query with joins instead of the basic finder method
             List<Appointment> appointments = appointmentRepository.findByChildIdWithDetails(childId);
-            System.out.println("Successfully fetched " + appointments.size() + " appointments");
             return appointments;
         } catch (Exception e) {
             System.err.println("Error fetching appointments for child ID " + childId + ": " + e.getMessage());
             e.printStackTrace();
-            // Return empty list instead of throwing exception
             return List.of();
         }
     }
@@ -135,21 +121,14 @@ public class AppointmentService {
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
     }
-    
-    /**
-     * Ensures that the appointments are properly linked to the child entity
-     * This helps maintain the bi-directional relationship between Child and Appointment
-     */
+
     public void syncChildAppointments(Child child) {
-        // Get all appointments for this child from the database
         List<Appointment> childAppointments = appointmentRepository.findByChildId(child.getId());
         
-        // Initialize the appointments collection if needed
         if (child.getAppointments() == null) {
             child.setAppointments(new HashSet<>());
         }
         
-        // Add all appointments to the child entity
         child.getAppointments().clear();
         child.getAppointments().addAll(childAppointments);
     }

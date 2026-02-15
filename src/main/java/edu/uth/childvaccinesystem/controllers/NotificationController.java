@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.Notification;
-import edu.uth.childvaccinesystem.services.NotificationService;
+import edu.uth.childvaccinesystem.services.impl.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,19 +13,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user/notifications/api")
-public class NotificationApiController {
+public class NotificationController {
 
     @Autowired
     private NotificationService notificationService;
 
-    /**
-     * Endpoint để lấy thông báo của người dùng theo ID
-     * Được gọi từ dropdown thông báo trong header
-     */
     @GetMapping("/{userId}")
     public ResponseEntity<?> getNotificationsByUserId(@PathVariable Long userId) {
         try {
-            // Kiểm tra xác thực và quyền truy cập
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
                 return ResponseEntity.status(401).body(Collections.emptyList());

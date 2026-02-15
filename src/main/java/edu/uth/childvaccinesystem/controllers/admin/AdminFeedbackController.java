@@ -2,7 +2,7 @@ package edu.uth.childvaccinesystem.controllers.admin;
 
 import edu.uth.childvaccinesystem.dtos.response.FeedbackResponse;
 import edu.uth.childvaccinesystem.entities.Feedback;
-import edu.uth.childvaccinesystem.services.FeedbackService;
+import edu.uth.childvaccinesystem.services.impl.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

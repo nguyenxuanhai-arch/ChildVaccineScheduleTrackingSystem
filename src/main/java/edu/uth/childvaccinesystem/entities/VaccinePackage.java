@@ -1,6 +1,7 @@
 package edu.uth.childvaccinesystem.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -8,8 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "vaccine_package")
 public class VaccinePackage {
 
@@ -30,9 +30,9 @@ public class VaccinePackage {
     @Column(columnDefinition = "LONGTEXT")
     private String imageBase64;
     
-    private int ageRangeStart; // Age in months
+    private int ageRangeStart;
     
-    private int ageRangeEnd; // Age in months
+    private int ageRangeEnd;
     
     private boolean featured;
     
@@ -48,20 +48,18 @@ public class VaccinePackage {
     
     private LocalDateTime updatedAt;
     
+    @Getter
     public enum PackageType {
         INDIVIDUAL("Tiêm lẻ"),
         PACKAGE("Trọn gói"),
         CUSTOM("Cá thể hóa");
-        
+
         private final String displayName;
-        
+
         PackageType(String displayName) {
             this.displayName = displayName;
         }
-        
-        public String getDisplayName() {
-            return displayName;
-        }
+
     }
     
     @PrePersist

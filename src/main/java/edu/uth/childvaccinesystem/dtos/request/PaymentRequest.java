@@ -2,11 +2,12 @@ package edu.uth.childvaccinesystem.dtos.request;
 
 import java.time.LocalDateTime;
 
-import lombok.Setter;
-import lombok.Getter;
+import lombok.*;
 
-@Setter
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentRequest {
     private Long id;
     private double amount;

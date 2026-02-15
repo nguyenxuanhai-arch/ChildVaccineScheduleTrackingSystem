@@ -1,9 +1,10 @@
-package edu.uth.childvaccinesystem.controllers.auth;
+package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.entities.Child;
-import edu.uth.childvaccinesystem.services.AppointmentService;
-import edu.uth.childvaccinesystem.services.ChildService;
+import edu.uth.childvaccinesystem.services.impl.AppointmentService;
+import edu.uth.childvaccinesystem.services.impl.ChildService;
+import edu.uth.childvaccinesystem.services.impl.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AuthController {
     private AppointmentService appointmentService;
 
     @Autowired
-    private edu.uth.childvaccinesystem.services.UserService userService;
+    private UserService userService;
 
     @GetMapping("/register")
     public String registerUser() {

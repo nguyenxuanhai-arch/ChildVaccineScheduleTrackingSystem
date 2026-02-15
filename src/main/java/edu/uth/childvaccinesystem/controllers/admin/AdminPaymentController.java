@@ -3,7 +3,7 @@ package edu.uth.childvaccinesystem.controllers.admin;
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.entities.Child;
 import edu.uth.childvaccinesystem.entities.Payment;
-import edu.uth.childvaccinesystem.services.PaymentService;
+import edu.uth.childvaccinesystem.services.impl.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

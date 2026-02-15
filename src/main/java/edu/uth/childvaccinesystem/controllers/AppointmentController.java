@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import edu.uth.childvaccinesystem.entities.Appointment;
 import edu.uth.childvaccinesystem.dtos.request.AppointmentRequest;
 import edu.uth.childvaccinesystem.dtos.request.PackageAppointmentRequest;
-import edu.uth.childvaccinesystem.services.AppointmentService;
+import edu.uth.childvaccinesystem.services.impl.AppointmentService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
@@ -19,13 +17,13 @@ import edu.uth.childvaccinesystem.entities.Appointment.AppointmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.security.Principal;
 import edu.uth.childvaccinesystem.entities.Feedback;
-import edu.uth.childvaccinesystem.services.FeedbackService;
+import edu.uth.childvaccinesystem.services.impl.FeedbackService;
 
 @Controller
 @RequestMapping("/appointments")
@@ -193,7 +191,6 @@ public class AppointmentController {
     public ResponseEntity<?> bookAppointment(@RequestBody AppointmentRequest request) {
         try {
             Appointment bookedAppointment = appointmentService.bookAppointment(request);
-            // Return the appointment id and redirect URL for client-side redirect
             return ResponseEntity.ok(
                 java.util.Map.of(
                     "id", bookedAppointment.getId(),

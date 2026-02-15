@@ -1,12 +1,14 @@
 package edu.uth.childvaccinesystem.dtos.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppointmentRequest {
     private Long childId;
     private Long vaccineId;

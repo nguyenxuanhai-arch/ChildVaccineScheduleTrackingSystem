@@ -1,7 +1,7 @@
 package edu.uth.childvaccinesystem.utils;
 
-import edu.uth.childvaccinesystem.dtos.request.ChildRequestDTO;
-import edu.uth.childvaccinesystem.dtos.response.ChildResponseDTO;
+import edu.uth.childvaccinesystem.dtos.request.ChildRequest;
+import edu.uth.childvaccinesystem.dtos.response.ChildResponse;
 import edu.uth.childvaccinesystem.entities.Child;
 import java.time.LocalDate;
 import java.time.Period;
@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class ChildMapper {
     
-    public static ChildResponseDTO toDTO(Child child) {
+    public static ChildResponse toDTO(Child child) {
         if (child == null) return null;
         
-        ChildResponseDTO dto = new ChildResponseDTO();
+        ChildResponse dto = new ChildResponse();
         dto.setId(child.getId());
         dto.setName(child.getName());
         dto.setDob(child.getDob());
@@ -30,13 +30,13 @@ public class ChildMapper {
         return dto;
     }
     
-    public static List<ChildResponseDTO> toDTOList(List<Child> children) {
+    public static List<ChildResponse> toDTOList(List<Child> children) {
         return children.stream()
                 .map(ChildMapper::toDTO)
                 .collect(Collectors.toList());
     }
     
-    public static Child toEntity(ChildRequestDTO dto) {
+    public static Child toEntity(ChildRequest dto) {
         if (dto == null) return null;
         
         Child child = new Child();

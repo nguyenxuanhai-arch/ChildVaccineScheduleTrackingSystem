@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import edu.uth.childvaccinesystem.dtos.request.FeedbackRequest;
 import edu.uth.childvaccinesystem.entities.Feedback;
-import edu.uth.childvaccinesystem.services.FeedbackService;
+import edu.uth.childvaccinesystem.services.impl.FeedbackService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 

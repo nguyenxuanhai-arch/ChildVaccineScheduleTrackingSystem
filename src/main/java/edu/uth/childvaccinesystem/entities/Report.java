@@ -1,13 +1,16 @@
 package edu.uth.childvaccinesystem.entities;
 
 import jakarta.persistence.*;
-import lombok.Setter;
-import lombok.Getter;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Setter
-@Getter
+@Data
+@Table(name = "reports")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Report {
     
     @Id

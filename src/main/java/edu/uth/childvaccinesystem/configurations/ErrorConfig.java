@@ -1,4 +1,4 @@
-package edu.uth.childvaccinesystem.config;
+package edu.uth.childvaccinesystem.configurations;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
@@ -31,7 +31,7 @@ public class ErrorConfig {
                 new ErrorPage(Throwable.class, "/error")
             );
             
-            // API error pages - these will be handled by our ApiExceptionHandler
+            // API error pages - these will be handled by our GlobalException
             registry.addErrorPages(
                 new ErrorPage(HttpStatus.NOT_FOUND, "/api/error"),
                 new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/api/error"),

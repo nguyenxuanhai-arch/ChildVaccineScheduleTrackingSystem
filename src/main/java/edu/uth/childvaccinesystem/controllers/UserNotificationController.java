@@ -1,9 +1,8 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import edu.uth.childvaccinesystem.entities.User;
-import edu.uth.childvaccinesystem.repositories.NotificationRepository;
-import edu.uth.childvaccinesystem.services.NotificationService;
-import edu.uth.childvaccinesystem.services.UserService;
+import edu.uth.childvaccinesystem.services.impl.NotificationService;
+import edu.uth.childvaccinesystem.services.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
