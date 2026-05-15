@@ -4,9 +4,9 @@ import edu.uth.childvaccinesystem.dtos.request.ChildRequest;
 import edu.uth.childvaccinesystem.dtos.response.ChildResponse;
 import edu.uth.childvaccinesystem.entities.Child;
 import edu.uth.childvaccinesystem.entities.User;
+import edu.uth.childvaccinesystem.mappers.ChildMapper;
 import edu.uth.childvaccinesystem.services.impl.ChildService;
 import edu.uth.childvaccinesystem.services.impl.UserService;
-import edu.uth.childvaccinesystem.utils.ChildMapper;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +29,7 @@ public class ChildController {
     private final ChildService childService;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final ChildMapper childMapper;
 
     @GetMapping("/simple-list")
     public ResponseEntity<List<ChildResponse>> getSimpleChildList(@RequestHeader("Authorization") String token) {
@@ -38,7 +39,7 @@ public class ChildController {
             System.out.println("Getting simplified children for parent: " + username);
             
             List<Child> children = childService.getChildrenByParentUsername(username);
-            List<ChildResponse> childDTOs = ChildMapper.toDTOList(children);
+            List<ChildResponse> childDTOs = childMapper.toResponseList(children);
             
             return ResponseEntity.ok(childDTOs);
         } catch (Exception e) {
@@ -58,7 +59,7 @@ public class ChildController {
             List<Child> children = childService.getChildrenByParentUsername(username);
             System.out.println("Found " + children.size() + " children");
 
-            List<ChildResponse> childDTOs = ChildMapper.toDTOList(children);
+            List<ChildResponse> childDTOs = childMapper.toResponseList(children);
 
             if (childDTOs.isEmpty()) {
                 System.out.println("No children found for parent: " + username);
@@ -117,14 +118,14 @@ public class ChildController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
             
-            Child child = ChildMapper.toEntity(childRequest);
+            Child child = childMapper.toEntity(childRequest);
             child.setParent(parent);
             child.setParentUsername(username);
             
             Child savedChild = childService.saveChild(child);
             
             if (savedChild != null && savedChild.getId() != null) {
-                ChildResponse savedDTO = ChildMapper.toDTO(savedChild);
+                ChildResponse savedDTO = childMapper.toResponse(savedChild);
                 
                 // Log saved data for debugging
                 if (savedDTO != null) {
@@ -214,7 +215,7 @@ public class ChildController {
             
             if (savedChild != null && savedChild.getId() != null) {
                 // Convert to DTO for response
-                ChildResponse savedDTO = ChildMapper.toDTO(savedChild);
+                ChildResponse savedDTO = childMapper.toResponse(savedChild);
                 
                 response.put("success", true);
                 response.put("message", "✅ Thêm bé thành công!");
@@ -281,7 +282,7 @@ public class ChildController {
             }
             
             // Convert to DTO for response
-            ChildResponse updatedDTO = ChildMapper.toDTO(updatedChildOpt.get());
+            ChildResponse updatedDTO = childMapper.toResponse(updatedChildOpt.get());
             
             response.put("success", true);
             response.put("message", "Child updated successfully");
@@ -369,7 +370,7 @@ public class ChildController {
             }
             
             // Convert to DTO
-            ChildResponse childDTO = ChildMapper.toDTO(child);
+            ChildResponse childDTO = childMapper.toResponse(child);
             
             response.put("success", true);
             response.put("child", childDTO);

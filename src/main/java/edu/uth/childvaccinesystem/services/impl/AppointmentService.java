@@ -15,7 +15,6 @@ import edu.uth.childvaccinesystem.repositories.AppointmentRepository;
 import edu.uth.childvaccinesystem.repositories.ChildRepository;
 import edu.uth.childvaccinesystem.repositories.VaccineRepository;
 import edu.uth.childvaccinesystem.repositories.VaccinePackageRepository;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -104,8 +103,7 @@ public class AppointmentService implements AppointmentServiceInterface {
 
     public List<Appointment> getAppointmentsByChildId(Long childId) {
         try {
-            List<Appointment> appointments = appointmentRepository.findByChildIdWithDetails(childId);
-            return appointments;
+            return appointmentRepository.findByChildIdWithDetails(childId);
         } catch (Exception e) {
             System.err.println("Error fetching appointments for child ID " + childId + ": " + e.getMessage());
             e.printStackTrace();

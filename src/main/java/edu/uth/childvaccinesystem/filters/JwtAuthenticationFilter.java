@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import edu.uth.childvaccinesystem.services.impl.UserService;
 import edu.uth.childvaccinesystem.utils.JwtUtil;
 
-@Component  // Để Spring quản lý filter này
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserService userService;
@@ -42,20 +42,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
-    String token = extractJwtFromCookies(request);
+        String token = extractJwtFromCookies(request);
 
-    if (token != null) {
-        String username = jwtUtil.extractUsername(token);
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token != null) {
+            String username = jwtUtil.extractUsername(token);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
         }
+        filterChain.doFilter(request, response);
     }
-    filterChain.doFilter(request, response);
-}
 }

@@ -46,7 +46,7 @@ public class VaccineController {
         
         Page<Vaccine> pageVaccines = vaccineService.getAllVaccinesWithPagination(pageable);
         
-        Page<VaccineResponse> vaccines = pageVaccines.map(vaccineMapper::toResponse);
+        Page<VaccineResponse> vaccines = vaccineMapper.toResponsePage(pageVaccines);
 
         Map<String, Object> response = new HashMap<>();
         response.put("vaccines", vaccines);

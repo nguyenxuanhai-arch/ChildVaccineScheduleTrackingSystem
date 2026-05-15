@@ -1,6 +1,8 @@
 package edu.uth.childvaccinesystem.controllers;
 
 import java.io.IOException;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +31,14 @@ import edu.uth.childvaccinesystem.entities.User;
 import java.util.Base64;
 import java.util.Collections;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auths")
 public class AuthsController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse httpResponse) {
@@ -56,7 +55,6 @@ public class AuthsController {
 
         String token = jwtUtil.generateToken(userDetails.getUsername(), role);
 
-        // ✅ Set JWT vào cookie
         Cookie cookie = new Cookie("jwt", token);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
@@ -118,22 +116,7 @@ public ResponseEntity<?> updateProfile(
 
     String token = request.getHeader("Authorization").substring(7);
     String username = jwtUtil.extractUsername(token);
-
-    User user = userService.getUserByUsername(username);
-    if (user == null) return ResponseEntity.status(404).body("User not found");
-
-    user.setName(name);
-    user.setPhone(phone);
-    user.setEmail(email); 
-    user.setAddress(address); 
-    if (image != null && !image.isEmpty()) {
-        try {
-            user.setData(image.getBytes()); // Chuyển file ảnh thành byte[] để lưu vào cơ sở dữ liệu
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Lỗi khi đọc ảnh");
-        }
-    }
-    userService.saveUser(user); // Ensure this method exists to persist user
+    userService.uploadAvatar(username,name, phone, address, email, image);
 
     return ResponseEntity.ok("Cập nhật thành công");
 }

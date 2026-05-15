@@ -5,6 +5,7 @@ import edu.uth.childvaccinesystem.dtos.response.VaccineResponse;
 import edu.uth.childvaccinesystem.entities.Vaccine;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.data.domain.Page;
 
@@ -20,5 +21,5 @@ public interface VaccineMapper {
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateVaccineFromRequest(Vaccine vaccine1, Vaccine vaccine2);
+    void updateVaccineFromRequest(Vaccine vaccine1,@MappingTarget Vaccine vaccine2);
 }

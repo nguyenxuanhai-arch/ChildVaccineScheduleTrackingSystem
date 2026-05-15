@@ -1,10 +1,12 @@
 package edu.uth.childvaccinesystem.services.impl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import edu.uth.childvaccinesystem.dtos.request.RegisterRequest;
 import edu.uth.childvaccinesystem.entities.User;
 import edu.uth.childvaccinesystem.repositories.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -64,7 +69,7 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 
-    public User createUser(User user) {
+    public void createUser(User user) {
         // Kiểm tra ID để phân biệt giữa tạo mới và cập nhật
         if (user.getId() == null) {
             // Đây là tạo mới - kiểm tra trùng lặp username và email
@@ -108,11 +113,7 @@ public class UserService implements UserDetailsService {
                 user.setCreatedAt(existingUser.getCreatedAt());
             }
         }
-        
-        return userRepository.save(user);
-    }
 
-    public void saveUser(User user) {
         userRepository.save(user);
     }
 
@@ -154,15 +155,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User getUserByIdOrUsername(String idOrUsername) {
-        try {
-            Long id = Long.parseLong(idOrUsername);
-            return userRepository.findById(id).orElse(null);
-        } catch (NumberFormatException e) {
-            return userRepository.findByUsername(idOrUsername).orElse(null);
-        }
-    }
-
     public List<User> getUsersByRole(String role) {
         // Kiểm tra và chuẩn hóa định dạng role
         if (role == null || role.isEmpty()) {
@@ -195,14 +187,15 @@ public class UserService implements UserDetailsService {
     
     /**
      * Change password for a user
-     * @param username The username of the user
+     *
+     * @param username        The username of the user
      * @param currentPassword The current password
-     * @param newPassword The new password to set
-     * @return true if password changed successfully, false otherwise
+     * @param newPassword     The new password to set
      * @throws UsernameNotFoundException if user not found
-     * @throws IllegalArgumentException if current password is incorrect
+     * @throws IllegalArgumentException  if current password is incorrect
      */
-    public boolean changePassword(String username, String currentPassword, String newPassword) {
+    @Transactional
+    public void changePassword(String username, String currentPassword, String newPassword) {
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
         
@@ -214,7 +207,25 @@ public class UserService implements UserDetailsService {
         // Set new password
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-        
-        return true;
+
+    }
+
+    @Transactional
+    public void uploadAvatar(String username, String name, String phone, String address, String email, MultipartFile image) {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        user.setName(name);
+        user.setPhone(phone);
+        user.setAddress(address);
+        user.setEmail(email);
+
+        if (image != null && !image.isEmpty()) {
+            try {
+                user.setData(image.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading image file", e);
+            }
+        }
+        userRepository.save(user);
     }
 }
